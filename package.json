@@ -1,0 +1,13 @@
+{
+  "name": "workflow",
+  "version": "0.1.0",
+  "main": "index.js",
+  "author": "Liam Ross",
+  "scripts": {
+    "start": "parcel demo/index.html"
+  },
+  "devDependencies": {
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "parcel-bundler": "^1.7.1"
+  }
+}

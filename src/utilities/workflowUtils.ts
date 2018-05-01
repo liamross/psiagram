@@ -28,7 +28,7 @@ export const isNodeColliding = (
 /**
  * Rounds number to nearest interval. Returns number if interval is 0.
  */
-export const roundToNearest = (number, interval) =>
+export const roundToNearest = (number: number, interval: number = 0): number =>
   interval ? Math.round(number / interval) * interval : number;
 
 /**

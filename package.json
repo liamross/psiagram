@@ -4,10 +4,13 @@
   "main": "index.js",
   "author": "Liam Ross",
   "scripts": {
-    "start": "parcel demo/index.html"
+    "start": "parcel demo/index.html",
+    "build": "parcel build src/index.ts",
+    "test": "jest"
   },
   "devDependencies": {
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "jest": "^22.4.3",
     "parcel-bundler": "^1.7.1",
     "prettier": "^1.12.1",
     "typescript": "^2.8.3"

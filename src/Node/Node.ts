@@ -1,5 +1,6 @@
 import { createSVGWithAttributes } from '../utilities/domUtils';
 import { INodeProps, INode } from './INode';
+import { setWorkflowType, WorkflowType } from '../utilities/dataUtils';
 
 export class Node implements INode {
   private props: INodeProps;
@@ -50,6 +51,9 @@ export class Node implements INode {
     textContent.textContent = title;
     group.appendChild(shape);
     group.appendChild(textContent);
+
+    // Set workflow type attribute.
+    setWorkflowType(group, WorkflowType.Node);
 
     this.element = group;
   }

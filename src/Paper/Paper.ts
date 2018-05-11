@@ -7,10 +7,10 @@ import { INode, INodeProps } from '../Node/INode';
 import { IEdge, IEdgeProps } from '../Edge/IEdge';
 import {
   IPaper,
-  IPaperInputNode,
   IPaperStoredNode,
   IPaperStoredEdge,
   IPaperProps,
+  IPaperInputNode,
 } from './IPaper';
 
 export class Paper implements IPaper {
@@ -53,7 +53,6 @@ export class Paper implements IPaper {
     // Paper Wrapper set up.
     const PWAttributes = {};
     PWAttributes['id'] = paperWrapperId;
-    // TODO: onmousedown listener.
     PWAttributes['style'] = `width:${this.width}; height:${this.height}`;
     if (paperWrapperClass) {
       PWAttributes['class'] = paperWrapperClass;
@@ -76,6 +75,9 @@ export class Paper implements IPaper {
     // Append paper into wrapper.
     this.paperWrapper.appendChild(this.paper);
 
+    // Add mousedown event listener to paper wrapper.
+    this.paperWrapper.addEventListener('mousedown', this._handleBlockMouseDown);
+
     // Add initial nodes and edges to paper.
     if (initialConditions.nodes) {
       initialConditions.nodes.forEach(node => this.addNode(node));
@@ -91,6 +93,8 @@ export class Paper implements IPaper {
 
   addNode(node: IPaperInputNode) {
     if (this.nodes.hasOwnProperty(node.id)) {
+      // TODO: Implement an error callback? We could have some sort of error
+      // coding system to allow for localization.
       console.error(`Add node: node with id ${node.id} already exists.`);
     } else {
       // Create instance by calling the class at node.component
@@ -173,4 +177,21 @@ export class Paper implements IPaper {
       console.error(`Update edge: edge with id ${id} does not exist.`);
     }
   }
+
+  init() {
+    // TODO: add listeners if they don't currently exist
+  }
+
+  uninit() {
+    // TODO: remove listeners
+  }
+
+  private _handleBlockMouseDown = evt => {
+    const target = evt.target.parentElement;
+
+    // if (target && target ) {
+    // }
+
+    console.log(target);
+  };
 }

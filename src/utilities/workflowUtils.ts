@@ -62,59 +62,21 @@ export const getEdgeNodeIntersection = (
   nextPoint: { x: number; y: number },
   node: IPaperStoredNode,
 ): { x: number; y: number } => {
-  // Typescript issue: can't spread operator for first 4 arguments.
-  // const e = [intersectPoint.x, intersectPoint.y, nextPoint.x, nextPoint.y];
+  const lineA = [intersectPoint.x, intersectPoint.y, nextPoint.x, nextPoint.y];
   const { x: nx, y: ny } = node.coords;
   const { width: nw, height: nh } = getWidthHeight(node);
+  // prettier-ignore
   return (
     // Left edge.
-    lineIntersect(
-      intersectPoint.x,
-      intersectPoint.y,
-      nextPoint.x,
-      nextPoint.y,
-      nx,
-      ny,
-      nx,
-      ny + nh,
-    ) ||
+    lineIntersect(...lineA, nx     , ny     , nx     , ny + nh) ||
     // Right edge.
-    lineIntersect(
-      intersectPoint.x,
-      intersectPoint.y,
-      nextPoint.x,
-      nextPoint.y,
-      nx + nw,
-      ny,
-      nx + nw,
-      ny + nh,
-    ) ||
+    lineIntersect(...lineA, nx + nw, ny     , nx + nw, ny + nh) ||
     // Top edge.
-    lineIntersect(
-      intersectPoint.x,
-      intersectPoint.y,
-      nextPoint.x,
-      nextPoint.y,
-      nx,
-      ny,
-      nx + nw,
-      ny,
-    ) ||
+    lineIntersect(...lineA, nx     , ny     , nx + nw, ny     ) ||
     // Bottom edge.
-    lineIntersect(
-      intersectPoint.x,
-      intersectPoint.y,
-      nextPoint.x,
-      nextPoint.y,
-      nx,
-      ny + nh,
-      nx + nw,
-      ny + nh,
-    ) || {
-      // Default.
-      x: intersectPoint.x,
-      y: intersectPoint.y,
-    }
+    lineIntersect(...lineA, nx     , ny + nh, nx + nw, ny + nh) ||
+    // Default.
+    { x: intersectPoint.x, y: intersectPoint.y }
   );
 };
 
@@ -131,7 +93,8 @@ export const getWidthHeight = (
 /**
  * Find intersect between two lines if it exists.
  */
-export const lineIntersect = (
+export function lineIntersect(...xy: number[]): { x: number; y: number } | null;
+export function lineIntersect(
   // Line 1
   x1: number, // - Point A, X-coordinate.
   y1: number, // - Point A, Y-coordinate.
@@ -142,7 +105,7 @@ export const lineIntersect = (
   y3: number, // - Point A, Y-coordinate.
   x4: number, // - Point B, X-coordinate.
   y4: number, // - Point B, Y-coordinate.
-): { x: number; y: number } | null => {
+): { x: number; y: number } | null {
   const denom = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
   if (denom) {
     const ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denom;
@@ -152,14 +115,4 @@ export const lineIntersect = (
       : null;
   }
   return null;
-};
-
-/**
- * Creates sequential IDs with a given prefix.
- */
-const nextIdIterator = (prefix: string): (() => string) => {
-  let nextId = 1;
-  return () => `${prefix}-${nextId++}`;
-};
-// export const getNextNodeId = nextIdIterator('node');
-export const getNextEdgeId = nextIdIterator('edge');
+}

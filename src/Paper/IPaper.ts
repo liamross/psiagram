@@ -1,6 +1,58 @@
 import { INode, INodeProps } from '../Node/INode';
 import { IEdge, IEdgeProps } from '../Edge/IEdge';
 
+export interface IPaper {
+  /**
+   * Get the paper element.
+   */
+  getPaperElement(): HTMLElement;
+
+  /**
+   * Add a node to the paper.
+   */
+  addNode(node: IPaperInputNode): void;
+
+  /**
+   * Remove a node by ID from the paper.
+   */
+  removeNode(id: string): void;
+
+  /**
+   * Update a node with newProps by ID on the paper.
+   */
+  updateNode(id: string, newProps: INodeProps): void;
+
+  /**
+   * Add an edge to the paper.
+   */
+  addEdge(edge: IPaperInputEdge): void;
+
+  /**
+   * Remove an edge by ID from the paper.
+   */
+  removeEdge(id: string): void;
+
+  /**
+   * Update an edge with newProps by ID on the paper.
+   */
+  updateEdge(id: string, newProps: IEdgeProps): void;
+
+  /**
+   * Initialize on-click listeners. This is only necessary if the component has
+   * had uninit called previously, as listeners are initialized in constructor.
+   *
+   * @todo: Is this necessary?
+   */
+  init(): void;
+
+  /**
+   * Removes any listeners from the component.
+   *
+   * @todo: Is this necessary?
+   */
+  uninit(): void;
+}
+
 export interface IPaperProps {
   width: string;
   height: string;
@@ -16,16 +68,6 @@ export interface IPaperProps {
     nodes?: Array<IPaperInputNode>;
     edges?: Array<IPaperInputEdge>;
   };
-}
-
-export interface IPaper {
-  getPaperElement(): HTMLElement;
-  addNode(node: IPaperInputNode): void;
-  removeNode(id: string): void;
-  updateNode(id: string, newProps: INodeProps): void;
-  addEdge(edge: IPaperInputEdge): void;
-  removeEdge(id: string): void;
-  updateEdge(id: string, newProps: IEdgeProps): void;
 }
 
 export interface IPaperInputNode {

@@ -19,7 +19,7 @@
   "jest": {
     "moduleFileExtensions": ["ts", "tsx", "js", "jsx"],
     "transform": {
-      "^.+\\.(ts|tsx)$": "<rootDir>/jest/tsTransform.js"
+      "^.+\\.(ts|tsx)$": "<rootDir>/jest/transpiler.js"
     },
     "testMatch": [
       "**/__tests__/**/*.(ts|tsx|js|jsx)",

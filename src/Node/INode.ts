@@ -1,4 +1,5 @@
 export interface INodeProps {
+  id: string;
   title: string;
   width: number;
   height: number;

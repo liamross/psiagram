@@ -6,6 +6,11 @@ import { setPaperDefs } from './PaperDefs';
 import { INode, INodeProps } from '../Node/INode';
 import { IEdge, IEdgeProps } from '../Edge/IEdge';
 import {
+  setWorkflowType,
+  getWorkflowType,
+  WorkflowType,
+} from '../utilities/dataUtils';
+import {
   IPaper,
   IPaperStoredNode,
   IPaperStoredEdge,
@@ -14,15 +19,15 @@ import {
 } from './IPaper';
 
 export class Paper implements IPaper {
-  private width: string;
-  private height: string;
-  private plugins: Array<Object>;
-  private nodes: { [key: string]: IPaperStoredNode };
-  private edges: { [key: string]: IPaperStoredEdge };
-  private gridSize: number;
-  private allowBlockOverlap: boolean;
-  private paperWrapper: HTMLElement;
-  private paper: SVGElement;
+  private _width: string;
+  private _height: string;
+  private _plugins: Array<Object>;
+  private _nodes: { [key: string]: IPaperStoredNode };
+  private _edges: { [key: string]: IPaperStoredEdge };
+  private _gridSize: number;
+  private _allowBlockOverlap: boolean;
+  private _paperWrapper: HTMLElement;
+  private _paper: SVGElement;
 
   constructor({
     width,
@@ -32,20 +37,23 @@ export class Paper implements IPaper {
     initialConditions,
   }: IPaperProps) {
     // Workspace parameters.
-    this.width = width;
-    this.height = height;
-    this.plugins = plugins;
-    this.nodes = {};
-    this.edges = {};
+    this._width = width;
+    this._height = height;
+    this._plugins = plugins;
+    this._nodes = {};
+    this._edges = {};
 
     // Workspace IDs.
-    const randomId = Math.round(Math.random() * 1000000).toString(16);
+    const randomId = Math.round(Math.random() * 10000000)
+      .toString(36)
+      .concat('0000')
+      .substring(0, 4);
     const paperWrapperId = `paper-wrapper_${randomId}`;
     const paperId = `paper_${randomId}`;
 
     // Additional parameters or defaults.
-    this.gridSize = attributes.gridSize || 0;
-    this.allowBlockOverlap = attributes.allowBlockOverlap || false;
+    this._gridSize = attributes.gridSize || 0;
+    this._allowBlockOverlap = attributes.allowBlockOverlap || false;
     const gridColor: string = attributes.gridColor || '#EEE';
     const paperWrapperClass: string = attributes.paperWrapperClass || '';
     const paperClass: string = attributes.paperClass || '';
@@ -53,11 +61,11 @@ export class Paper implements IPaper {
     // Paper Wrapper set up.
     const PWAttributes = {};
     PWAttributes['id'] = paperWrapperId;
-    PWAttributes['style'] = `width:${this.width}; height:${this.height}`;
+    PWAttributes['style'] = `width:${this._width}; height:${this._height}`;
     if (paperWrapperClass) {
       PWAttributes['class'] = paperWrapperClass;
     }
-    this.paperWrapper = createElementWithAttributes('div', PWAttributes);
+    this._paperWrapper = createElementWithAttributes('div', PWAttributes);
 
     // Paper set up.
     const PAttributes: Object = {};
@@ -67,16 +75,19 @@ export class Paper implements IPaper {
     if (paperClass) {
       PAttributes['class'] = paperClass;
     }
-    this.paper = createSVGWithAttributes('svg', PAttributes);
+    this._paper = createSVGWithAttributes('svg', PAttributes);
 
     // Add defs to paper.
-    setPaperDefs(this.paper, this.gridSize, gridColor);
+    setPaperDefs(this._paper, this._gridSize, gridColor);
+
+    // Set workflow type attribute to node.
+    setWorkflowType(this._paper, WorkflowType.Paper);
 
     // Append paper into wrapper.
-    this.paperWrapper.appendChild(this.paper);
+    this._paperWrapper.appendChild(this._paper);
 
     // Add mousedown event listener to paper wrapper.
-    this.paperWrapper.addEventListener('mousedown', this._handleBlockMouseDown);
+    this._paperWrapper.addEventListener('mousedown', this._handleMouseDown);
 
     // Add initial nodes and edges to paper.
     if (initialConditions.nodes) {
@@ -88,11 +99,11 @@ export class Paper implements IPaper {
   }
 
   getPaperElement(): HTMLElement {
-    return this.paperWrapper;
+    return this._paperWrapper;
   }
 
   addNode(node: IPaperInputNode) {
-    if (this.nodes.hasOwnProperty(node.id)) {
+    if (this._nodes.hasOwnProperty(node.id)) {
       // TODO: Implement an error callback? We could have some sort of error
       // coding system to allow for localization.
       console.error(`Add node: node with id ${node.id} already exists.`);
@@ -101,12 +112,13 @@ export class Paper implements IPaper {
       const component: any = node.component;
       const instance: INode = new component({
         ...node.props,
-        gridSize: this.gridSize,
+        gridSize: this._gridSize,
+        id: node.id,
       });
       const params = instance.getParameters();
       const ref = instance.getNodeElement();
 
-      this.nodes[node.id] = {
+      this._nodes[node.id] = {
         id: node.id,
         coords: node.coords,
         params,
@@ -120,7 +132,7 @@ export class Paper implements IPaper {
           'transform',
           `translate(${node.coords.x} ${node.coords.y})`,
         );
-        this.paper.appendChild(ref);
+        this._paper.appendChild(ref);
       } else {
         console.error(
           `Add node: invalid element returned from node class\nNode ID: ${
@@ -132,17 +144,17 @@ export class Paper implements IPaper {
   }
 
   removeNode(id: string): void {
-    if (this.nodes.hasOwnProperty(id)) {
+    if (this._nodes.hasOwnProperty(id)) {
       // Remove all edges that use node as end point.
-      Object.keys(this.edges).forEach(edgeId => {
-        const edge = this.edges[edgeId];
+      Object.keys(this._edges).forEach(edgeId => {
+        const edge = this._edges[edgeId];
         if (edge.source.id === id || edge.target.id === id) {
           this.removeEdge(edgeId);
         }
       });
       // Remove node.
-      this.nodes[id].ref.remove();
-      delete this.nodes[id];
+      this._nodes[id].ref.remove();
+      delete this._nodes[id];
     } else {
       console.error(`Delete node: node with id ${id} does not exist.`);
     }
@@ -150,8 +162,8 @@ export class Paper implements IPaper {
 
   updateNode(id: string, newProps: INodeProps): void {
     // TODO: WHAT GOES DOWN TO NODE WHAT STAYS HERE!!!
-    if (this.nodes.hasOwnProperty(id)) {
-      this.nodes[id].instance.updateProps(newProps);
+    if (this._nodes.hasOwnProperty(id)) {
+      this._nodes[id].instance.updateProps(newProps);
     } else {
       console.error(`Update node: node with id ${id} does not exist.`);
     }
@@ -162,17 +174,17 @@ export class Paper implements IPaper {
   }
 
   removeEdge(id: string): void {
-    if (this.edges.hasOwnProperty(id)) {
-      this.edges[id].ref.remove();
-      delete this.edges[id];
+    if (this._edges.hasOwnProperty(id)) {
+      this._edges[id].ref.remove();
+      delete this._edges[id];
     } else {
       console.error(`Delete edge: edge with id ${id} does not exist.`);
     }
   }
 
   updateEdge(id: string, newProps: IEdgeProps): void {
-    if (this.edges.hasOwnProperty(id)) {
-      this.edges[id].instance.updateProps(newProps);
+    if (this._edges.hasOwnProperty(id)) {
+      this._edges[id].instance.updateProps(newProps);
     } else {
       console.error(`Update edge: edge with id ${id} does not exist.`);
     }
@@ -186,12 +198,30 @@ export class Paper implements IPaper {
     // TODO: remove listeners
   }
 
-  private _handleBlockMouseDown = evt => {
-    const target = evt.target.parentElement;
+  private _handleMouseDown = (evt: MouseEvent) => {
+    const target = evt.target as Element;
+    // This targets the parent of the clicked element. The parent is either
+    // <svg> for Paper, or <g> for Node or Edge.
+    const containerElement = target.parentElement;
+    const workflowType = getWorkflowType(containerElement);
 
-    // if (target && target ) {
-    // }
+    switch (workflowType) {
+      case WorkflowType.Node:
+        this._handleNodeMouseDown(evt, containerElement);
+        break;
+      case WorkflowType.Edge:
+        break;
+      case WorkflowType.Paper:
+        break;
+      default:
+        break;
+    }
+  };
 
-    console.log(target);
+  private _handleNodeMouseDown = (
+    evt: MouseEvent,
+    containerElement: Element,
+  ) => {
+    console.log('yep its a node');
   };
 }

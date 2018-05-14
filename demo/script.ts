@@ -3,7 +3,6 @@ import { Paper, Node } from '../src';
 var myPaper = null;
 
 function loadPaper() {
-  console.log('load paper');
   myPaper = new Paper({
     width: '1300px',
     height: '900px',

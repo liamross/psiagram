@@ -17,7 +17,12 @@
     "typescript": "^2.8.3"
   },
   "jest": {
-    "moduleFileExtensions": ["ts", "tsx", "js", "jsx"],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx"
+    ],
     "transform": {
       "^.+\\.(ts|tsx)$": "<rootDir>/jest/transpiler.js"
     },
@@ -25,5 +30,8 @@
       "**/__tests__/**/*.(ts|tsx|js|jsx)",
       "**/?(*.)(spec|test).(ts|tsx|js|jsx)"
     ]
+  },
+  "dependencies": {
+    "npm": "^6.0.1"
   }
 }

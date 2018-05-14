@@ -58,11 +58,11 @@ export const getNodeMidpoint = (node, gridSize = 0) => {
  * Finds the point along the side of the node to trip edge to.
  */
 export const getEdgeNodeIntersection = (
-  intersectPoint: { x: number; y: number },
+  midPoint: { x: number; y: number },
   nextPoint: { x: number; y: number },
   node: IPaperStoredNode,
 ): { x: number; y: number } => {
-  const lineA = [intersectPoint.x, intersectPoint.y, nextPoint.x, nextPoint.y];
+  const lineA = [midPoint.x, midPoint.y, nextPoint.x, nextPoint.y];
   const { x: nx, y: ny } = node.coords;
   const { width: nw, height: nh } = getWidthHeight(node);
   // prettier-ignore
@@ -75,8 +75,8 @@ export const getEdgeNodeIntersection = (
     lineIntersect(...lineA, nx     , ny     , nx + nw, ny     ) ||
     // Bottom edge.
     lineIntersect(...lineA, nx     , ny + nh, nx + nw, ny + nh) ||
-    // Default.
-    { x: intersectPoint.x, y: intersectPoint.y }
+    // Default to the center point of the node.
+    { x: midPoint.x, y: midPoint.y }
   );
 };
 

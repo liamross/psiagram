@@ -25,13 +25,15 @@ export class Node implements INode {
   }
 
   createNodeElement() {
-    const { width, height, title } = this.props;
+    const { width, height, title, id } = this.props;
     const FONT_HEIGHT = 14;
     const fontX = width / 2;
     const fontY = FONT_HEIGHT / 2 + height / 2;
     // TODO: this will be dynamic based on props.
 
-    const group = createSVGWithAttributes('g');
+    const group = createSVGWithAttributes('g', {
+      id,
+    });
 
     const shape = createSVGWithAttributes('rect', {
       width,
@@ -52,7 +54,7 @@ export class Node implements INode {
     group.appendChild(shape);
     group.appendChild(textContent);
 
-    // Set workflow type attribute.
+    // Set workflow type attribute to node.
     setWorkflowType(group, WorkflowType.Node);
 
     this.element = group;

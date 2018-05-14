@@ -1,10 +1,10 @@
 /**
  * Creates and returns an element.
  */
-export function createElementWithAttributes(
+export const createElementWithAttributes = (
   tag: string,
   attributes: { [key: string]: any } = {},
-): HTMLElement | null {
+): HTMLElement | null => {
   if (typeof tag === 'string' && typeof attributes === 'object') {
     const el = document.createElement(tag);
     for (let key in attributes) {
@@ -13,15 +13,15 @@ export function createElementWithAttributes(
     return el;
   }
   return null;
-}
+};
 
 /**
  * Creates and returns a namespace element.
  */
-export function createSVGWithAttributes(
+export const createSVGWithAttributes = (
   tag: string,
   attributes: { [key: string]: any } = {},
-): SVGElement | null {
+): SVGElement | null => {
   if (typeof tag === 'string' && typeof attributes === 'object') {
     const xmlns = 'http://www.w3.org/2000/svg';
     const ns = document.createElementNS(xmlns, tag);
@@ -31,4 +31,20 @@ export function createSVGWithAttributes(
     return ns;
   }
   return null;
-}
+};
+
+export const setElementAttribute = (
+  element: HTMLElement,
+  attribute: string,
+  value: string,
+): void => {
+  element.setAttribute(attribute, value);
+};
+
+export const setSVGAttribute = (
+  svgElement: SVGElement,
+  attribute: string,
+  value: string,
+): void => {
+  svgElement.setAttributeNS(null, attribute, value);
+};

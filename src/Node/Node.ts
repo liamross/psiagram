@@ -33,6 +33,8 @@ export class Node implements INode {
 
     const group = createSVGWithAttributes('g', {
       id,
+      // Temporary:
+      style: 'user-select: none',
     });
 
     const shape = createSVGWithAttributes('rect', {

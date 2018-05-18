@@ -1,6 +1,6 @@
 # workflow
 
-Pure JavaScript engine for rendering workflows in SVG.
+Pure JavaScript framework for rendering workflows in SVG.
 
 ```js
 const myPaper = new Paper({ width, height, plugins, ...etc });

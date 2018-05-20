@@ -1,0 +1,13 @@
+{
+  "rules": {
+    "no-console": false,
+    "ordered-imports": false,
+    "variable-name": [
+      true,
+      "ban-keywords",
+      "check-format",
+      "allow-leading-underscore"
+    ]
+  },
+  "extends": ["tslint:latest", "tslint-config-prettier"]
+}

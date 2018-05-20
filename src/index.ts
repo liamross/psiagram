@@ -17,7 +17,7 @@ import { INodeProps } from './Node/INode';
 import { IEdgeProps } from './Edge/IEdge';
 
 // Other exports.
-import { Coordinates } from './common/types';
+import { ICoordinates } from './common/types';
 
 // prettier-ignore
 export {
@@ -43,5 +43,5 @@ export {
   /**
    * Other
    */
-  Coordinates,      // Object to represent coordinates on paper.
+  ICoordinates,      // Object to represent coordinates on paper.
 };

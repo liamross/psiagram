@@ -10,12 +10,16 @@ export const isNodeColliding = (
   gridSize: number,
   allowContact: boolean,
 ): boolean => {
-  if (!node1 || !node2) return false;
+  if (!node1 || !node2) {
+    return false;
+  }
 
+  // tslint:disable:variable-name
   const { x: node1_x, y: node1_y } = node1.coords;
   const { x: node2_x, y: node2_y } = node2.coords;
   const { width: node1_w, height: node1_h } = getWidthHeight(node1);
   const { width: node2_w, height: node2_h } = getWidthHeight(node2);
+  // tslint:enable:variable-name
 
   return (
     node1_x < node2_x + (allowContact ? 0 : gridSize / 2) + node2_w &&
@@ -28,8 +32,8 @@ export const isNodeColliding = (
 /**
  * Rounds number to nearest interval. Returns number if interval is 0.
  */
-export const roundToNearest = (number: number, interval: number = 0): number =>
-  interval ? Math.round(number / interval) * interval : number;
+export const roundToNearest = (num: number, interval: number = 0): number =>
+  interval ? Math.round(num / interval) * interval : num;
 
 /**
  * Sets the node that has matching id to end of array, making it the top
@@ -37,8 +41,8 @@ export const roundToNearest = (number: number, interval: number = 0): number =>
  */
 export const nodeToFront = (
   id: string,
-  nodes: Array<IPaperStoredNode>,
-): Array<IPaperStoredNode> => {
+  nodes: IPaperStoredNode[],
+): IPaperStoredNode[] => {
   const sortNodes = nodes.slice();
   return sortNodes.sort((a, b) => (a.id === id ? 1 : b.id === id ? -1 : 0));
 };

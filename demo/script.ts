@@ -21,20 +21,20 @@ import {
   /**
    * Other
    */
-  Coordinates, // Object to represent coordinates on paper.
+  ICoordinates, // Object to represent coordinates on paper.
 } from '../src';
 
-var myPaper: IPaper | null = null;
+let myPaper: IPaper | null = null;
 
 function loadPaper() {
   const paperProps: IPaperProps = {
-    width: '1300px',
-    height: '900px',
-    plugins: [],
     attributes: {
       gridSize: 20,
     },
+    height: '900px',
     initialConditions: {},
+    plugins: [],
+    width: '1300px',
   };
 
   myPaper = new Paper(paperProps);
@@ -47,16 +47,16 @@ function loadPaper() {
 function addNode() {
   if (myPaper) {
     const node: IPaperInputNode = {
-      id: `new_node_test`,
       component: Node,
-      props: {
-        width: 160,
-        height: 80,
-        title: 'Title 1',
-      },
       coords: {
         x: 320,
         y: 160,
+      },
+      id: `new_node_test`,
+      props: {
+        height: 80,
+        title: 'Title 1',
+        width: 160,
       },
     };
     myPaper.addNode(node);

@@ -2,7 +2,7 @@ import { setPaperDefs } from './PaperDefs';
 import { INode } from '../Node/INode';
 import { IEdge } from '../Edge/IEdge';
 import { roundToNearest } from '../utilities/workflowUtils';
-import { Coordinates } from '../common/types';
+import { ICoordinates } from '../common/types';
 import {
   setWorkflowType,
   getWorkflowType,
@@ -29,11 +29,11 @@ import {
 export class Paper implements IPaper {
   private _width: string;
   private _height: string;
-  private _plugins: Array<Object>;
+  private _plugins: Array<{}>;
   private _nodes: { [key: string]: IPaperStoredNode };
   private _edges: { [key: string]: IPaperStoredEdge };
-  private _initialMouseCoords: Coordinates | null;
-  private _initialPaperCoords: Coordinates | null;
+  private _initialMouseCoords: ICoordinates | null;
+  private _initialPaperCoords: ICoordinates | null;
   private _activeItem: IActiveItem | null;
   private _gridSize: number;
   private _allowBlockOverlap: boolean;
@@ -73,23 +73,19 @@ export class Paper implements IPaper {
     const paperClass: string = attributes.paperClass || '';
 
     // Paper Wrapper set up.
-    const PWAttributes = {};
-    PWAttributes['id'] = paperWrapperId;
-    PWAttributes['style'] = `width:${this._width}; height:${this._height}`;
-    if (paperWrapperClass) {
-      PWAttributes['class'] = paperWrapperClass;
-    }
-    this._paperWrapper = createElementWithAttributes('div', PWAttributes);
+    this._paperWrapper = createElementWithAttributes('div', {
+      class: paperWrapperClass || null,
+      id: paperWrapperId,
+      style: `width:${this._width}; height:${this._height}`,
+    });
 
     // Paper set up.
-    const PAttributes: Object = {};
-    PAttributes['id'] = paperId;
-    PAttributes['width'] = '100%';
-    PAttributes['height'] = '100%';
-    if (paperClass) {
-      PAttributes['class'] = paperClass;
-    }
-    this._paper = createSVGWithAttributes('svg', PAttributes);
+    this._paper = createSVGWithAttributes('svg', {
+      class: paperClass || null,
+      height: '100%',
+      id: paperId,
+      width: '100%',
+    });
 
     // Add defs to paper.
     setPaperDefs(this._paper, this._gridSize, gridColor);
@@ -112,11 +108,11 @@ export class Paper implements IPaper {
     }
   }
 
-  getPaperElement(): HTMLElement {
+  public getPaperElement(): HTMLElement {
     return this._paperWrapper;
   }
 
-  addNode(node: IPaperInputNode) {
+  public addNode(node: IPaperInputNode): void {
     if (this._nodes.hasOwnProperty(node.id)) {
       // TODO: Implement an error callback? We could have some sort of error
       // coding system to allow for localization.
@@ -135,10 +131,10 @@ export class Paper implements IPaper {
 
       // Add node to nodes.
       this._nodes[node.id] = {
-        id: node.id,
         coords: node.coords,
-        params,
+        id: node.id,
         instance,
+        params,
         ref,
       };
 
@@ -160,9 +156,9 @@ export class Paper implements IPaper {
     }
   }
 
-  updateNode(
+  public updateNode(
     id: string,
-    newProps: { props?: IPaperNodeProps; coords?: Coordinates },
+    newProps: { props?: IPaperNodeProps; coords?: ICoordinates },
   ): void {
     if (this._nodes.hasOwnProperty(id)) {
       const { props, coords } = newProps;
@@ -172,8 +168,8 @@ export class Paper implements IPaper {
       if (props) {
         node.instance.updateProps({
           ...props,
-          id,
           gridSize: this._gridSize,
+          id,
         });
       }
 
@@ -186,7 +182,7 @@ export class Paper implements IPaper {
     }
   }
 
-  removeNode(id: string): void {
+  public removeNode(id: string): void {
     if (this._nodes.hasOwnProperty(id)) {
       // Remove all edges that use node as end point.
       Object.keys(this._edges).forEach(edgeId => {
@@ -203,11 +199,11 @@ export class Paper implements IPaper {
     }
   }
 
-  addEdge(edge: IPaperInputEdge): void {
+  public addEdge(edge: IPaperInputEdge): void {
     // TODO: implement.
   }
 
-  updateEdge(id: string, newProps: IPaperEdgeProps): void {
+  public updateEdge(id: string, newProps: IPaperEdgeProps): void {
     if (this._edges.hasOwnProperty(id)) {
       this._edges[id].instance.updateProps(newProps);
     } else {
@@ -215,7 +211,7 @@ export class Paper implements IPaper {
     }
   }
 
-  removeEdge(id: string): void {
+  public removeEdge(id: string): void {
     if (this._edges.hasOwnProperty(id)) {
       this._edges[id].ref.remove();
       delete this._edges[id];
@@ -224,7 +220,7 @@ export class Paper implements IPaper {
     }
   }
 
-  updateActiveItem(activeItem: IActiveItem = null): void {
+  public updateActiveItem(activeItem: IActiveItem = null): void {
     const oldActiveItem = this._activeItem;
 
     if (oldActiveItem) {
@@ -256,15 +252,15 @@ export class Paper implements IPaper {
     }
   }
 
-  init() {
+  public init() {
     // TODO: add listeners if they don't currently exist
   }
 
-  uninit() {
+  public uninit() {
     // TODO: remove listeners
   }
 
-  private _updateNodePosition = (id: string, coords: Coordinates): void => {
+  private _updateNodePosition = (id: string, coords: ICoordinates): void => {
     if (this._nodes.hasOwnProperty(id)) {
       const node = this._nodes[id];
 
@@ -308,9 +304,9 @@ export class Paper implements IPaper {
 
       // Set clicked node as moving item.
       this.updateActiveItem({
-        workflowType: WorkflowType.Node,
         id,
         paperItemState: PaperItemState.Moving,
+        workflowType: WorkflowType.Node,
       });
 
       // Store initial mouse coordinates.

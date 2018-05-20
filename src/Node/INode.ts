@@ -3,6 +3,7 @@ export interface INodeProps {
   title: string;
   width: number;
   height: number;
+  gridSize: number;
 }
 
 export interface INode {

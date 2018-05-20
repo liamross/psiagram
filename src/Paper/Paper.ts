@@ -1,7 +1,8 @@
 import { setPaperDefs } from './PaperDefs';
-import { INode, INodeProps } from '../Node/INode';
-import { IEdge, IEdgeProps } from '../Edge/IEdge';
+import { INode } from '../Node/INode';
+import { IEdge } from '../Edge/IEdge';
 import { roundToNearest } from '../utilities/workflowUtils';
+import { Coordinates } from '../common/types';
 import {
   setWorkflowType,
   getWorkflowType,
@@ -21,7 +22,8 @@ import {
   IPaperStoredNode,
   IPaperInputEdge,
   IPaperStoredEdge,
-  Coordinates,
+  IPaperNodeProps,
+  IPaperEdgeProps,
 } from './IPaper';
 
 export class Paper implements IPaper {
@@ -30,17 +32,13 @@ export class Paper implements IPaper {
   private _plugins: Array<Object>;
   private _nodes: { [key: string]: IPaperStoredNode };
   private _edges: { [key: string]: IPaperStoredEdge };
-  private _gridSize: number;
-  private _allowBlockOverlap: boolean;
-  private _paperWrapper: HTMLElement;
-  private _paper: SVGElement;
   private _initialMouseCoords: Coordinates | null;
   private _initialPaperCoords: Coordinates | null;
-  private _activeItem: {
-    workflowType: WorkflowType;
-    id: string;
-    paperItemState: PaperItemState;
-  } | null;
+  private _activeItem: IActiveItem | null;
+  private _gridSize: number;
+  private _allowBlockOverlap: boolean;
+  private _paper: SVGElement;
+  private _paperWrapper: HTMLElement;
 
   constructor({
     width,
@@ -67,6 +65,7 @@ export class Paper implements IPaper {
     const paperId = `paper_${randomId}`;
 
     // Additional parameters or defaults.
+    attributes = attributes || {};
     this._gridSize = attributes.gridSize || 0;
     this._allowBlockOverlap = attributes.allowBlockOverlap || false;
     const gridColor: string = attributes.gridColor || '#EEE';
@@ -123,16 +122,18 @@ export class Paper implements IPaper {
       // coding system to allow for localization.
       console.error(`Add node: node with id ${node.id} already exists.`);
     } else {
-      // Create instance by calling the class at node.component
-      const component: any = node.component;
-      const instance: INode = new component({
+      // Create instance of class at node.component.
+      const instance: INode = new node.component({
         ...node.props,
         gridSize: this._gridSize,
         id: node.id,
       });
+
+      // Get params and ref to element from instance.
       const params = instance.getParameters();
       const ref = instance.getNodeElement();
 
+      // Add node to nodes.
       this._nodes[node.id] = {
         id: node.id,
         coords: node.coords,
@@ -141,6 +142,7 @@ export class Paper implements IPaper {
         ref,
       };
 
+      // If ref, translate to node.coords and append onto paper.
       if (ref) {
         setSVGAttribute(
           ref,
@@ -160,7 +162,7 @@ export class Paper implements IPaper {
 
   updateNode(
     id: string,
-    newProps: { props?: INodeProps; coords?: Coordinates },
+    newProps: { props?: IPaperNodeProps; coords?: Coordinates },
   ): void {
     if (this._nodes.hasOwnProperty(id)) {
       const { props, coords } = newProps;
@@ -168,13 +170,16 @@ export class Paper implements IPaper {
 
       // If newProps has props, call updateProps on node instance.
       if (props) {
-        node.instance.updateProps(props);
+        node.instance.updateProps({
+          ...props,
+          id,
+          gridSize: this._gridSize,
+        });
       }
 
-      // If newProps has coords, update coordinates in paper.
+      // If newProps has coords, update coordinates in paper, and redraw node.
       if (coords) {
-        node.coords = coords;
-        this._redrawNode(id);
+        this._updateNodePosition(id, coords);
       }
     } else {
       console.error(`Update node: node with id ${id} does not exist.`);
@@ -202,7 +207,7 @@ export class Paper implements IPaper {
     // TODO: implement.
   }
 
-  updateEdge(id: string, newProps: IEdgeProps): void {
+  updateEdge(id: string, newProps: IPaperEdgeProps): void {
     if (this._edges.hasOwnProperty(id)) {
       this._edges[id].instance.updateProps(newProps);
     } else {
@@ -259,9 +264,14 @@ export class Paper implements IPaper {
     // TODO: remove listeners
   }
 
-  private _redrawNode = (id: string): void => {
+  private _updateNodePosition = (id: string, coords: Coordinates): void => {
     if (this._nodes.hasOwnProperty(id)) {
       const node = this._nodes[id];
+
+      // Update node coordinates.
+      node.coords = coords;
+
+      // Translate node to those coordinates.
       setSVGAttribute(
         node.ref,
         'transform',

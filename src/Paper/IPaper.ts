@@ -1,7 +1,9 @@
-import { INode, INodeProps } from '../Node/INode';
-import { IEdge, IEdgeProps } from '../Edge/IEdge';
+import { INode } from '../Node/INode';
+import { IEdge } from '../Edge/IEdge';
 import { WorkflowType } from '../utilities/dataUtils';
+import { Coordinates } from '../common/types';
 
+/** Paper class interface. */
 export interface IPaper {
   /**
    * Get the paper element.
@@ -24,7 +26,7 @@ export interface IPaper {
   updateNode(
     id: string,
     newProps: {
-      props?: INodeProps;
+      props?: IPaperNodeProps;
       coords?: Coordinates;
     },
   ): void;
@@ -42,7 +44,7 @@ export interface IPaper {
   /**
    * Update an edge with newProps by ID on the paper.
    */
-  updateEdge(id: string, newProps: IEdgeProps): void;
+  updateEdge(id: string, newProps: IPaperEdgeProps): void;
 
   /**
    * Updates the current active item if an active item is given, or removes any
@@ -66,10 +68,7 @@ export interface IPaper {
   uninit(): void;
 }
 
-export interface Coordinates {
-  x: number;
-  y: number;
-}
+/** Exported types. */
 
 export interface IPaperProps {
   width: string;
@@ -88,23 +87,34 @@ export interface IPaperProps {
   };
 }
 
+export interface IPaperInputNode {
+  id: string;
+  component: any;
+  props: IPaperNodeProps;
+  coords: Coordinates;
+}
+
+export interface IPaperInputEdge {
+  id: string;
+  component: any;
+  source: { id: string };
+  target: { id: string };
+  props: IPaperEdgeProps;
+  coords: Array<Coordinates>;
+}
+
 export interface IActiveItem {
   workflowType: WorkflowType;
   id: string;
   paperItemState: PaperItemState;
 }
 
+/** Local types. */
+
 export enum PaperItemState {
   Moving = 'moving',
   Selected = 'selected',
   Default = 'default',
-}
-
-export interface IPaperInputNode {
-  id: string;
-  component: any;
-  props: INodeProps;
-  coords: Coordinates;
 }
 
 export interface IPaperStoredNode {
@@ -115,13 +125,10 @@ export interface IPaperStoredNode {
   ref: SVGElement;
 }
 
-export interface IPaperInputEdge {
-  id: string;
-  component: any;
-  source: { id: string };
-  target: { id: string };
-  props: IEdgeProps;
-  coords: Array<Coordinates>;
+export interface IPaperNodeProps {
+  title: string;
+  width: number;
+  height: number;
 }
 
 export interface IPaperStoredEdge {
@@ -131,4 +138,8 @@ export interface IPaperStoredEdge {
   coords: Array<Coordinates>;
   instance: IEdge;
   ref: SVGElement;
+}
+
+export interface IPaperEdgeProps {
+  coords: Array<Coordinates>;
 }

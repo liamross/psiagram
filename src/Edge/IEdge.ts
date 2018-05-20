@@ -1,7 +1,7 @@
-import { Coordinates } from '../common/types';
+import { ICoordinates } from '../common/types';
 
 export interface IEdgeProps {
-  coords: Array<Coordinates>;
+  coords: ICoordinates[];
 }
 
 export interface IEdge {

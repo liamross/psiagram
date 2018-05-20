@@ -1,7 +1,7 @@
 import { INode } from '../Node/INode';
 import { IEdge } from '../Edge/IEdge';
 import { WorkflowType } from '../utilities/dataUtils';
-import { Coordinates } from '../common/types';
+import { ICoordinates } from '../common/types';
 
 /** Paper class interface. */
 export interface IPaper {
@@ -27,7 +27,7 @@ export interface IPaper {
     id: string,
     newProps: {
       props?: IPaperNodeProps;
-      coords?: Coordinates;
+      coords?: ICoordinates;
     },
   ): void;
 
@@ -73,7 +73,7 @@ export interface IPaper {
 export interface IPaperProps {
   width: string;
   height: string;
-  plugins?: Array<Object>;
+  plugins?: Array<{}>;
   attributes?: {
     gridSize?: number;
     allowBlockOverlap?: boolean;
@@ -82,8 +82,8 @@ export interface IPaperProps {
     paperClass?: string;
   };
   initialConditions?: {
-    nodes?: Array<IPaperInputNode>;
-    edges?: Array<IPaperInputEdge>;
+    nodes?: IPaperInputNode[];
+    edges?: IPaperInputEdge[];
   };
 }
 
@@ -91,7 +91,7 @@ export interface IPaperInputNode {
   id: string;
   component: any;
   props: IPaperNodeProps;
-  coords: Coordinates;
+  coords: ICoordinates;
 }
 
 export interface IPaperInputEdge {
@@ -100,7 +100,7 @@ export interface IPaperInputEdge {
   source: { id: string };
   target: { id: string };
   props: IPaperEdgeProps;
-  coords: Array<Coordinates>;
+  coords: ICoordinates[];
 }
 
 export interface IActiveItem {
@@ -119,7 +119,7 @@ export enum PaperItemState {
 
 export interface IPaperStoredNode {
   id: string;
-  coords: Coordinates;
+  coords: ICoordinates;
   params: { width: number; height: number };
   instance: INode;
   ref: SVGElement;
@@ -135,11 +135,11 @@ export interface IPaperStoredEdge {
   id: string;
   source: { id: string };
   target: { id: string };
-  coords: Array<Coordinates>;
+  coords: ICoordinates[];
   instance: IEdge;
   ref: SVGElement;
 }
 
 export interface IPaperEdgeProps {
-  coords: Array<Coordinates>;
+  coords: ICoordinates[];
 }

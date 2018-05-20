@@ -1,5 +1,7 @@
 # workflow
 
+[![Build Status](https://travis-ci.org/liamross/workflow.svg?branch=master)](https://travis-ci.org/liamross/workflow)
+
 > NOTE: Documentation will likely be a last step, as of right now the
 > functionality is in development, so more than likely everything detailed here
 > will change by the final framework.

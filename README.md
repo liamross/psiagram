@@ -1,6 +1,12 @@
 # workflow
 
+> NOTE: Documentation will likely be a last step, as of right now the
+> functionality is in development, so more than likely everything detailed here
+> will change by the final framework.
+
 Pure JavaScript framework for rendering workflows in SVG.
+
+# Old Documentation (only use for reference)
 
 ```js
 const myPaper = new Paper({ width, height, plugins, ...etc });

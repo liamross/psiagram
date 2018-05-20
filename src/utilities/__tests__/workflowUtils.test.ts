@@ -79,7 +79,7 @@ describe('Workflow Utilities', () => {
     });
   });
   /**
-   * roundToNearest
+   * nodeToFront
    */
   /**
    * getNodeMidpoint
@@ -88,8 +88,7 @@ describe('Workflow Utilities', () => {
     it('finds midpoint of a node with no gridSize given', () => {
       const node1 = generateNode('1');
       const midpoint = getNodeMidpoint(node1);
-      expect(midpoint).toHaveProperty('x', 40);
-      expect(midpoint).toHaveProperty('y', 40);
+      expect(midpoint).toMatchObject({ x: 40, y: 40 });
     });
   });
 });

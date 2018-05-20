@@ -46,11 +46,14 @@ export const nodeToFront = (
 /**
  * Find the coordinates of a node's midpoint.
  */
-export const getNodeMidpoint = (node, gridSize = 0) => {
+export const getNodeMidpoint = (
+  node: IPaperStoredNode,
+  gridSize: number = 0,
+) => {
   const { width, height } = getWidthHeight(node);
   return {
-    x: roundToNearest(node.x + width / 2, gridSize),
-    y: roundToNearest(node.y + height / 2, gridSize),
+    x: roundToNearest(node.coords.x + width / 2, gridSize),
+    y: roundToNearest(node.coords.y + height / 2, gridSize),
   };
 };
 

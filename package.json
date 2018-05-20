@@ -6,7 +6,7 @@
   "scripts": {
     "start": "parcel demo/index.html",
     "build": "parcel build src/index.ts",
-    "test": "jest"
+    "test": "jest --config test/jest.config.js"
   },
   "devDependencies": {
     "@types/jest": "^22.2.3",
@@ -14,24 +14,7 @@
     "jest": "^22.4.3",
     "parcel-bundler": "^1.7.1",
     "prettier": "^1.12.1",
+    "tslint": "^5.10.0",
     "typescript": "^2.8.3"
-  },
-  "jest": {
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx"
-    ],
-    "transform": {
-      "^.+\\.(ts|tsx)$": "<rootDir>/jest/transpiler.js"
-    },
-    "testMatch": [
-      "**/__tests__/**/*.(ts|tsx|js|jsx)",
-      "**/?(*.)(spec|test).(ts|tsx|js|jsx)"
-    ]
-  },
-  "dependencies": {
-    "npm": "^6.0.1"
   }
 }

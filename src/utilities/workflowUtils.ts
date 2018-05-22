@@ -1,4 +1,5 @@
 import { IPaperStoredNode } from '../Paper/IPaper';
+import { IParameters } from '../common/types';
 
 /**
  * Returns true if nodes are overlapping in the workspace, false otherwise.
@@ -90,9 +91,7 @@ export const getEdgeNodeIntersection = (
 /**
  * Returns node's width and height.
  */
-export const getWidthHeight = (
-  node: IPaperStoredNode,
-): { width: number; height: number } => {
+export const getWidthHeight = (node: IPaperStoredNode): IParameters => {
   const params = node.params;
   return params;
 };

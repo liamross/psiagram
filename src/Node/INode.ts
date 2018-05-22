@@ -1,3 +1,5 @@
+import { IParameters } from '../common/types';
+
 export interface INodeProps {
   id: string;
   title: string;
@@ -10,6 +12,6 @@ export interface INode {
   getNodeElement(): SVGElement;
   updateProps(newProps: INodeProps): void;
   createNodeElement(): void;
-  getParameters(): { width: number; height: number };
+  getParameters(): IParameters;
   validateNode(): boolean;
 }

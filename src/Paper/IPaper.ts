@@ -1,7 +1,7 @@
 import { INode } from '../Node/INode';
 import { IEdge } from '../Edge/IEdge';
 import { WorkflowType } from '../utilities/dataUtils';
-import { ICoordinates } from '../common/types';
+import { ICoordinates, IParameters } from '../common/types';
 
 /** Paper class interface. */
 export interface IPaper {
@@ -120,7 +120,7 @@ export enum PaperItemState {
 export interface IPaperStoredNode {
   id: string;
   coords: ICoordinates;
-  params: { width: number; height: number };
+  params: IParameters;
   instance: INode;
   ref: SVGElement;
 }

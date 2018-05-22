@@ -13,18 +13,18 @@ export class Node implements INode {
     this.createNodeElement();
   }
 
-  getNodeElement() {
+  public getNodeElement() {
     return this.element;
   }
 
-  updateProps(newProps: INodeProps): void {
+  public updateProps(newProps: INodeProps): void {
     this.props = {
       ...this.props,
       ...newProps,
     };
   }
 
-  createNodeElement() {
+  public createNodeElement() {
     const { width, height, title, id } = this.props;
     const FONT_HEIGHT = 14;
     const fontX = width / 2;
@@ -62,7 +62,7 @@ export class Node implements INode {
     this.element = group;
   }
 
-  getParameters() {
+  public getParameters() {
     // TODO: needs to return the final full size of the component.
     return {
       width: this.props.width,
@@ -70,7 +70,7 @@ export class Node implements INode {
     };
   }
 
-  validateNode() {
+  public validateNode() {
     // Validate that node has a title.
     if (!this.props.title) {
       return false;

@@ -81,10 +81,10 @@ export class Paper implements IPaper {
 
     // Paper set up.
     this._paper = createSVGWithAttributes('svg', {
-      class: paperClass || null,
-      height: '100%',
       id: paperId,
       width: '100%',
+      height: '100%',
+      class: paperClass || null,
     });
 
     // Add defs to paper.

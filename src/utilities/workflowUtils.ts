@@ -1,5 +1,5 @@
 import { IPaperStoredNode } from '../Paper/IPaper';
-import { IParameters } from '../common/types';
+import { IParameters, ICoordinates } from '../common/types';
 
 /**
  * Returns true if nodes are overlapping in the workspace, false otherwise.
@@ -54,7 +54,7 @@ export const nodeToFront = (
 export const getNodeMidpoint = (
   node: IPaperStoredNode,
   gridSize: number = 0,
-) => {
+): ICoordinates => {
   const { width, height } = getWidthHeight(node);
   return {
     x: roundToNearest(node.coords.x + width / 2, gridSize),

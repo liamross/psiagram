@@ -1,7 +1,11 @@
 import { setPaperDefs } from './PaperDefs';
 import { INode } from '../Node/INode';
 import { IEdge } from '../Edge/IEdge';
-import { roundToNearest } from '../utilities/workflowUtils';
+import {
+  roundToNearest,
+  getNodeMidpoint,
+  getEdgeNodeIntersection,
+} from '../utilities/workflowUtils';
 import { ICoordinates } from '../common/types';
 import {
   setWorkflowType,
@@ -203,9 +207,28 @@ export class Paper implements IPaper {
     // TODO: implement.
   }
 
-  public updateEdge(id: string, newProps: IPaperEdgeProps): void {
+  public updateEdge(
+    id: string,
+    newProps: {
+      props?: IPaperEdgeProps;
+      newNodes?: {
+        source?: { id: string };
+        target?: { id: string };
+      };
+      coords?: ICoordinates[];
+    } = {},
+  ): void {
     if (this._edges.hasOwnProperty(id)) {
-      this._edges[id].instance.updateProps(newProps);
+      const { props, newNodes, coords } = newProps;
+      const edge = this._edges[id];
+
+      // If newProps has props, call updateProps on node instance.
+      if (props) {
+        edge.instance.updateProps({
+          ...props,
+          id,
+        });
+      }
     } else {
       console.error(`Update edge: edge with id ${id} does not exist.`);
     }
@@ -273,8 +296,70 @@ export class Paper implements IPaper {
         'transform',
         `translate(${node.coords.x} ${node.coords.y})`,
       );
+
+      // Update all edges attached to this node.
+      Object.keys(this._edges).forEach(edgeId => {
+        const edge = this._edges[edgeId];
+        if (edge.source.id === id || edge.target.id === id) {
+          this._updateEdgePosition(edgeId);
+        }
+      });
     } else {
-      console.error(`Redraw node: node with id ${id} does not exist.`);
+      console.error(`Update node position: node with id ${id} does not exist.`);
+    }
+  };
+
+  private _updateEdgePosition = (
+    id: string,
+    newNodes?: {
+      source?: { id: string };
+      target?: { id: string };
+    },
+    coords?: ICoordinates[],
+  ) => {
+    if (this._edges.hasOwnProperty(id)) {
+      const edge = this._edges[id];
+
+      // If newProps has newNodes, update given new edge endpoints.
+      if (newNodes) {
+        edge.source.id = newNodes.source ? newNodes.source.id : edge.source.id;
+        edge.target.id = newNodes.target ? newNodes.target.id : edge.target.id;
+      }
+
+      // If newProps has coords, update coords array.
+      if (coords) {
+        edge.coords = coords;
+      }
+
+      // Get source and target nodes.
+      const sourceNode = this._nodes[edge.source.id];
+      const targetNode = this._nodes[edge.target.id];
+
+      // Find midpoint of source and target nodes.
+      const sourceMidPoint = getNodeMidpoint(sourceNode, this._gridSize);
+      const targetMidPoint = getNodeMidpoint(targetNode, this._gridSize);
+
+      // Get the block-side anchor points for the path.
+      const startPoint = getEdgeNodeIntersection(
+        sourceMidPoint,
+        edge.coords[0] || targetMidPoint,
+        sourceNode,
+      );
+      const endPoint = getEdgeNodeIntersection(
+        targetMidPoint,
+        edge.coords[edge.coords.length - 1] || sourceMidPoint,
+        targetNode,
+      );
+
+      // Generate string for d attribute of SVG path.
+      const dString = `M ${startPoint.x} ${startPoint.y} ${edge.coords
+        .map(point => `L ${point.x} ${point.y} `)
+        .join()}L ${endPoint.x} ${endPoint.y}`;
+
+      // Set edge refs path.
+      setSVGAttribute(edge.ref, 'd', dString);
+    } else {
+      console.error(`Update edge position: edge with id ${id} does not exist.`);
     }
   };
 
@@ -348,19 +433,9 @@ export class Paper implements IPaper {
         this._initialPaperCoords.y -
         roundToNearest(mouseDeltaY, this._gridSize);
 
-      this.updateNode(id, { coords: { x: blockX, y: blockY } });
-
       // TODO: Check if dragged block is overlapping.
 
-      // Update all edges attached to this node.
-      Object.keys(this._edges).forEach(edgeId => {
-        const edge = this._edges[edgeId];
-        if (edge.source.id === id) {
-          // TODO: Update the edge source to match the moving node.
-        } else if (edge.target.id === id) {
-          // TODO: Update the edge target to match the moving node.
-        }
-      });
+      this.updateNode(id, { coords: { x: blockX, y: blockY } });
     } else {
       console.error(
         `Handle node mousemove: no current moving node. Active item: `,

@@ -2,6 +2,8 @@ import { INode } from '../Node/INode';
 import { IEdge } from '../Edge/IEdge';
 import { WorkflowType } from '../utilities/dataUtils';
 import { ICoordinates, IParameters } from '../common/types';
+import { Node } from '../Node/Node';
+import { Edge } from '../Edge/Edge';
 
 /** Paper class interface. */
 export interface IPaper {
@@ -44,7 +46,17 @@ export interface IPaper {
   /**
    * Update an edge with newProps by ID on the paper.
    */
-  updateEdge(id: string, newProps: IPaperEdgeProps): void;
+  updateEdge(
+    id: string,
+    newProps?: {
+      newNodes?: {
+        source?: { id: string };
+        target?: { id: string };
+      };
+      props?: IPaperEdgeProps;
+      coords?: ICoordinates[];
+    },
+  ): void;
 
   /**
    * Updates the current active item if an active item is given, or removes any
@@ -87,26 +99,26 @@ export interface IPaperProps {
   };
 }
 
+export interface IActiveItem {
+  workflowType: WorkflowType;
+  id: string;
+  paperItemState: PaperItemState;
+}
+
 export interface IPaperInputNode {
   id: string;
-  component: any;
+  component: typeof Node;
   props: IPaperNodeProps;
   coords: ICoordinates;
 }
 
 export interface IPaperInputEdge {
   id: string;
-  component: any;
+  component: typeof Edge;
   source: { id: string };
   target: { id: string };
   props: IPaperEdgeProps;
   coords: ICoordinates[];
-}
-
-export interface IActiveItem {
-  workflowType: WorkflowType;
-  id: string;
-  paperItemState: PaperItemState;
 }
 
 /** Local types. */
@@ -133,6 +145,7 @@ export interface IPaperNodeProps {
 
 export interface IPaperStoredEdge {
   id: string;
+  title: string;
   source: { id: string };
   target: { id: string };
   coords: ICoordinates[];
@@ -141,5 +154,5 @@ export interface IPaperStoredEdge {
 }
 
 export interface IPaperEdgeProps {
-  coords: ICoordinates[];
+  title: string;
 }

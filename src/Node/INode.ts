@@ -1,11 +1,11 @@
 import { IParameters } from '../common/types';
 
 export interface INodeProps {
-  id: string;
-  title: string;
-  width: number;
-  height: number;
-  gridSize: number;
+  id?: string;
+  title?: string;
+  width?: number;
+  height?: number;
+  gridSize?: number;
 }
 
 export interface INode {

@@ -1,7 +1,9 @@
+import { IPaperStoredNode } from '../Paper/IPaper';
 import { ICoordinates, IParameters } from '../common/types';
 
 export interface IEdgeProps {
-  coords: ICoordinates[];
+  id?: string;
+  title?: string;
 }
 
 export interface IEdge {

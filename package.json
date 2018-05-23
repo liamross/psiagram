@@ -6,7 +6,8 @@
   "scripts": {
     "start": "parcel demo/index.html",
     "build": "parcel build src/index.ts",
-    "test": "jest --config test/jest.config.js"
+    "test": "jest --config test/jest.config.js",
+    "lint": "tslint src/**/*.ts"
   },
   "devDependencies": {
     "@types/jest": "^22.2.3",

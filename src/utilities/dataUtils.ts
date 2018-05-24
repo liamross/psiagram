@@ -15,7 +15,7 @@ export const setWorkflowType = (
  * WorkflowType.
  */
 export const hasWorkflowType = (
-  element: Element,
+  element: Element | null = null,
   workflowType: WorkflowType,
 ): boolean => {
   return getWorkflowType(element) === workflowType;
@@ -24,8 +24,12 @@ export const hasWorkflowType = (
 /**
  * Returns the WorkflowType of an element or empty string if it has none.
  */
-export const getWorkflowType = (element: Element): WorkflowType | string => {
-  return (element.getAttribute(WORKFLOW_DATA_ATTRIBUTE) as WorkflowType) || '';
+export const getWorkflowType = (
+  element: Element | null = null,
+): WorkflowType | string => {
+  return element
+    ? (element.getAttribute(WORKFLOW_DATA_ATTRIBUTE) as WorkflowType)
+    : '';
 };
 
 /**

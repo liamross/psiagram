@@ -13,12 +13,11 @@ export interface IEdgeUpdateProps {
 
 export interface IEdge {
   getEdgeElement(): SVGElement;
-  updateProps(newProps: IEdgeProps): void;
+  updateProps(newProps: IEdgeUpdateProps): void;
   updatePath(
     source: ICoordinates,
     target: ICoordinates,
     coords?: ICoordinates[],
   ): void;
-  createEdgeElement(): void;
   validateEdge(): boolean;
 }

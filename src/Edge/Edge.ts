@@ -1,52 +1,19 @@
-import { IEdge, IEdgeProps } from './IEdge';
+import { IEdge, IEdgeProps, IEdgeUpdateProps } from './IEdge';
 import { IParameters, ICoordinates } from '../common/types';
+import { setWorkflowType, WorkflowType } from '../utilities/dataUtils';
 import {
   createSVGWithAttributes,
   setSVGAttribute,
 } from '../utilities/domUtils';
-import { setWorkflowType, WorkflowType } from '../utilities/dataUtils';
 
 export class Edge implements IEdge {
   private props: IEdgeProps;
-  private element: SVGElement | null;
-  private path: SVGElement | null;
+  private element: SVGElement;
+  private path: SVGElement;
 
-  constructor(props) {
+  constructor(props: IEdgeProps) {
     this.props = props;
-    this.element = null;
-    this.path = null;
 
-    this.createEdgeElement();
-  }
-
-  public getEdgeElement = (): SVGElement => {
-    return this.element;
-  };
-
-  public updateProps = (newProps: IEdgeProps): void => {
-    this.props = {
-      ...this.props,
-      ...newProps,
-    };
-
-    // TODO: Update those props in the actual ref.
-  };
-
-  public updatePath = (
-    source: ICoordinates,
-    target: ICoordinates,
-    coords?: ICoordinates[],
-  ): void => {
-    // Generate string for d attribute of SVG path.
-    const dString = `M ${source.x} ${source.y} ${coords
-      .map(point => `L ${point.x} ${point.y} `)
-      .join()}L ${target.x} ${target.y}`;
-
-    // Set edge refs path.
-    setSVGAttribute(this.path, 'd', dString);
-  };
-
-  public createEdgeElement = (): void => {
     const { id, title } = this.props;
 
     const group = createSVGWithAttributes('g', {
@@ -70,6 +37,33 @@ export class Edge implements IEdge {
 
     this.path = path;
     this.element = group;
+  }
+
+  public getEdgeElement = (): SVGElement => {
+    return this.element;
+  };
+
+  public updateProps = (newProps: IEdgeUpdateProps): void => {
+    this.props = {
+      ...this.props,
+      ...newProps,
+    };
+
+    // TODO: Update those props in the actual ref.
+  };
+
+  public updatePath = (
+    source: ICoordinates,
+    target: ICoordinates,
+    coords?: ICoordinates[],
+  ): void => {
+    // Generate string for d attribute of SVG path.
+    const dString = `M ${source.x} ${source.y} ${
+      coords ? coords.map(point => `L ${point.x} ${point.y} `).join() : ''
+    }L ${target.x} ${target.y}`;
+
+    // Set edge refs path.
+    setSVGAttribute(this.path, 'd', dString);
   };
 
   public validateEdge = (): boolean => {

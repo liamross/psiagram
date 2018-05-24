@@ -1,43 +1,26 @@
 import { createSVGWithAttributes } from '../utilities/domUtils';
-import { INodeProps, INode } from './INode';
+import { INodeProps, INode, INodeUpdateProps } from './INode';
 import { setWorkflowType, WorkflowType } from '../utilities/dataUtils';
 
 export class Node implements INode {
   private props: INodeProps;
-  private element: SVGElement | null;
+  private element: SVGElement;
 
-  constructor(props) {
+  constructor(props: INodeProps) {
     this.props = props;
-    this.element = null;
 
-    this.createNodeElement();
-  }
-
-  public getNodeElement() {
-    return this.element;
-  }
-
-  public updateProps(newProps: INodeProps): void {
-    this.props = {
-      ...this.props,
-      ...newProps,
-    };
-
-    // TODO: Update those props in the actual ref.
-  }
-
-  public createNodeElement() {
     const { width, height, title, id } = this.props;
     const FONT_HEIGHT = 14;
     const fontX = width / 2;
     const fontY = FONT_HEIGHT / 2 + height / 2;
-    // TODO: this will be dynamic based on props.
 
     const group = createSVGWithAttributes('g', {
       id,
       // Temporary:
       style: 'user-select: none',
     });
+
+    // TODO: this will be dynamic based on props.
 
     const shape = createSVGWithAttributes('rect', {
       width,
@@ -54,6 +37,7 @@ export class Node implements INode {
       'font-size': FONT_HEIGHT,
     });
 
+    // Append shape and title into group.
     textContent.textContent = title;
     group.appendChild(shape);
     group.appendChild(textContent);
@@ -62,6 +46,19 @@ export class Node implements INode {
     setWorkflowType(group, WorkflowType.Node);
 
     this.element = group;
+  }
+
+  public getNodeElement() {
+    return this.element;
+  }
+
+  public updateProps(newProps: INodeUpdateProps): void {
+    this.props = {
+      ...this.props,
+      ...newProps,
+    };
+
+    // TODO: Update those props in the actual ref.
   }
 
   public getParameters() {
@@ -82,5 +79,7 @@ export class Node implements INode {
       return false;
     }
     // TODO: Validate that node has some style given.
+
+    return true;
   }
 }

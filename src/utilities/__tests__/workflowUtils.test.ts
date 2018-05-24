@@ -4,22 +4,25 @@ import {
   roundToNearest,
   getNodeMidpoint,
 } from '../workflowUtils';
+import { Node } from '../..';
 
 /** Helpers */
 
 const generateNode = (
-  id,
+  id: string,
   x = 0,
   y = 0,
   width = 80,
   height = 80,
 ): IPaperStoredNode => {
+  const xmlns = 'http://www.w3.org/2000/svg';
+  const ns = document.createElementNS(xmlns, 'g');
   return {
     id,
     coords: { x, y },
     params: { width, height },
-    instance: null,
-    ref: null,
+    instance: new Node({ id, title: '', width, height, gridSize: 1 }),
+    ref: ns,
   };
 };
 

@@ -4,17 +4,14 @@
 export const createElementWithAttributes = (
   tag: string,
   attributes: { [key: string]: any } = {},
-): HTMLElement | null => {
-  if (typeof tag === 'string' && typeof attributes === 'object') {
-    const el = document.createElement(tag);
-    for (const key in attributes) {
-      if (attributes.hasOwnProperty(key) && !(attributes[key] == null)) {
-        el.setAttribute(key, attributes[key]);
-      }
+): HTMLElement => {
+  const el = document.createElement(tag);
+  for (const key in attributes) {
+    if (attributes.hasOwnProperty(key) && !(attributes[key] == null)) {
+      el.setAttribute(key, attributes[key]);
     }
-    return el;
   }
-  return null;
+  return el;
 };
 
 /**
@@ -23,18 +20,15 @@ export const createElementWithAttributes = (
 export const createSVGWithAttributes = (
   tag: string,
   attributes: { [key: string]: any } = {},
-): SVGElement | null => {
-  if (typeof tag === 'string' && typeof attributes === 'object') {
-    const xmlns = 'http://www.w3.org/2000/svg';
-    const ns = document.createElementNS(xmlns, tag);
-    for (const key in attributes) {
-      if (attributes.hasOwnProperty(key) && !(attributes[key] == null)) {
-        ns.setAttributeNS(null, key, attributes[key]);
-      }
+): SVGElement => {
+  const xmlns = 'http://www.w3.org/2000/svg';
+  const ns = document.createElementNS(xmlns, tag);
+  for (const key in attributes) {
+    if (attributes.hasOwnProperty(key) && !(attributes[key] == null)) {
+      ns.setAttributeNS('', key, attributes[key]);
     }
-    return ns;
   }
-  return null;
+  return ns;
 };
 
 export const setElementAttribute = (
@@ -50,5 +44,5 @@ export const setSVGAttribute = (
   attribute: string,
   value: string,
 ): void => {
-  svgElement.setAttributeNS(null, attribute, value);
+  svgElement.setAttributeNS('', attribute, value);
 };

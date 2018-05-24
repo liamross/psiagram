@@ -103,6 +103,7 @@ export interface IActiveItem {
   workflowType: WorkflowType;
   id: string;
   paperItemState: PaperItemState;
+  [key: string]: string;
 }
 
 export interface IPaperInputNode {

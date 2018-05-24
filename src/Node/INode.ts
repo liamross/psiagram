@@ -18,8 +18,7 @@ export interface INodeUpdateProps {
 
 export interface INode {
   getNodeElement(): SVGElement;
-  updateProps(newProps: INodeProps): void;
-  createNodeElement(): void;
+  updateProps(newProps: INodeUpdateProps): void;
   getParameters(): IParameters;
   validateNode(): boolean;
 }

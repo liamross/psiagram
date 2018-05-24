@@ -33,7 +33,7 @@ import {
 export class Paper implements IPaper {
   private _width: string;
   private _height: string;
-  private _plugins: Array<{}>;
+  private _plugins: Array<{}> | null;
   private _nodes: { [key: string]: IPaperStoredNode };
   private _edges: { [key: string]: IPaperStoredEdge };
   private _initialMouseCoords: ICoordinates | null;
@@ -53,7 +53,7 @@ export class Paper implements IPaper {
   }: IPaperProps) {
     this._width = width;
     this._height = height;
-    this._plugins = plugins;
+    this._plugins = plugins || null;
     this._nodes = {};
     this._edges = {};
     this._initialMouseCoords = null;
@@ -104,10 +104,10 @@ export class Paper implements IPaper {
     this._paperWrapper.addEventListener('mousedown', this._handleMouseDown);
 
     // Add initial nodes and edges to paper.
-    if (initialConditions.nodes) {
+    if (initialConditions && initialConditions.nodes) {
       initialConditions.nodes.forEach(node => this.addNode(node));
     }
-    if (initialConditions.edges) {
+    if (initialConditions && initialConditions.edges) {
       initialConditions.edges.forEach(edge => this.addEdge(edge));
     }
   }
@@ -127,7 +127,7 @@ export class Paper implements IPaper {
         ...node.props,
         gridSize: this._gridSize,
         id: node.id,
-      });
+      }) as INode;
 
       // Get params and ref to element from instance.
       const params = instance.getParameters();
@@ -279,7 +279,7 @@ export class Paper implements IPaper {
     }
   }
 
-  public updateActiveItem(activeItem: IActiveItem = null): void {
+  public updateActiveItem(activeItem?: IActiveItem): void {
     const oldActiveItem = this._activeItem;
 
     if (oldActiveItem) {
@@ -304,7 +304,7 @@ export class Paper implements IPaper {
     }
 
     // Update active item.
-    this._activeItem = activeItem;
+    this._activeItem = activeItem || null;
 
     if (activeItem) {
       // TODO: Do any 'initialization' actions on the new active item.
@@ -398,19 +398,21 @@ export class Paper implements IPaper {
     const containerElement = (evt.target as Element).parentElement;
     const workflowType = getWorkflowType(containerElement);
 
-    switch (workflowType) {
-      case WorkflowType.Node:
-        this._handleNodeMouseDown(evt, containerElement.id);
-        break;
-      case WorkflowType.Edge:
-        this._handleEdgeMouseDown(evt, containerElement.id);
-        break;
-      case WorkflowType.Paper:
-        // Do we need to give ID?
-        this._handlePaperMouseDown(evt, containerElement.id);
-        break;
-      default:
-        break;
+    if (containerElement) {
+      switch (workflowType) {
+        case WorkflowType.Node:
+          this._handleNodeMouseDown(evt, containerElement.id);
+          break;
+        case WorkflowType.Edge:
+          this._handleEdgeMouseDown(evt, containerElement.id);
+          break;
+        case WorkflowType.Paper:
+          // Do we need to give ID?
+          this._handlePaperMouseDown(evt, containerElement.id);
+          break;
+        default:
+          break;
+      }
     }
   };
 
@@ -448,7 +450,9 @@ export class Paper implements IPaper {
     if (
       this._activeItem &&
       this._activeItem.workflowType === WorkflowType.Node &&
-      this._activeItem.paperItemState === PaperItemState.Moving
+      this._activeItem.paperItemState === PaperItemState.Moving &&
+      this._initialMouseCoords &&
+      this._initialPaperCoords
     ) {
       const id = this._activeItem.id;
 

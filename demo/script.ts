@@ -23,18 +23,42 @@ import {
    */
   ICoordinates, // Object to represent coordinates on paper.
 } from '../src';
+import { Edge } from '../src/Edge/Edge';
 
 let myPaper: IPaper | null = null;
 
 function loadPaper() {
   const paperProps: IPaperProps = {
-    attributes: {
-      gridSize: 20,
-    },
+    attributes: { gridSize: 20 },
     height: '900px',
-    initialConditions: {},
-    plugins: [],
     width: '1300px',
+    plugins: [],
+    initialConditions: {
+      nodes: [
+        {
+          id: 'node1',
+          component: Node,
+          coords: { x: 80, y: 80 },
+          props: { width: 80, height: 80, title: 'node 1' },
+        },
+        {
+          id: 'node2',
+          component: Node,
+          coords: { x: 240, y: 80 },
+          props: { width: 80, height: 80, title: 'node 2' },
+        },
+      ],
+      edges: [
+        {
+          id: 'edge1',
+          component: Edge,
+          source: { id: 'node1' },
+          target: { id: 'node2' },
+          coords: [],
+          props: { title: 'edge 1' },
+        },
+      ],
+    },
   };
 
   myPaper = new Paper(paperProps);

@@ -144,11 +144,7 @@ export class Paper implements IPaper {
 
       // If ref, translate to node.coords and append onto paper.
       if (ref) {
-        setSVGAttribute(
-          ref,
-          'transform',
-          `translate(${node.coords.x} ${node.coords.y})`,
-        );
+        this._updateNodePosition(node.id, node.coords);
         this._paper.appendChild(ref);
       } else {
         console.error(
@@ -204,7 +200,42 @@ export class Paper implements IPaper {
   }
 
   public addEdge(edge: IPaperInputEdge): void {
-    // TODO: implement.
+    if (this._edges.hasOwnProperty(edge.id)) {
+      // TODO: Implement an error callback? We could have some sort of error
+      // coding system to allow for localization.
+      console.error(`Add edge: edge with id ${edge.id} already exists.`);
+    } else {
+      // Create instance of class at edge.component.
+      const instance: IEdge = new edge.component({
+        ...edge.props,
+        id: edge.id,
+      });
+
+      // Get ref to element from instance.
+      const ref = instance.getEdgeElement();
+
+      // Add edge to edges.
+      this._edges[edge.id] = {
+        id: edge.id,
+        source: edge.source,
+        target: edge.target,
+        coords: edge.coords,
+        instance,
+        ref,
+      };
+
+      // If ref, update edge position and append onto paper.
+      if (ref) {
+        this._updateEdgePosition(edge.id);
+        this._paper.appendChild(ref);
+      } else {
+        console.error(
+          `Add edge: invalid element returned from edge class\nEdge ID: ${
+            edge.id
+          }`,
+        );
+      }
+    }
   }
 
   public updateEdge(
@@ -222,12 +253,17 @@ export class Paper implements IPaper {
       const { props, newNodes, coords } = newProps;
       const edge = this._edges[id];
 
-      // If newProps has props, call updateProps on node instance.
+      // If newProps has props, call updateProps on edge instance.
       if (props) {
         edge.instance.updateProps({
           ...props,
           id,
         });
+      }
+
+      // if newProps has newNodes or coords, call update edge position.
+      if (newNodes || coords) {
+        this._updateEdgePosition(id, newNodes, coords);
       }
     } else {
       console.error(`Update edge: edge with id ${id} does not exist.`);
@@ -351,13 +387,8 @@ export class Paper implements IPaper {
         targetNode,
       );
 
-      // Generate string for d attribute of SVG path.
-      const dString = `M ${startPoint.x} ${startPoint.y} ${edge.coords
-        .map(point => `L ${point.x} ${point.y} `)
-        .join()}L ${endPoint.x} ${endPoint.y}`;
-
-      // Set edge refs path.
-      setSVGAttribute(edge.ref, 'd', dString);
+      // Call update path method in edge instance.
+      edge.instance.updatePath(startPoint, endPoint, edge.coords);
     } else {
       console.error(`Update edge position: edge with id ${id} does not exist.`);
     }

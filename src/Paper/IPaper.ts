@@ -145,7 +145,6 @@ export interface IPaperNodeProps {
 
 export interface IPaperStoredEdge {
   id: string;
-  title: string;
   source: { id: string };
   target: { id: string };
   coords: ICoordinates[];

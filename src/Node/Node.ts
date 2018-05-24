@@ -22,6 +22,8 @@ export class Node implements INode {
       ...this.props,
       ...newProps,
     };
+
+    // TODO: Update those props in the actual ref.
   }
 
   public createNodeElement() {

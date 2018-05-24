@@ -1,27 +1,28 @@
 {
   "compilerOptions": {
-    // Output code.
+    // Output options.
     "sourceMap": true,
     "declaration": true,
     "removeComments": true,
-    // Other.
-    "baseUrl": ".",
-    "outDir": "lib",
-    "target": "es5",
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "lib": ["es2017", "dom"],
     // Code checking.
     "strict": true,
-    "noUnusedLocals": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "strictNullChecks": true,
     "preserveConstEnums": true,
     "forceConsistentCasingInFileNames": true,
+    // File utilities.
+    "baseUrl": ".",
+    "outDir": "lib",
+    "target": "es5",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "lib": ["es2017", "dom"],
     "paths": {
-      "interval-resizer/lib/*": ["./src/*"]
+      "workflow/lib/*": ["./src/*"]
     }
   },
   "include": ["src"]

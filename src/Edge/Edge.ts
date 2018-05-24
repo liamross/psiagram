@@ -1,5 +1,5 @@
 import { IEdge, IEdgeProps, IEdgeUpdateProps } from './IEdge';
-import { IParameters, ICoordinates } from '../common/types';
+import { ICoordinates } from '../common/types';
 import { setWorkflowType, WorkflowType } from '../utilities/dataUtils';
 import {
   createSVGWithAttributes,
@@ -7,14 +7,14 @@ import {
 } from '../utilities/domUtils';
 
 export class Edge implements IEdge {
-  private props: IEdgeProps;
-  private element: SVGElement;
-  private path: SVGElement;
+  private _props: IEdgeProps;
+  private _element: SVGElement;
+  private _path: SVGElement;
 
   constructor(props: IEdgeProps) {
-    this.props = props;
+    this._props = props;
 
-    const { id, title } = this.props;
+    const { id /* , title */ } = this._props;
 
     const group = createSVGWithAttributes('g', {
       id,
@@ -35,17 +35,17 @@ export class Edge implements IEdge {
     // Set workflow type attribute to edge.
     setWorkflowType(group, WorkflowType.Edge);
 
-    this.path = path;
-    this.element = group;
+    this._path = path;
+    this._element = group;
   }
 
   public getEdgeElement = (): SVGElement => {
-    return this.element;
+    return this._element;
   };
 
   public updateProps = (newProps: IEdgeUpdateProps): void => {
-    this.props = {
-      ...this.props,
+    this._props = {
+      ...this._props,
       ...newProps,
     };
 
@@ -63,7 +63,7 @@ export class Edge implements IEdge {
     }L ${target.x} ${target.y}`;
 
     // Set edge refs path.
-    setSVGAttribute(this.path, 'd', dString);
+    setSVGAttribute(this._path, 'd', dString);
   };
 
   public validateEdge = (): boolean => {

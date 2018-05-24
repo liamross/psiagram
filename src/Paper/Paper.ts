@@ -479,14 +479,12 @@ export class Paper implements IPaper {
     }
   };
 
-  private _handleNodeMouseUp = (evt: MouseEvent): void => {
+  private _handleNodeMouseUp = (): void => {
     if (
       this._activeItem &&
       this._activeItem.workflowType === WorkflowType.Node &&
       this._activeItem.paperItemState === PaperItemState.Moving
     ) {
-      const id = this._activeItem.id;
-
       // Set active node to selected state.
       this.updateActiveItem({
         ...this._activeItem,

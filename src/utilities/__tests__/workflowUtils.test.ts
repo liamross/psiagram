@@ -5,9 +5,7 @@ import {
   getNodeMidpoint,
 } from '../workflowUtils';
 
-/**
- * Helpers
- */
+/** Helpers */
 
 const generateNode = (
   id,
@@ -25,14 +23,9 @@ const generateNode = (
   };
 };
 
-/**
- * Tests
- */
+/** Tests */
 
 describe('Workflow Utilities', () => {
-  /**
-   * isNodeColliding
-   */
   describe('isNodeColliding', () => {
     it('returns true if two nodes overlap', () => {
       const node1 = generateNode('1');
@@ -58,9 +51,7 @@ describe('Workflow Utilities', () => {
       expect(isNodeColliding(node1, node2, 20, true)).toBeFalsy();
     });
   });
-  /**
-   * roundToNearest
-   */
+
   describe('roundToNearest', () => {
     it('preserves number if interval is 0', () => {
       expect(roundToNearest(20, 0)).toBe(20);
@@ -78,12 +69,8 @@ describe('Workflow Utilities', () => {
       expect(roundToNearest(15, 7)).toBe(14);
     });
   });
-  /**
-   * nodeToFront
-   */
-  /**
-   * getNodeMidpoint
-   */
+  /* TODO: nodeToFront */
+
   describe('getNodeMidpoint', () => {
     it('finds midpoint of a node with no gridSize given', () => {
       const node1 = generateNode('1');

@@ -3,3 +3,9 @@ export interface ICoordinates {
   y: number;
   z?: number;
 }
+
+export interface IParameters {
+  width: number;
+  height: number;
+  depth?: number;
+}

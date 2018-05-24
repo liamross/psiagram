@@ -1,13 +1,24 @@
-import { ICoordinates } from '../common/types';
+import { IPaperStoredNode } from '../Paper/IPaper';
+import { ICoordinates, IParameters } from '../common/types';
 
 export interface IEdgeProps {
-  coords: ICoordinates[];
+  id: string;
+  title: string;
+}
+
+export interface IEdgeUpdateProps {
+  id?: string;
+  title?: string;
 }
 
 export interface IEdge {
   getEdgeElement(): SVGElement;
   updateProps(newProps: IEdgeProps): void;
+  updatePath(
+    source: ICoordinates,
+    target: ICoordinates,
+    coords?: ICoordinates[],
+  ): void;
   createEdgeElement(): void;
-  getParameters(): { width: number; height: number };
   validateEdge(): boolean;
 }

@@ -3,13 +3,13 @@ import { INodeProps, INode, INodeUpdateProps } from './INode';
 import { setWorkflowType, WorkflowType } from '../utilities/dataUtils';
 
 export class Node implements INode {
-  private props: INodeProps;
-  private element: SVGElement;
+  private _props: INodeProps;
+  private _element: SVGElement;
 
   constructor(props: INodeProps) {
-    this.props = props;
+    this._props = props;
 
-    const { width, height, title, id } = this.props;
+    const { width, height, title, id } = this._props;
     const FONT_HEIGHT = 14;
     const fontX = width / 2;
     const fontY = FONT_HEIGHT / 2 + height / 2;
@@ -45,16 +45,16 @@ export class Node implements INode {
     // Set workflow type attribute to node.
     setWorkflowType(group, WorkflowType.Node);
 
-    this.element = group;
+    this._element = group;
   }
 
   public getNodeElement() {
-    return this.element;
+    return this._element;
   }
 
   public updateProps(newProps: INodeUpdateProps): void {
-    this.props = {
-      ...this.props,
+    this._props = {
+      ...this._props,
       ...newProps,
     };
 
@@ -64,18 +64,18 @@ export class Node implements INode {
   public getParameters() {
     // TODO: needs to return the final full size of the component.
     return {
-      width: this.props.width,
-      height: this.props.height,
+      width: this._props.width,
+      height: this._props.height,
     };
   }
 
   public validateNode() {
     // Validate that node has a title.
-    if (!this.props.title) {
+    if (!this._props.title) {
       return false;
     }
     // Validate that node has basic width and height params.
-    if (!(this.props.width && this.props.height)) {
+    if (!(this._props.width && this._props.height)) {
       return false;
     }
     // TODO: Validate that node has some style given.

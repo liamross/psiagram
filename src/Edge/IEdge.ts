@@ -1,5 +1,4 @@
-import { IPaperStoredNode } from '../Paper/IPaper';
-import { ICoordinates, IParameters } from '../common/types';
+import { ICoordinates } from '../common/types';
 
 export interface IEdgeProps {
   id: string;

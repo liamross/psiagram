@@ -1,23 +1,11 @@
 import {
-  /**
-   * Paper
-   */
   Paper, // Paper class.
   IPaperProps, // Object to initialize paper.
   IPaperInputNode, // Object to add node.
   IPaperInputEdge, // Object to add edge.
   IActiveItem, // Object to change active item.
-  /**
-   * Node
-   */
   Node, // Node class.
-  /**
-   * Edge
-   */
   Edge, // Edge class.
-  /**
-   * Other
-   */
   ICoordinates, // Object to represent coordinates on paper.
 } from '../src';
 

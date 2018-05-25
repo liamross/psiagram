@@ -7,16 +7,20 @@
   "private": true,
   "scripts": {
     "start": "parcel demo/index.html",
-    "build": "tsc",
     "test": "jest --config test/jest.config.js",
     "lint": "tslint -p . -t verbose",
-    "parcel-build": "parcel build src/index.ts"
+    "build": "yarn clean:lib && tsc",
+    "build:parcel": "yarn clean:dist && parcel build src/index.ts",
+    "clean": "yarn clean:dist && yarn clean:lib",
+    "clean:dist": "rimraf dist",
+    "clean:lib": "rimraf lib"
   },
   "devDependencies": {
     "@types/jest": "^22.2.3",
     "jest": "^22.4.3",
     "parcel-bundler": "^1.7.1",
     "prettier": "^1.12.1",
+    "rimraf": "^2.6.2",
     "tslint": "^5.10.0",
     "tslint-config-prettier": "^1.13.0",
     "typescript": "^2.8.3"

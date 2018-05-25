@@ -22,5 +22,6 @@
       "workflow/lib/*": ["./src/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["**/__tests__", "**/*.test.ts", "**/*.spec.ts"]
 }

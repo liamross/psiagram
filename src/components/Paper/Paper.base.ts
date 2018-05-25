@@ -1,21 +1,21 @@
-import { Node, Edge } from '../';
-import { setPaperDefs } from './PaperDefs';
-import { ICoordinates } from '../common/types';
+import { Node, Edge } from '../../';
+import { setPaperDefs } from './definitions/svgDefinitions';
+import { ICoordinates } from '../../common/types';
 import {
   roundToNearest,
   getNodeMidpoint,
   getEdgeNodeIntersection,
-} from '../utilities/workflowUtils';
+} from '../../utilities/workflowUtils';
 import {
   setWorkflowType,
   getWorkflowType,
   WorkflowType,
-} from '../utilities/dataUtils';
+} from '../../utilities/dataUtils';
 import {
   createElementWithAttributes,
   createSVGWithAttributes,
   setSVGAttribute,
-} from '../utilities/domUtils';
+} from '../../utilities/domUtils';
 import {
   IPaperProps,
   IActiveItem,

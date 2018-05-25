@@ -1,7 +1,7 @@
 import { Node } from '../Node';
 import { Edge } from '../Edge';
-import { WorkflowType } from '../utilities/dataUtils';
-import { ICoordinates, IParameters } from '../common/types';
+import { WorkflowType } from '../../utilities/dataUtils';
+import { ICoordinates, IParameters } from '../../common/types';
 
 // =============================================================================
 // Paper

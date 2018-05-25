@@ -1,10 +1,10 @@
 import { IEdgeProps, IEdgeUpdateProps } from './';
-import { ICoordinates } from '../common/types';
-import { setWorkflowType, WorkflowType } from '../utilities/dataUtils';
+import { ICoordinates } from '../../common/types';
+import { setWorkflowType, WorkflowType } from '../../utilities/dataUtils';
 import {
   createSVGWithAttributes,
   setSVGAttribute,
-} from '../utilities/domUtils';
+} from '../../utilities/domUtils';
 
 export class Edge {
   private _props: IEdgeProps;

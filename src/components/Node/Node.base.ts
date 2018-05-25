@@ -1,7 +1,7 @@
 import { INodeProps, INodeUpdateProps } from './';
-import { IParameters } from '../common/types';
-import { createSVGWithAttributes } from '../utilities/domUtils';
-import { setWorkflowType, WorkflowType } from '../utilities/dataUtils';
+import { IParameters } from '../../common/types';
+import { createSVGWithAttributes } from '../../utilities/domUtils';
+import { setWorkflowType, WorkflowType } from '../../utilities/dataUtils';
 
 export class Node {
   private _props: INodeProps;

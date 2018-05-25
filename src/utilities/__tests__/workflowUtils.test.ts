@@ -1,4 +1,4 @@
-import { IPaperStoredNode } from '../../Paper/IPaper';
+import { IPaperStoredNode } from '../../Paper';
 import {
   isNodeColliding,
   roundToNearest,

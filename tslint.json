@@ -3,6 +3,7 @@
     "no-console": [true, "debug", "info", "log", "time", "timeEnd", "trace"],
     "ordered-imports": false,
     "object-literal-sort-keys": false,
+    "no-unused-variable": true,
     "variable-name": [
       true,
       "ban-keywords",

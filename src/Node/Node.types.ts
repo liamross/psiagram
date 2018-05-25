@@ -1,5 +1,3 @@
-import { IParameters } from '../common/types';
-
 export interface INodeProps {
   id: string;
   title: string;
@@ -14,11 +12,4 @@ export interface INodeUpdateProps {
   width?: number;
   height?: number;
   gridSize?: number;
-}
-
-export interface INode {
-  getNodeElement(): SVGElement;
-  updateProps(newProps: INodeUpdateProps): void;
-  getParameters(): IParameters;
-  validateNode(): boolean;
 }

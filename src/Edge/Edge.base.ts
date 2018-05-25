@@ -1,4 +1,4 @@
-import { IEdge, IEdgeProps, IEdgeUpdateProps } from './IEdge';
+import { IEdgeProps, IEdgeUpdateProps } from './';
 import { ICoordinates } from '../common/types';
 import { setWorkflowType, WorkflowType } from '../utilities/dataUtils';
 import {
@@ -6,7 +6,7 @@ import {
   setSVGAttribute,
 } from '../utilities/domUtils';
 
-export class Edge implements IEdge {
+export class Edge {
   private _props: IEdgeProps;
   private _element: SVGElement;
   private _path: SVGElement;
@@ -14,7 +14,7 @@ export class Edge implements IEdge {
   constructor(props: IEdgeProps) {
     this._props = props;
 
-    const { id /* , title */ } = this._props;
+    const { id, title } = this._props;
 
     const group = createSVGWithAttributes('g', {
       id,
@@ -32,42 +32,39 @@ export class Edge implements IEdge {
 
     group.appendChild(path);
 
-    // Set workflow type attribute to edge.
     setWorkflowType(group, WorkflowType.Edge);
 
     this._path = path;
     this._element = group;
   }
 
-  public getEdgeElement = (): SVGElement => {
+  public getEdgeElement(): SVGElement {
     return this._element;
-  };
+  }
 
-  public updateProps = (newProps: IEdgeUpdateProps): void => {
+  public updateProps(newProps: IEdgeUpdateProps): void {
     this._props = {
       ...this._props,
       ...newProps,
     };
 
     // TODO: Update those props in the actual ref.
-  };
+  }
 
-  public updatePath = (
+  public updatePath(
     source: ICoordinates,
     target: ICoordinates,
     coords?: ICoordinates[],
-  ): void => {
-    // Generate string for d attribute of SVG path.
+  ): void {
     const dString = `M ${source.x} ${source.y} ${
       coords ? coords.map(point => `L ${point.x} ${point.y} `).join() : ''
     }L ${target.x} ${target.y}`;
 
-    // Set edge refs path.
     setSVGAttribute(this._path, 'd', dString);
-  };
+  }
 
-  public validateEdge = (): boolean => {
+  public validateEdge(): boolean {
     // TODO: implement validation (check Node.ts for help).
     return true;
-  };
+  }
 }

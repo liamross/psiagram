@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/liamross/workflow">
+  <a href="https://github.com/liamross/psiagram">
     <img alt="Psiagram" src="assets/psiagram.png?raw=true" width="888" >
   </a>
 </p>
@@ -9,8 +9,17 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/liamross/psiagram/blob/master/LICENSE">
+    <img
+      alt="License"
+      src="https://img.shields.io/github/license/liamross/psiagram.svg"
+    >
+  </a>
   <a href="https://travis-ci.org/liamross/workflow">
-    <img alt="License" src="https://travis-ci.org/liamross/workflow.svg?branch=master">
+    <img
+      alt="License"
+      src="https://travis-ci.org/liamross/workflow.svg?branch=master"
+    >
   </a>
 </p>
 

@@ -24,8 +24,6 @@ import {
   IPaperStoredNode,
   IPaperInputEdge,
   IPaperStoredEdge,
-  IPaperNodeProps,
-  IPaperEdgeProps,
   IPaperNodeUpdateProps,
   IPaperEdgeUpdateProps,
 } from './';

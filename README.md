@@ -25,11 +25,17 @@
 
 ---
 
-> NOTE: Documentation will likely be a last step, as of right now the
-> functionality is in development, so more than likely everything detailed here
-> will change by the final framework.
+# 🚧 Under Construction 🚧
 
-# Old Documentation (only use for reference)
+> The core functionality is currently under develop, so everything will be
+> undergoing massive changes with **no** documentation to justify the changes.
+> Once the core of the framework is built and the major decisions have been
+> made, documentation will catch up. More than likely everything detailed here
+> will change by the final framework, so use at your own discretion.
+>
+> \- Liam
+
+## Initial plans (now severely outdated, only for reference)
 
 ```js
 const myPaper = new Paper({ width, height, plugins, ...etc });

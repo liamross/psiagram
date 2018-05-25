@@ -1,6 +1,6 @@
 import { setPaperDefs } from './PaperDefs';
-import { INode } from '../Node/INode';
-import { IEdge } from '../Edge/IEdge';
+import { Node } from '../Node/Node';
+import { Edge } from '../Edge/Edge';
 import {
   roundToNearest,
   getNodeMidpoint,
@@ -18,7 +18,6 @@ import {
   setSVGAttribute,
 } from '../utilities/domUtils';
 import {
-  IPaper,
   IPaperProps,
   IActiveItem,
   PaperItemState,
@@ -30,7 +29,7 @@ import {
   IPaperEdgeProps,
 } from './IPaper';
 
-export class Paper implements IPaper {
+export class Paper {
   private _width: string;
   private _height: string;
   private _plugins: Array<{}> | null;
@@ -51,24 +50,17 @@ export class Paper implements IPaper {
     attributes,
     initialConditions,
   }: IPaperProps) {
+    // Required parameters.
     this._width = width;
     this._height = height;
-    this._plugins = plugins || null;
     this._nodes = {};
     this._edges = {};
     this._initialMouseCoords = null;
     this._initialPaperCoords = null;
     this._activeItem = null;
 
-    // Workspace IDs.
-    const randomId = Math.round(Math.random() * 10000000)
-      .toString(36)
-      .concat('0000')
-      .substring(0, 4);
-    const paperWrapperId = `paper-wrapper_${randomId}`;
-    const paperId = `paper_${randomId}`;
-
-    // Additional parameters or defaults.
+    // Optional parameters and defaults.
+    this._plugins = plugins || null;
     attributes = attributes || {};
     this._gridSize = attributes.gridSize || 0;
     this._allowBlockOverlap = attributes.allowBlockOverlap || false;
@@ -76,46 +68,59 @@ export class Paper implements IPaper {
     const paperWrapperClass: string = attributes.paperWrapperClass || '';
     const paperClass: string = attributes.paperClass || '';
 
-    // Paper Wrapper set up.
-    this._paperWrapper = createElementWithAttributes('div', {
-      class: paperWrapperClass || null,
-      id: paperWrapperId,
-      style: `width:${this._width}; height:${this._height}`,
-    });
+    // Generate base36 IDs that are 4 characters long.
+    const randomId = Math.round(Math.random() * 10000000)
+      .toString(36)
+      .concat('0000')
+      .substring(0, 4);
+    const paperWrapperId = `paper-wrapper_${randomId}`;
+    const paperId = `paper_${randomId}`;
 
-    // Paper set up.
+    // Set up paper.
     this._paper = createSVGWithAttributes('svg', {
       id: paperId,
       width: '100%',
       height: '100%',
       class: paperClass || null,
     });
-
-    // Add defs to paper.
     setPaperDefs(this._paper, this._gridSize, gridColor);
-
-    // Set workflow type attribute to node.
     setWorkflowType(this._paper, WorkflowType.Paper);
 
-    // Append paper into wrapper.
+    // Set up paper wrapper.
+    this._paperWrapper = createElementWithAttributes('div', {
+      class: paperWrapperClass || null,
+      id: paperWrapperId,
+      style: `width:${this._width}; height:${this._height}`,
+    });
     this._paperWrapper.appendChild(this._paper);
-
-    // Add mousedown event listener to paper wrapper.
     this._paperWrapper.addEventListener('mousedown', this._handleMouseDown);
 
-    // Add initial nodes and edges to paper.
+    // Add all initial nodes.
     if (initialConditions && initialConditions.nodes) {
       initialConditions.nodes.forEach(node => this.addNode(node));
     }
+
+    // Add all initial edges.
     if (initialConditions && initialConditions.edges) {
       initialConditions.edges.forEach(edge => this.addEdge(edge));
     }
   }
 
+  /**
+   * Returns the paper wrapper which contains an svg paper element, as well as
+   * any nodes or edges rendered onto the paper.
+   *
+   * @returns {HTMLElement}
+   */
   public getPaperElement(): HTMLElement {
     return this._paperWrapper;
   }
 
+  /**
+   * Add a node to the paper. This node must be a complete Input Node.
+   *
+   * @param node
+   */
   public addNode(node: IPaperInputNode): void {
     if (this._nodes.hasOwnProperty(node.id)) {
       // TODO: Implement an error callback? We could have some sort of error
@@ -123,11 +128,11 @@ export class Paper implements IPaper {
       console.error(`Add node: node with id ${node.id} already exists.`);
     } else {
       // Create instance of class at node.component.
-      const instance: INode = new node.component({
+      const instance: Node = new node.component({
         ...node.props,
         gridSize: this._gridSize,
         id: node.id,
-      }) as INode;
+      });
 
       // Get params and ref to element from instance.
       const params = instance.getParameters();
@@ -156,9 +161,23 @@ export class Paper implements IPaper {
     }
   }
 
+  /**
+   * Update a node with newProps by ID. This allows you to update the appearance
+   * of the node, the position of the node, or both.
+   *
+   * @param id
+   *
+   * @param [newProps]
+   *
+   * @param [newProps.props] Contains anything that would make a visual impact
+   * on the node, for example title, width, height.
+   *
+   * @param [newProps.coords] The coordinates of the node with respect to the
+   * paper.
+   */
   public updateNode(
     id: string,
-    newProps: { props?: IPaperNodeProps; coords?: ICoordinates },
+    newProps: { props?: IPaperNodeProps; coords?: ICoordinates } = {},
   ): void {
     if (this._nodes.hasOwnProperty(id)) {
       const { props, coords } = newProps;
@@ -182,6 +201,11 @@ export class Paper implements IPaper {
     }
   }
 
+  /**
+   * Removes a node from the paper by node ID.
+   *
+   * @param id
+   */
   public removeNode(id: string): void {
     if (this._nodes.hasOwnProperty(id)) {
       // Remove all edges that use node as end point.
@@ -199,6 +223,11 @@ export class Paper implements IPaper {
     }
   }
 
+  /**
+   * Add an edge to the paper. This edge must be a complete Input Edge.
+   *
+   * @param edge
+   */
   public addEdge(edge: IPaperInputEdge): void {
     if (this._edges.hasOwnProperty(edge.id)) {
       // TODO: Implement an error callback? We could have some sort of error
@@ -206,7 +235,7 @@ export class Paper implements IPaper {
       console.error(`Add edge: edge with id ${edge.id} already exists.`);
     } else {
       // Create instance of class at edge.component.
-      const instance: IEdge = new edge.component({
+      const instance: Edge = new edge.component({
         ...edge.props,
         id: edge.id,
       });
@@ -238,14 +267,31 @@ export class Paper implements IPaper {
     }
   }
 
+  /**
+   * Update an edge with newProps by ID. This allows you to update the
+   * appearance of the edge, the source or target nodes, or the array of
+   * coordinate points the edge passes through.
+   *
+   * @param id
+   *
+   * @param [newProps]
+   *
+   * @param [newProps.props] Contains anything that would make a visual impact
+   * on the edge, for example title.
+   *
+   * @param [newProps.newNodes]
+   *
+   * @param [newProps.newNodes.source] The new source node for the edge.
+   *
+   * @param [newProps.newNodes.target] The new target node for the edge.
+   *
+   * @param [newProps.coords] New coordinate points the edge passes through.
+   */
   public updateEdge(
     id: string,
     newProps: {
       props?: IPaperEdgeProps;
-      newNodes?: {
-        source?: { id: string };
-        target?: { id: string };
-      };
+      newNodes?: { source?: { id: string }; target?: { id: string } };
       coords?: ICoordinates[];
     } = {},
   ): void {
@@ -270,6 +316,11 @@ export class Paper implements IPaper {
     }
   }
 
+  /**
+   * Removes an edge from the paper by edge ID.
+   *
+   * @param id
+   */
   public removeEdge(id: string): void {
     if (this._edges.hasOwnProperty(id)) {
       this._edges[id].ref.remove();
@@ -279,6 +330,14 @@ export class Paper implements IPaper {
     }
   }
 
+  /**
+   * Updates the current active item if an active item is given, or removes any
+   * active items if no parameters are given. You must provide an Active Item
+   * object with the workflow item type, id of the item, and the state you wish
+   * to move the item to.
+   *
+   * @param [activeItem]
+   */
   public updateActiveItem(activeItem?: IActiveItem): void {
     const oldActiveItem = this._activeItem;
 
@@ -311,14 +370,14 @@ export class Paper implements IPaper {
     }
   }
 
-  public init() {
-    // TODO: add listeners if they don't currently exist
-  }
-
-  public uninit() {
-    // TODO: remove listeners
-  }
-
+  /**
+   * Updates a node position on the paper to provided coordinates. Will call
+   * update edge position on every edge that connects to the node.
+   *
+   * @param id
+   *
+   * @param coords
+   */
   private _updateNodePosition = (id: string, coords: ICoordinates): void => {
     if (this._nodes.hasOwnProperty(id)) {
       const node = this._nodes[id];
@@ -345,12 +404,14 @@ export class Paper implements IPaper {
     }
   };
 
+  /**
+   *
+   *
+   * @param
+   */
   private _updateEdgePosition = (
     id: string,
-    newNodes?: {
-      source?: { id: string };
-      target?: { id: string };
-    },
+    newNodes?: { source?: { id: string }; target?: { id: string } },
     coords?: ICoordinates[],
   ) => {
     if (this._edges.hasOwnProperty(id)) {

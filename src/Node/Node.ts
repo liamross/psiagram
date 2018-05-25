@@ -1,8 +1,9 @@
 import { createSVGWithAttributes } from '../utilities/domUtils';
-import { INodeProps, INode, INodeUpdateProps } from './INode';
+import { INodeProps, INodeUpdateProps } from './INode';
 import { setWorkflowType, WorkflowType } from '../utilities/dataUtils';
+import { IParameters } from '../common/types';
 
-export class Node implements INode {
+export class Node {
   private _props: INodeProps;
   private _element: SVGElement;
 
@@ -30,25 +31,23 @@ export class Node implements INode {
       'stroke-width': 1,
     });
 
-    const textContent = createSVGWithAttributes('text', {
+    const text = createSVGWithAttributes('text', {
       x: fontX,
       y: fontY,
       'text-anchor': 'middle',
       'font-size': FONT_HEIGHT,
     });
 
-    // Append shape and title into group.
-    textContent.textContent = title;
+    text.textContent = title;
     group.appendChild(shape);
-    group.appendChild(textContent);
+    group.appendChild(text);
 
-    // Set workflow type attribute to node.
     setWorkflowType(group, WorkflowType.Node);
 
     this._element = group;
   }
 
-  public getNodeElement() {
+  public getNodeElement(): SVGElement {
     return this._element;
   }
 
@@ -61,7 +60,7 @@ export class Node implements INode {
     // TODO: Update those props in the actual ref.
   }
 
-  public getParameters() {
+  public getParameters(): IParameters {
     // TODO: needs to return the final full size of the component.
     return {
       width: this._props.width,
@@ -69,12 +68,11 @@ export class Node implements INode {
     };
   }
 
-  public validateNode() {
-    // Validate that node has a title.
+  public validateNode(): boolean {
     if (!this._props.title) {
       return false;
     }
-    // Validate that node has basic width and height params.
+
     if (!(this._props.width && this._props.height)) {
       return false;
     }

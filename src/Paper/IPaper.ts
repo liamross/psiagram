@@ -1,86 +1,38 @@
-import { INode } from '../Node/INode';
-import { IEdge } from '../Edge/IEdge';
-import { WorkflowType } from '../utilities/dataUtils';
-import { ICoordinates, IParameters } from '../common/types';
 import { Node } from '../Node/Node';
 import { Edge } from '../Edge/Edge';
+import { WorkflowType } from '../utilities/dataUtils';
+import { ICoordinates, IParameters } from '../common/types';
 
-/** Paper class interface. */
+// =============================================================================
+// Paper
+
 export interface IPaper {
-  /**
-   * Get the paper element.
-   */
   getPaperElement(): HTMLElement;
 
-  /**
-   * Add a node to the paper.
-   */
   addNode(node: IPaperInputNode): void;
 
-  /**
-   * Remove a node by ID from the paper.
-   */
-  removeNode(id: string): void;
-
-  /**
-   * Update a node with newProps by ID on the paper.
-   */
   updateNode(
     id: string,
-    newProps: {
-      props?: IPaperNodeProps;
-      coords?: ICoordinates;
-    },
+    newProps?: { props?: IPaperNodeProps; coords?: ICoordinates },
   ): void;
 
-  /**
-   * Add an edge to the paper.
-   */
+  removeNode(id: string): void;
+
   addEdge(edge: IPaperInputEdge): void;
 
-  /**
-   * Remove an edge by ID from the paper.
-   */
-  removeEdge(id: string): void;
-
-  /**
-   * Update an edge with newProps by ID on the paper.
-   */
   updateEdge(
     id: string,
     newProps?: {
-      newNodes?: {
-        source?: { id: string };
-        target?: { id: string };
-      };
+      newNodes?: { source?: { id: string }; target?: { id: string } };
       props?: IPaperEdgeProps;
       coords?: ICoordinates[];
     },
   ): void;
 
-  /**
-   * Updates the current active item if an active item is given, or removes any
-   * active items if no parameters are given.
-   */
+  removeEdge(id: string): void;
+
   updateActiveItem(activeItem?: IActiveItem): void;
-
-  /**
-   * Initialize on-click listeners. This is only necessary if the component has
-   * had uninit called previously, as listeners are initialized in constructor.
-   *
-   * @todo: Is this necessary?
-   */
-  init(): void;
-
-  /**
-   * Removes any listeners from the component.
-   *
-   * @todo: Is this necessary?
-   */
-  uninit(): void;
 }
-
-/** Exported types. */
 
 export interface IPaperProps {
   width: string;
@@ -99,6 +51,9 @@ export interface IPaperProps {
   };
 }
 
+// =============================================================================
+// Active Item
+
 export interface IActiveItem {
   workflowType: WorkflowType;
   id: string;
@@ -106,12 +61,38 @@ export interface IActiveItem {
   [key: string]: string;
 }
 
+export enum PaperItemState {
+  Moving = 'moving',
+  Selected = 'selected',
+  Default = 'default',
+}
+
+// =============================================================================
+// Node
+
 export interface IPaperInputNode {
   id: string;
   component: typeof Node;
   props: IPaperNodeProps;
   coords: ICoordinates;
 }
+
+export interface IPaperNodeProps {
+  title: string;
+  width: number;
+  height: number;
+}
+
+export interface IPaperStoredNode {
+  id: string;
+  coords: ICoordinates;
+  params: IParameters;
+  instance: Node;
+  ref: SVGElement;
+}
+
+// =============================================================================
+// Edge
 
 export interface IPaperInputEdge {
   id: string;
@@ -122,26 +103,8 @@ export interface IPaperInputEdge {
   coords: ICoordinates[];
 }
 
-/** Local types. */
-
-export enum PaperItemState {
-  Moving = 'moving',
-  Selected = 'selected',
-  Default = 'default',
-}
-
-export interface IPaperStoredNode {
-  id: string;
-  coords: ICoordinates;
-  params: IParameters;
-  instance: INode;
-  ref: SVGElement;
-}
-
-export interface IPaperNodeProps {
+export interface IPaperEdgeProps {
   title: string;
-  width: number;
-  height: number;
 }
 
 export interface IPaperStoredEdge {
@@ -149,10 +112,6 @@ export interface IPaperStoredEdge {
   source: { id: string };
   target: { id: string };
   coords: ICoordinates[];
-  instance: IEdge;
+  instance: Edge;
   ref: SVGElement;
-}
-
-export interface IPaperEdgeProps {
-  title: string;
 }

@@ -2,6 +2,12 @@ import { createSVGWithAttributes } from '../utilities/domUtils';
 
 /**
  * Builds out the complete defs element for paper component.
+ *
+ * @param paperElement
+ *
+ * @param gridSize
+ *
+ * @param gridColor
  */
 export function setPaperDefs(
   paperElement: SVGElement,
@@ -11,9 +17,9 @@ export function setPaperDefs(
   const defs = createSVGWithAttributes('defs');
   paperElement.appendChild(defs);
 
-  // Add grid if valid grid size is provided.
+  // Add grid to definitions if valid grid size is provided.
   if (gridSize > 0) {
-    // Subgrid
+    // Create subgrid.
     const subgrid = createSVGWithAttributes('pattern', {
       id: '_subgrid',
       width: gridSize / 2,
@@ -29,7 +35,7 @@ export function setPaperDefs(
     subgrid.appendChild(subgridPath);
     defs.appendChild(subgrid);
 
-    // Grid
+    // Create grid.
     const grid = createSVGWithAttributes('pattern', {
       id: '_grid',
       width: gridSize,
@@ -62,7 +68,7 @@ export function setPaperDefs(
     paperElement.appendChild(gridContainer);
   }
 
-  // Arrowhead
+  // Add edge arrowheads to definitions.
   // TODO: eventually implement path without marker for dynamic colors.
   const arrowhead = createSVGWithAttributes('marker', {
     id: '_arrow',

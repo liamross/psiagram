@@ -1,7 +1,6 @@
 // Paper exports.
 import { Paper } from './Paper/Paper';
 import {
-  IPaper,
   IPaperProps,
   IPaperInputNode,
   IPaperInputEdge,
@@ -10,11 +9,9 @@ import {
 
 // Node exports.
 import { Node } from './Node/Node';
-import { INodeProps } from './Node/INode';
 
 // Edge exports.
-// export { Edge } from './Edge/Edge';
-import { IEdgeProps } from './Edge/IEdge';
+import { Edge } from './Edge/Edge';
 
 // Other exports.
 import { ICoordinates } from './common/types';
@@ -25,7 +22,6 @@ export {
    * Paper
    */
   Paper,            // Paper class.
-  IPaper,           // Paper class interface.
   IPaperProps,      // Object to initialize paper.
   IPaperInputNode,  // Object to add node.
   IPaperInputEdge,  // Object to add edge.
@@ -34,12 +30,10 @@ export {
    * Node
    */
   Node,             // Node class.
-  INodeProps,       // Object to initialize node.
   /**
    * Edge
    */
-  // Edge,             // Edge class.
-  IEdgeProps,       // Object to initialize edge.
+  Edge,             // Edge class.
   /**
    * Other
    */

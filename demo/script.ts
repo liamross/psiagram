@@ -3,7 +3,6 @@ import {
    * Paper
    */
   Paper, // Paper class.
-  IPaper, // Paper class interface.
   IPaperProps, // Object to initialize paper.
   IPaperInputNode, // Object to add node.
   IPaperInputEdge, // Object to add edge.
@@ -12,20 +11,17 @@ import {
    * Node
    */
   Node, // Node class.
-  INodeProps, // Object to initialize node.
   /**
    * Edge
    */
-  // Edge, // Edge class.
-  IEdgeProps, // Object to initialize edge.
+  Edge, // Edge class.
   /**
    * Other
    */
   ICoordinates, // Object to represent coordinates on paper.
 } from '../src';
-import { Edge } from '../src/Edge/Edge';
 
-let myPaper: IPaper | null = null;
+let myPaper: Paper | null = null;
 
 function loadPaper() {
   const paperProps: IPaperProps = {

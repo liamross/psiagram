@@ -1,5 +1,3 @@
-import { ICoordinates } from '../common/types';
-
 export interface IEdgeProps {
   id: string;
   title: string;
@@ -8,15 +6,4 @@ export interface IEdgeProps {
 export interface IEdgeUpdateProps {
   id?: string;
   title?: string;
-}
-
-export interface IEdge {
-  getEdgeElement(): SVGElement;
-  updateProps(newProps: IEdgeUpdateProps): void;
-  updatePath(
-    source: ICoordinates,
-    target: ICoordinates,
-    coords?: ICoordinates[],
-  ): void;
-  validateEdge(): boolean;
 }

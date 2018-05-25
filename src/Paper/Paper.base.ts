@@ -299,19 +299,6 @@ export class Paper {
   }
 
   /**
-   * Update an edge with newProps by ID. This allows you to update the
-   * appearance of the edge, the source or target nodes, or the array of
-   * coordinate points the edge passes through.
-   *
-   * @param id The ID of the edge you wish to update.
-   * @param [newProps] Optional newProps object.
-   * @param [newProps.props] Props to visually change the edge.
-   * @param [newProps.newNodes] Optional newNodes object.
-   * @param [newProps.newNodes.source] The new source node for the edge.
-   * @param [newProps.newNodes.target] The new target node for the edge.
-   * @param [newProps.coords] New coordinate points the edge passes through.
-   */
-  /**
    * Update an edge's end nodes and coordinates. This does NOT append the edge
    * onto paper.
    *
@@ -328,7 +315,10 @@ export class Paper {
    * 5. Call updatePath on the edge instance with the new points.
    *
    * @param id The ID of the node to update coordinates.
-   * @param newCoords The new coordinates of the node.
+   * @param [newNodes] The new coordinates of the node.
+   * @param [newNodes.source] A new source node for the edge.
+   * @param [newNodes.target] A new target node for the edge.
+   * @param [coords] A new array of coordinates for the edge.
    */
   public updateEdgePosition(
     id: string,

@@ -15,10 +15,10 @@
       src="https://img.shields.io/github/license/liamross/psiagram.svg"
     >
   </a>
-  <a href="https://travis-ci.org/liamross/workflow">
+  <a href="https://travis-ci.org/liamross/psiagram">
     <img
       alt="License"
-      src="https://travis-ci.org/liamross/workflow.svg?branch=master"
+      src="https://travis-ci.org/liamross/psiagram.svg?branch=master"
     >
   </a>
 </p>

@@ -161,7 +161,7 @@ export class Paper {
   }
 
   /**
-   * Update the appearance of the node.
+   * Update the appearance of the node with given ID.
    *
    * @param id The ID of the node you wish to update.
    * @param props Props to visually change the node.
@@ -282,9 +282,7 @@ export class Paper {
   }
 
   /**
-   * Update an edge with newProps by ID. This allows you to update the
-   * appearance of the edge, the source or target nodes, or the array of
-   * coordinate points the edge passes through.
+   * Update the appearance of the edge with given ID.
    *
    * @param id The ID of the edge you wish to update.
    * @param props Props to visually change the edge.

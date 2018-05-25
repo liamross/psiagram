@@ -1,8 +1,20 @@
-# workflow
+<p align="center">
+  <a href="https://github.com/liamross/workflow">
+    <img alt="Psiagram" src="assets/psiagram.png?raw=true" width="888" >
+  </a>
+</p>
 
-[![Build Status](https://travis-ci.org/liamross/workflow.svg?branch=master)](https://travis-ci.org/liamross/workflow)
+<p align="center">
+  Ψ JavaScript diagramming framework for workflows.
+</p>
 
-🔱 JavaScript diagramming framework for workflows.
+<p align="center">
+  <a href="https://travis-ci.org/liamross/workflow">
+    <img alt="License" src="https://travis-ci.org/liamross/workflow.svg?branch=master">
+  </a>
+</p>
+
+---
 
 > NOTE: Documentation will likely be a last step, as of right now the
 > functionality is in development, so more than likely everything detailed here

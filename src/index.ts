@@ -1,17 +1,17 @@
 // Paper exports.
-import { Paper } from './Paper/Paper';
 import {
+  Paper,
   IPaperProps,
   IPaperInputNode,
   IPaperInputEdge,
   IActiveItem,
-} from './Paper/IPaper';
+} from './Paper';
 
 // Node exports.
-import { Node } from './Node/Node';
+import { Node } from './Node';
 
 // Edge exports.
-import { Edge } from './Edge/Edge';
+import { Edge } from './Edge';
 
 // Other exports.
 import { ICoordinates } from './common/types';

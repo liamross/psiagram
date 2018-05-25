@@ -1,5 +1,5 @@
-import { Node } from '../Node/Node';
-import { Edge } from '../Edge/Edge';
+import { Node } from '../Node';
+import { Edge } from '../Edge';
 import { WorkflowType } from '../utilities/dataUtils';
 import { ICoordinates, IParameters } from '../common/types';
 
@@ -83,6 +83,12 @@ export interface IPaperNodeProps {
   height: number;
 }
 
+export interface IPaperNodeUpdateProps {
+  title?: string;
+  width?: number;
+  height?: number;
+}
+
 export interface IPaperStoredNode {
   id: string;
   coords: ICoordinates;
@@ -105,6 +111,10 @@ export interface IPaperInputEdge {
 
 export interface IPaperEdgeProps {
   title: string;
+}
+
+export interface IPaperEdgeUpdateProps {
+  title?: string;
 }
 
 export interface IPaperStoredEdge {

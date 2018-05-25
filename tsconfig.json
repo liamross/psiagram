@@ -3,11 +3,8 @@
     // Output options.
     "sourceMap": true,
     "declaration": true,
-    "removeComments": true,
     // Code checking.
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,

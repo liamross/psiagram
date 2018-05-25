@@ -1,4 +1,4 @@
-import { IEdgeProps, IEdgeUpdateProps } from './IEdge';
+import { IEdgeProps, IEdgeUpdateProps } from './';
 import { ICoordinates } from '../common/types';
 import { setWorkflowType, WorkflowType } from '../utilities/dataUtils';
 import {

@@ -1,4 +1,4 @@
-import { createSVGWithAttributes } from '../utilities/domUtils';
+import { createSVGWithAttributes } from '../../../utilities/domUtils';
 
 /**
  * Builds out the complete defs element for paper component.

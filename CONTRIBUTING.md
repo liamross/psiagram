@@ -72,6 +72,10 @@ $ npm run build:parcel
 $ yarn clean
 $ npm run clean
 
+# delete dist, lib, coverage and .cache folders
+$ yarn deepclean
+$ npm run deepclean
+
 # delete dist folder
 $ yarn clean:dist
 $ npm run clean:dist
@@ -79,4 +83,12 @@ $ npm run clean:dist
 # delete lib folder
 $ yarn clean:lib
 $ npm run clean:lib
+
+# delete coverage folder
+$ yarn clean:coverage
+$ npm run clean:coverage
+
+# delete .cache folder
+$ yarn clean:cache
+$ npm run clean:cache
 ```

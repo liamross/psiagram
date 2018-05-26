@@ -4,6 +4,11 @@ import { IParameters, ICoordinates } from '../common/types';
 /**
  * Returns true if nodes are overlapping in the workspace, false otherwise.
  * Will return false if either node is an invalid value.
+ *
+ * @param node1 The first node.
+ * @param node2 The second node.
+ * @param gridSize The size of the grid.
+ * @param allowContact Is contact allowed (touching sides).
  */
 export const isNodeColliding = (
   node1: IPaperStoredNode,
@@ -32,24 +37,18 @@ export const isNodeColliding = (
 
 /**
  * Rounds number to nearest interval. Returns number if interval is 0.
+ *
+ * @param num The number to round.
+ * @param interval The size of the interval to round to.
  */
 export const roundToNearest = (num: number, interval: number = 0): number =>
   interval ? Math.round(num / interval) * interval : num;
 
 /**
- * Sets the node that has matching id to end of array, making it the top
- * element in the svg. Returns a new array with matching node as last item.
- */
-export const nodeToFront = (
-  id: string,
-  nodes: IPaperStoredNode[],
-): IPaperStoredNode[] => {
-  const sortNodes = nodes.slice();
-  return sortNodes.sort((a, b) => (a.id === id ? 1 : b.id === id ? -1 : 0));
-};
-
-/**
  * Find the coordinates of a node's midpoint.
+ *
+ * @param node The node to get midpoint of.
+ * @param gridSize The size of the grid to snap to.
  */
 export const getNodeMidpoint = (
   node: IPaperStoredNode,
@@ -64,15 +63,31 @@ export const getNodeMidpoint = (
 
 /**
  * Finds the point along the side of the node to trip edge to.
+ *
+ * @param node Node with boundary to trim edge at.
+ * @param nextPoint The next point closest to the node center.
+ * @param [gridSize] The size of the grid to snap to.
+ * @param [nodeOutline] Distance in px away from node to trim edge.
  */
 export const getEdgeNodeIntersection = (
-  midPoint: { x: number; y: number },
-  nextPoint: { x: number; y: number },
   node: IPaperStoredNode,
+  nextPoint: { x: number; y: number },
+  gridSize?: number,
+  nodeOutline?: number,
 ): { x: number; y: number } => {
+  const midPoint = getNodeMidpoint(node, gridSize);
   const lineA = [midPoint.x, midPoint.y, nextPoint.x, nextPoint.y];
-  const { x: nx, y: ny } = node.coords;
-  const { width: nw, height: nh } = getWidthHeight(node);
+
+  let { x: nx, y: ny } = node.coords;
+  let { width: nw, height: nh } = getWidthHeight(node);
+
+  if (nodeOutline) {
+    nx = nx - nodeOutline;
+    ny = ny - nodeOutline;
+    nw = nw + nodeOutline * 2;
+    nh = nh + nodeOutline * 2;
+  }
+
   // prettier-ignore
   return (
     // Left edge.
@@ -89,28 +104,45 @@ export const getEdgeNodeIntersection = (
 };
 
 /**
- * Returns node's width and height.
+ * Returns node's width and height. Attempts to call getParameters on instance,
+ * and defaults to node.params if unsuccessful.
+ *
+ * @param node The node to find width and height of.
  */
 export const getWidthHeight = (node: IPaperStoredNode): IParameters => {
-  const params = node.params;
+  const params = node.instance.getParameters() || node.params;
   return params;
 };
 
 /**
  * Find intersect between two lines if it exists.
+ *
+ * Line 1:
+ *
+ * @param x1 Point A, X-coordinate.
+ * @param y1 Point A, Y-coordinate.
+ *
+ * @param x2 Point B, X-coordinate.
+ * @param y2 Point B, Y-coordinate.
+ *
+ * Line 2:
+ *
+ * @param x3 Point A, X-coordinate.
+ * @param y3 Point A, Y-coordinate.
+ *
+ * @param x4 Point B, X-coordinate.
+ * @param y4 Point B, Y-coordinate.
  */
 export function lineIntersect(...xy: number[]): { x: number; y: number } | null;
 export function lineIntersect(
-  // Line 1
-  x1: number, // - Point A, X-coordinate.
-  y1: number, // - Point A, Y-coordinate.
-  x2: number, // - Point B, X-coordinate.
-  y2: number, // - Point B, Y-coordinate.
-  // Line 2
-  x3: number, // - Point A, X-coordinate.
-  y3: number, // - Point A, Y-coordinate.
-  x4: number, // - Point B, X-coordinate.
-  y4: number, // - Point B, Y-coordinate.
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  x3: number,
+  y3: number,
+  x4: number,
+  y4: number,
 ): { x: number; y: number } | null {
   const denom = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
   if (denom) {

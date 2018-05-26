@@ -3,6 +3,7 @@ import {
   isNodeColliding,
   roundToNearest,
   getNodeMidpoint,
+  getEdgeNodeIntersection,
 } from '../workflowUtils';
 import { Node } from '../..';
 
@@ -72,13 +73,70 @@ describe('Workflow Utilities', () => {
       expect(roundToNearest(15, 7)).toBe(14);
     });
   });
-  /* TODO: nodeToFront */
 
   describe('getNodeMidpoint', () => {
     it('finds midpoint of a node with no gridSize given', () => {
       const node1 = generateNode('1');
       const midpoint = getNodeMidpoint(node1);
       expect(midpoint).toMatchObject({ x: 40, y: 40 });
+    });
+
+    it('rounds midpoint to nearest grid intersection', () => {
+      const node1 = generateNode('1', 0, 0, 85, 85);
+      const midpoint = getNodeMidpoint(node1, 20);
+      expect(midpoint).toMatchObject({ x: 40, y: 40 });
+    });
+  });
+
+  describe('getEdgeNodeIntersection', () => {
+    it('finds intersection with no gridSize given', () => {
+      const node1 = generateNode('1');
+      const intersection = getEdgeNodeIntersection(node1, { x: 120, y: 120 });
+      expect(intersection).toMatchObject({ x: 80, y: 80 });
+    });
+
+    it('finds intersection with midpoint rounded to nearest grid', () => {
+      const node1 = generateNode('1', 0, 0, 85, 85);
+      const intersection = getEdgeNodeIntersection(
+        node1,
+        { x: 120, y: 40 },
+        20,
+      );
+      expect(intersection).toMatchObject({ x: 85, y: 40 });
+    });
+
+    it('reverts to midpoint if nextPoint is within border', () => {
+      const node1 = generateNode('1');
+      const intersection = getEdgeNodeIntersection(node1, { x: 50, y: 50 });
+      expect(intersection).toMatchObject({ x: 40, y: 40 });
+    });
+
+    it('reverts to grid-rounded midpoint if nextPoint is within border', () => {
+      const node1 = generateNode('1');
+      const intersection = getEdgeNodeIntersection(node1, { x: 50, y: 50 }, 30);
+      expect(intersection).toMatchObject({ x: 30, y: 30 });
+    });
+
+    it('trims edge at node border plus outline if given', () => {
+      const node1 = generateNode('1');
+      const intersection = getEdgeNodeIntersection(
+        node1,
+        { x: 40, y: 120 },
+        0,
+        10,
+      );
+      expect(intersection).toMatchObject({ x: 40, y: 90 });
+    });
+
+    it('reverts to midpoint if nextPoint is within border plus outline', () => {
+      const node1 = generateNode('1');
+      const intersection = getEdgeNodeIntersection(
+        node1,
+        { x: 40, y: 85 },
+        0,
+        10,
+      );
+      expect(intersection).toMatchObject({ x: 40, y: 40 });
     });
   });
 });

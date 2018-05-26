@@ -345,16 +345,17 @@ export class Paper {
 
       // Get sourceNode intersection.
       const startPoint = getEdgeNodeIntersection(
-        sourceMidPoint,
-        edge.coords[0] || targetMidPoint,
         sourceNode,
+        edge.coords[0] || targetMidPoint,
+        this._gridSize,
       );
 
       // Get targetNode intersection.
       const endPoint = getEdgeNodeIntersection(
-        targetMidPoint,
-        edge.coords[edge.coords.length - 1] || sourceMidPoint,
         targetNode,
+        edge.coords[edge.coords.length - 1] || sourceMidPoint,
+        this._gridSize,
+        4,
       );
 
       edge.instance.updatePath(startPoint, endPoint, edge.coords);
@@ -465,6 +466,9 @@ export class Paper {
         x: roundToNearest(node.coords.x, this._gridSize),
         y: roundToNearest(node.coords.y, this._gridSize),
       };
+
+      // Move node to top within paper.
+      this._paper.appendChild(node.ref);
 
       // Initialize mouse movement and release listeners.
       document.addEventListener('mousemove', this._handleNodeMouseMove);

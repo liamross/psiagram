@@ -11,4 +11,6 @@ module.exports = {
     // Match any typescript or javascript file ending with spec or test.
     '**/?(*.)(spec|test).(ts|tsx|js|jsx)',
   ],
+  coverageDirectory: './coverage/',
+  collectCoverage: true,
 };

@@ -6,34 +6,6 @@ import { ICoordinates, IParameters } from '../../common/types';
 // =============================================================================
 // Paper
 
-export interface IPaper {
-  getPaperElement(): HTMLElement;
-
-  addNode(node: IPaperInputNode): void;
-
-  updateNode(
-    id: string,
-    newProps?: { props?: IPaperNodeProps; coords?: ICoordinates },
-  ): void;
-
-  removeNode(id: string): void;
-
-  addEdge(edge: IPaperInputEdge): void;
-
-  updateEdge(
-    id: string,
-    newProps?: {
-      newNodes?: { source?: { id: string }; target?: { id: string } };
-      props?: IPaperEdgeProps;
-      coords?: ICoordinates[];
-    },
-  ): void;
-
-  removeEdge(id: string): void;
-
-  updateActiveItem(activeItem?: IActiveItem): void;
-}
-
 export interface IPaperProps {
   width: string;
   height: string;
@@ -50,6 +22,16 @@ export interface IPaperProps {
     edges?: IPaperInputEdge[];
   };
 }
+
+export declare type listenerTypes =
+  | 'add-node'
+  | 'update-node'
+  | 'delete-node'
+  | 'add-edge'
+  | 'update-edge'
+  | 'delete-edge';
+
+export declare type listenerFunction = (data?: {}, env?: {}) => any;
 
 // =============================================================================
 // Active Item

@@ -47,6 +47,21 @@ function loadPaper() {
 
   myPaper = new Paper(paperProps);
 
+  function functionToTest(env, data) {
+    console.warn('functionToTest');
+    console.warn('env:', env);
+    console.warn('data:', data);
+  }
+
+  function functionToTestTwo(env, data) {
+    console.warn('functionToTestTwo');
+    console.warn('env:', env);
+    console.warn('data:', data);
+  }
+
+  myPaper.addListener('add-edge', functionToTest);
+  myPaper.addListener('add-node', functionToTestTwo);
+
   // Append paper into div #_target
   const target = document.getElementById('_target');
   target.appendChild(myPaper.getPaperElement());

@@ -1,6 +1,7 @@
 language: node_js
 node_js:
   - "8"
-cache:
-  directories:
-    - "node_modules"
+install:
+  - npm install codecov -g
+script:
+  - jest --config test/jest.config.js --coverage && codecov

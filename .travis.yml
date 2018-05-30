@@ -4,4 +4,4 @@ node_js:
 install:
   - npm install codecov -g
 script:
-  - jest --config test/jest.config.js --coverage && codecov
+  - test --coverage && codecov

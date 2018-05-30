@@ -26,6 +26,8 @@ import {
   IPaperStoredEdge,
   IPaperNodeUpdateProps,
   IPaperEdgeUpdateProps,
+  listenerTypes,
+  listenerFunction,
 } from './';
 
 export class Paper {
@@ -37,6 +39,7 @@ export class Paper {
   private _initialMouseCoords: ICoordinates | null;
   private _initialPaperCoords: ICoordinates | null;
   private _activeItem: IActiveItem | null;
+  private _listeners: { [key: string]: listenerFunction[] };
   private _gridSize: number;
   private _allowBlockOverlap: boolean;
   private _paper: SVGElement;
@@ -57,6 +60,7 @@ export class Paper {
     this._initialMouseCoords = null;
     this._initialPaperCoords = null;
     this._activeItem = null;
+    this._listeners = {};
 
     // Optional parameters and defaults.
     this._plugins = plugins || null;
@@ -71,7 +75,8 @@ export class Paper {
     const randomId = Math.round(Math.random() * 10000000)
       .toString(36)
       .concat('0000')
-      .substring(0, 4);
+      .substring(0, 4)
+      .toUpperCase();
     const paperWrapperId = `paper-wrapper_${randomId}`;
     const paperId = `paper_${randomId}`;
 
@@ -116,6 +121,43 @@ export class Paper {
   }
 
   /**
+   * Add a listener for a specific type of event. This listener will be called
+   * every time the event is triggered.
+   *
+   * @param type The type of listener to add.
+   * @param listener The listener function triggered when type of event happens.
+   */
+  public addListener(type: listenerTypes, listener: listenerFunction): void {
+    if (this._listeners[type] === undefined) {
+      this._listeners[type] = [];
+    }
+
+    if (this._listeners[type].every(currentLis => currentLis !== listener)) {
+      this._listeners[type].push(listener);
+    } else {
+      console.error(
+        `Add listener: identical listener already exists for "${type}".`,
+      );
+    }
+  }
+
+  /**
+   * Add a listener for a specific type of event. This listener will be called
+   * every time the event is triggered.
+   *
+   * @param type The type of listener to remove.
+   * @param listener The listener function to remove.
+   */
+  public removeListener(type: listenerTypes, listener: listenerFunction): void {
+    if (this._listeners[type] !== undefined && this._listeners[type].length) {
+      const listenerIndex = this._listeners[type].findIndex(
+        currentLis => currentLis === listener,
+      );
+      this._listeners[type].splice(listenerIndex, 1);
+    }
+  }
+
+  /**
    * Add a node to the paper. This node must be a complete Input Node.
    *
    * @param node The node object to add to paper.
@@ -148,6 +190,8 @@ export class Paper {
       if (ref) {
         this.updateNodePosition(node.id, node.coords);
         this._paper.appendChild(ref);
+
+        this._callListeners('add-node', this._nodes[node.id]);
       } else {
         console.error(
           `Add node: invalid element returned from node class\nNode ID: ${
@@ -269,6 +313,8 @@ export class Paper {
       if (ref) {
         this.updateEdgePosition(edge.id);
         this._paper.appendChild(ref);
+
+        this._callListeners('add-edge', this._edges[edge.id]);
       } else {
         console.error(
           `Add edge: invalid element returned from edge class\nEdge ID: ${
@@ -425,6 +471,34 @@ export class Paper {
     }
   }
 
+  /**
+   * Calls all listeners of a specific type, with data and env.
+   *
+   * @param type The type of listener to call.
+   * @param data Any computed data specific to the listener, and not in env.
+   */
+  private _callListeners(type: listenerTypes, data?: { [key: string]: any }) {
+    if (this._listeners[type] !== undefined && this._listeners[type].length) {
+      const env = {
+        width: this._width,
+        height: this._height,
+        plugins: this._plugins,
+        nodes: this._nodes,
+        edges: this._edges,
+        initialMouseCoords: this._initialMouseCoords,
+        initialPaperCoords: this._initialPaperCoords,
+        activeItem: this._activeItem,
+        listeners: this._listeners,
+        gridSize: this._gridSize,
+        allowBlockOverlap: this._allowBlockOverlap,
+        paper: this._paper,
+        paperWrapper: this._paperWrapper,
+      };
+
+      this._listeners[type].forEach(listener => listener(env, data));
+    }
+  }
+
   private _handleMouseDown = (evt: MouseEvent): void => {
     const containerElement = (evt.target as Element).parentElement;
     const workflowType = getWorkflowType(containerElement);
@@ -494,13 +568,13 @@ export class Paper {
       const mouseDeltaX = this._initialMouseCoords.x - evt.clientX;
       const mouseDeltaY = this._initialMouseCoords.y - evt.clientY;
 
-      // Find new block coordinates (round mouse delta).
-      const blockX =
-        this._initialPaperCoords.x -
-        roundToNearest(mouseDeltaX, this._gridSize);
-      const blockY =
-        this._initialPaperCoords.y -
-        roundToNearest(mouseDeltaY, this._gridSize);
+      // Round mouse deltas to nearest grid.
+      const roundedMouseDeltaX = roundToNearest(mouseDeltaX, this._gridSize);
+      const roundedMouseDeltaY = roundToNearest(mouseDeltaY, this._gridSize);
+
+      // Find new block coordinates.
+      const blockX = this._initialPaperCoords.x - roundedMouseDeltaX;
+      const blockY = this._initialPaperCoords.y - roundedMouseDeltaY;
 
       // TODO: Check if dragged block is overlapping.
 

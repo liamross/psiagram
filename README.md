@@ -17,8 +17,14 @@
   </a>
   <a href="https://travis-ci.org/liamross/psiagram">
     <img
-      alt="License"
+      alt="Build"
       src="https://travis-ci.org/liamross/psiagram.svg?branch=master"
+    >
+  </a>
+  <a href="https://codecov.io/gh/liamross/psiagram">
+    <img
+      alt="Coverage"
+      src="https://img.shields.io/codecov/c/github/liamross/psiagram.svg"
     >
   </a>
 </p>

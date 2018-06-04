@@ -76,7 +76,7 @@ function loadPaper() {
 
   // Paper listeners
   // prettier-ignore
-  myPaper.addListener('update-active-item', listenerBuilder('update-active-item'));
+  // myPaper.addListener('update-active-item', listenerBuilder('update-active-item'));
 
   // Append paper into div #_target
   const target = document.getElementById('_target');

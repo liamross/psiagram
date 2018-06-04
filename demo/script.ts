@@ -8,6 +8,7 @@ import {
   Edge, // Edge class.
   ICoordinates, // Object to represent coordinates on paper.
 } from '../src';
+import { isNodeColliding } from '../src/utilities/workflowUtils';
 
 let myPaper: Paper | null = null;
 
@@ -64,7 +65,7 @@ function loadPaper() {
   // Node listeners
   // myPaper.addListener('add-node', listenerBuilder('add-node'));
   // myPaper.addListener('update-node', listenerBuilder('update-node'));
-  myPaper.addListener('move-node', listenerBuilder('move-node'));
+  // myPaper.addListener('move-node', listenerBuilder('move-node'));
   // myPaper.addListener('remove-node', listenerBuilder('remove-node'));
 
   // Edge listeners
@@ -74,10 +75,8 @@ function loadPaper() {
   // myPaper.addListener('remove-edge', listenerBuilder('remove-edge'));
 
   // Paper listeners
-  // myPaper.addListener(
-  //   'update-active-item',
-  //   listenerBuilder('update-active-item'),
-  // );
+  // prettier-ignore
+  // myPaper.addListener('update-active-item', listenerBuilder('update-active-item'));
 
   // Append paper into div #_target
   const target = document.getElementById('_target');
@@ -103,8 +102,15 @@ function addNode() {
   }
 }
 
-// Add node on button click.
-document.getElementById('_testbutton').addEventListener('click', addNode);
+function moveNode() {
+  const node = document.getElementById('new_node_test');
+  if (myPaper && node) {
+    myPaper.moveNode('new_node_test', { x: 0, y: 0 });
+  }
+}
+
+document.getElementById('_addNodeButton').addEventListener('click', addNode);
+document.getElementById('_moveNodeButton').addEventListener('click', moveNode);
 
 // Load paper element once DOM is loaded.
 document.addEventListener('DOMContentLoaded', () => loadPaper());

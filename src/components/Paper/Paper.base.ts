@@ -199,7 +199,6 @@ export class Paper {
         this._paper.appendChild(ref);
 
         this._callListeners('add-node', { node: this._nodes[node.id] });
-        this._callListeners('move-node', { node: this._nodes[node.id] });
       } else {
         console.error(
           `Add node: invalid element returned from node class\nNode ID: ${
@@ -245,7 +244,7 @@ export class Paper {
    * @param id The ID of the node to update coordinates.
    * @param newCoords The new coordinates of the node.
    */
-  public updateNodePosition(id: string, newCoords: ICoordinates): void {
+  public moveNode(id: string, newCoords: ICoordinates): void {
     if (this._nodes.hasOwnProperty(id)) {
       const node = this._nodes[id];
 
@@ -260,11 +259,7 @@ export class Paper {
           `translate(${node.coords.x} ${node.coords.y})`,
         );
 
-        this._callListeners('move-node', {
-          node,
-          coords: newCoords,
-          params: getWidthHeight(node),
-        });
+        this._callListeners('move-node', { node });
 
         Object.keys(this._edges).forEach(edgeId => {
           const edge = this._edges[edgeId];
@@ -382,26 +377,26 @@ export class Paper {
    * 5. Call updatePath on the edge instance with the new points.
    *
    * @param id The ID of the node to update coordinates.
+   * @param [coords] A new array of coordinates for the edge.
    * @param [newNodes] The new coordinates of the node.
    * @param [newNodes.source] A new source node for the edge.
    * @param [newNodes.target] A new target node for the edge.
-   * @param [coords] A new array of coordinates for the edge.
    */
   public updateEdgePosition(
     id: string,
-    newNodes?: { source?: { id: string }; target?: { id: string } },
     coords?: ICoordinates[],
+    newNodes?: { source?: { id: string }; target?: { id: string } },
   ) {
     if (this._edges.hasOwnProperty(id)) {
       const edge = this._edges[id];
 
+      if (coords) {
+        edge.coords = coords;
+      }
+
       if (newNodes) {
         edge.source.id = newNodes.source ? newNodes.source.id : edge.source.id;
         edge.target.id = newNodes.target ? newNodes.target.id : edge.target.id;
-      }
-
-      if (coords) {
-        edge.coords = coords;
       }
 
       const sourceNode = this._nodes[edge.source.id];
@@ -609,7 +604,7 @@ export class Paper {
 
       // TODO: Check if dragged block is overlapping.
 
-      this.updateNodePosition(id, { x: blockX, y: blockY });
+      this.moveNode(id, { x: blockX, y: blockY });
     } else {
       console.error(
         `Handle node mousemove: no current moving node. Active item: `,

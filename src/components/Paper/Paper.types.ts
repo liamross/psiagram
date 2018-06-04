@@ -24,14 +24,20 @@ export interface IPaperProps {
 }
 
 export declare type listenerTypes =
+  // Node
   | 'add-node'
   | 'update-node'
-  | 'delete-node'
+  | 'move-node'
+  | 'remove-node'
+  // Edge
   | 'add-edge'
   | 'update-edge'
-  | 'delete-edge';
+  | 'move-edge'
+  | 'remove-edge'
+  // Paper
+  | 'update-active-item';
 
-export declare type listenerFunction = (data?: {}, env?: {}) => any;
+export declare type listenerFunction = (env: {}, data: {}) => any;
 
 // =============================================================================
 // Active Item

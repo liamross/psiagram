@@ -47,20 +47,37 @@ function loadPaper() {
 
   myPaper = new Paper(paperProps);
 
-  function functionToTest(env, data) {
-    console.warn('functionToTest');
-    console.warn('env:', env);
-    console.warn('data:', data);
-  }
+  const listenerBuilder = listenerType => (env, data) => {
+    // tslint:disable-next-line
+    console.log(
+      '=========================',
+      '\nlistener type: ',
+      listenerType,
+      '\nenv:',
+      env,
+      '\ndata:',
+      data,
+      '\n=========================',
+    );
+  };
 
-  function functionToTestTwo(env, data) {
-    console.warn('functionToTestTwo');
-    console.warn('env:', env);
-    console.warn('data:', data);
-  }
+  // Node listeners
+  // myPaper.addListener('add-node', listenerBuilder('add-node'));
+  // myPaper.addListener('update-node', listenerBuilder('update-node'));
+  myPaper.addListener('move-node', listenerBuilder('move-node'));
+  // myPaper.addListener('remove-node', listenerBuilder('remove-node'));
 
-  myPaper.addListener('add-edge', functionToTest);
-  myPaper.addListener('add-node', functionToTestTwo);
+  // Edge listeners
+  // myPaper.addListener('add-edge', listenerBuilder('add-edge'));
+  // myPaper.addListener('update-edge', listenerBuilder('update-edge'));
+  // myPaper.addListener('move-edge', listenerBuilder('move-edge'));
+  // myPaper.addListener('remove-edge', listenerBuilder('remove-edge'));
+
+  // Paper listeners
+  // myPaper.addListener(
+  //   'update-active-item',
+  //   listenerBuilder('update-active-item'),
+  // );
 
   // Append paper into div #_target
   const target = document.getElementById('_target');

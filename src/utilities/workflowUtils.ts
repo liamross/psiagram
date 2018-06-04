@@ -154,3 +154,15 @@ export function lineIntersect(
   }
   return null;
 }
+
+export const areCoordsEqual = (
+  coordsA: ICoordinates,
+  coordsB: ICoordinates,
+): boolean => {
+  return !!(
+    coordsA.x === coordsB.x &&
+    coordsA.y === coordsB.y &&
+    ((coordsA.z === undefined && coordsB.z === undefined) ||
+      coordsA.z === coordsB.z)
+  );
+};

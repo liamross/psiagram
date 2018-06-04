@@ -5,6 +5,8 @@ import {
   roundToNearest,
   getNodeMidpoint,
   getEdgeNodeIntersection,
+  areCoordsEqual,
+  getWidthHeight,
 } from '../../utilities/workflowUtils';
 import {
   setWorkflowType,
@@ -188,10 +190,16 @@ export class Paper {
 
       // If ref, translate to node.coords and append onto paper.
       if (ref) {
-        this.updateNodePosition(node.id, node.coords);
+        setSVGAttribute(
+          ref,
+          'transform',
+          `translate(${node.coords.x} ${node.coords.y})`,
+        );
+
         this._paper.appendChild(ref);
 
-        this._callListeners('add-node', this._nodes[node.id]);
+        this._callListeners('add-node', { node: this._nodes[node.id] });
+        this._callListeners('move-node', { node: this._nodes[node.id] });
       } else {
         console.error(
           `Add node: invalid element returned from node class\nNode ID: ${
@@ -212,6 +220,7 @@ export class Paper {
     if (this._nodes.hasOwnProperty(id)) {
       const node = this._nodes[id];
 
+      this._callListeners('update-node', { node, props });
       node.instance.updateProps({
         ...props,
         gridSize: this._gridSize,
@@ -240,20 +249,30 @@ export class Paper {
     if (this._nodes.hasOwnProperty(id)) {
       const node = this._nodes[id];
 
-      node.coords = newCoords;
+      // Only update node position if coordinates have changed.
+      if (!areCoordsEqual(node.coords, newCoords)) {
+        const oldCoords = { ...node.coords };
+        node.coords = newCoords;
 
-      setSVGAttribute(
-        node.ref,
-        'transform',
-        `translate(${node.coords.x} ${node.coords.y})`,
-      );
+        setSVGAttribute(
+          node.ref,
+          'transform',
+          `translate(${node.coords.x} ${node.coords.y})`,
+        );
 
-      Object.keys(this._edges).forEach(edgeId => {
-        const edge = this._edges[edgeId];
-        if (edge.source.id === id || edge.target.id === id) {
-          this.updateEdgePosition(edgeId);
-        }
-      });
+        this._callListeners('move-node', {
+          node,
+          coords: newCoords,
+          params: getWidthHeight(node),
+        });
+
+        Object.keys(this._edges).forEach(edgeId => {
+          const edge = this._edges[edgeId];
+          if (edge.source.id === id || edge.target.id === id) {
+            this.updateEdgePosition(edgeId);
+          }
+        });
+      }
     } else {
       console.error(`Update node position: node with id ${id} does not exist.`);
     }
@@ -274,6 +293,7 @@ export class Paper {
         }
       });
       // Remove node.
+      this._callListeners('remove-node', { node: this._nodes[id] });
       this._nodes[id].ref.remove();
       delete this._nodes[id];
     } else {
@@ -314,7 +334,7 @@ export class Paper {
         this.updateEdgePosition(edge.id);
         this._paper.appendChild(ref);
 
-        this._callListeners('add-edge', this._edges[edge.id]);
+        this._callListeners('add-edge', { edge: this._edges[edge.id] });
       } else {
         console.error(
           `Add edge: invalid element returned from edge class\nEdge ID: ${
@@ -335,6 +355,7 @@ export class Paper {
     if (this._edges.hasOwnProperty(id)) {
       const edge = this._edges[id];
 
+      this._callListeners('update-edge', { edge, props });
       edge.instance.updateProps({
         ...props,
         id,
@@ -405,6 +426,8 @@ export class Paper {
       );
 
       edge.instance.updatePath(startPoint, endPoint, edge.coords);
+
+      this._callListeners('move-edge', { edge });
     } else {
       console.error(`Update edge position: edge with id ${id} does not exist.`);
     }
@@ -417,6 +440,8 @@ export class Paper {
    */
   public removeEdge(id: string): void {
     if (this._edges.hasOwnProperty(id)) {
+      this._callListeners('remove-edge', { edge: this._edges[id] });
+
       this._edges[id].ref.remove();
       delete this._edges[id];
     } else {
@@ -447,6 +472,8 @@ export class Paper {
         console.error(
           // TODO: Fix issue #2 - Right-click while moving hits error condition.
           //
+          // paperItemState: moving
+          //
           // Options:
           // 1. Handle right clicks seperately.
           // 2. Don't worry about it, and hide this specific error condition.
@@ -465,6 +492,7 @@ export class Paper {
 
     // Update active item.
     this._activeItem = activeItem || null;
+    this._callListeners('update-active-item', { activeItem, oldActiveItem });
 
     if (activeItem) {
       // TODO: Do any 'initialization' actions on the new active item.
@@ -477,7 +505,10 @@ export class Paper {
    * @param type The type of listener to call.
    * @param data Any computed data specific to the listener, and not in env.
    */
-  private _callListeners(type: listenerTypes, data?: { [key: string]: any }) {
+  private _callListeners(
+    type: listenerTypes,
+    data: { [key: string]: any },
+  ): void {
     if (this._listeners[type] !== undefined && this._listeners[type].length) {
       const env = {
         width: this._width,

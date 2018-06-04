@@ -7,6 +7,7 @@ import {
   getEdgeNodeIntersection,
   areCoordsEqual,
   getWidthHeight,
+  generateRandomString,
 } from '../../utilities/workflowUtils';
 import {
   setWorkflowType,
@@ -73,11 +74,7 @@ export class Paper {
     this._plugins = plugins || null;
 
     // Generate base36 IDs that are 4 characters long.
-    const randomId = Math.round(Math.random() * 10000000)
-      .toString(36)
-      .concat('0000')
-      .substring(0, 4)
-      .toUpperCase();
+    const randomId = generateRandomString(36, 4);
     const paperWrapperId = `paper-wrapper_${randomId}`;
     const paperId = `paper_${randomId}`;
 

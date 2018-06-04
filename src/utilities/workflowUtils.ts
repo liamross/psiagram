@@ -177,6 +177,12 @@ export function lineIntersect(
   return null;
 }
 
+/**
+ * Returns true if all points are equal between two sets of coordinates.
+ *
+ * @param coordsA First set of coordinates.
+ * @param coordsB Second set of coordinates.
+ */
 export const areCoordsEqual = (
   coordsA: ICoordinates,
   coordsB: ICoordinates,
@@ -187,4 +193,30 @@ export const areCoordsEqual = (
     ((coordsA.z === undefined && coordsB.z === undefined) ||
       coordsA.z === coordsB.z)
   );
+};
+
+/**
+ * Generates a random number in a given base, and back-fills any remaining space
+ * in length with the character '0'.
+ *
+ * @param base The radix of the number to represent in string (2 < base <= 36).
+ * @param length The length of the random number string. Must be greater than 0.
+ */
+export const generateRandomString = (base: number, length: number): string => {
+  if (
+    typeof base === 'number' &&
+    typeof length === 'number' &&
+    base > 2 &&
+    base <= 36 &&
+    length > 0
+  ) {
+    return Math.round(Math.random() * Math.pow(base, length))
+      .toString(base)
+      .concat('0'.repeat(length))
+      .substring(0, length)
+      .toUpperCase();
+  } else {
+    console.error('Generate random string: invalid base or length provided.');
+    return '';
+  }
 };

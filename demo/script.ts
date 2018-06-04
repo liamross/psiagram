@@ -65,7 +65,7 @@ function loadPaper() {
   // Node listeners
   // myPaper.addListener('add-node', listenerBuilder('add-node'));
   // myPaper.addListener('update-node', listenerBuilder('update-node'));
-  myPaper.addListener('move-node', listenerBuilder('move-node'));
+  // myPaper.addListener('move-node', listenerBuilder('move-node'));
   // myPaper.addListener('remove-node', listenerBuilder('remove-node'));
 
   // Edge listeners

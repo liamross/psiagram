@@ -33,8 +33,8 @@ import {
 } from './';
 
 export class Paper {
-  private _width: string;
-  private _height: string;
+  private _width: number;
+  private _height: number;
   private _plugins: Array<{}> | null;
   private _nodes: { [key: string]: IPaperStoredNode };
   private _edges: { [key: string]: IPaperStoredEdge };
@@ -54,9 +54,15 @@ export class Paper {
     attributes,
     initialConditions,
   }: IPaperProps) {
-    // Required parameters.
-    this._width = width;
-    this._height = height;
+    attributes = attributes || {};
+    this._gridSize = attributes.gridSize || 0;
+    this._allowBlockOverlap = attributes.allowBlockOverlap || false;
+    const gridColor: string = attributes.gridColor || '#EEE';
+    const paperWrapperClass: string = attributes.paperWrapperClass || '';
+    const paperClass: string = attributes.paperClass || '';
+
+    this._width = roundToNearest(width, this._gridSize, this._gridSize);
+    this._height = roundToNearest(height, this._gridSize, this._gridSize);
     this._nodes = {};
     this._edges = {};
     this._initialMouseCoords = null;
@@ -64,14 +70,7 @@ export class Paper {
     this._activeItem = null;
     this._listeners = {};
 
-    // Optional parameters and defaults.
     this._plugins = plugins || null;
-    attributes = attributes || {};
-    this._gridSize = attributes.gridSize || 0;
-    this._allowBlockOverlap = attributes.allowBlockOverlap || false;
-    const gridColor: string = attributes.gridColor || '#EEE';
-    const paperWrapperClass: string = attributes.paperWrapperClass || '';
-    const paperClass: string = attributes.paperClass || '';
 
     // Generate base36 IDs that are 4 characters long.
     const randomId = Math.round(Math.random() * 10000000)
@@ -96,7 +95,7 @@ export class Paper {
     this._paperWrapper = createElementWithAttributes('div', {
       class: paperWrapperClass || null,
       id: paperWrapperId,
-      style: `width:${this._width}; height:${this._height}`,
+      style: `width:${this._width}px; height:${this._height}px`,
     });
     this._paperWrapper.appendChild(this._paper);
     this._paperWrapper.addEventListener('mousedown', this._handleMouseDown);
@@ -188,13 +187,13 @@ export class Paper {
         ref,
       };
 
+      // Round node coords to nearest grid.
+      const roundedX = roundToNearest(node.coords.x, this._gridSize);
+      const roundedY = roundToNearest(node.coords.y, this._gridSize);
+
       // If ref, translate to node.coords and append onto paper.
       if (ref) {
-        setSVGAttribute(
-          ref,
-          'transform',
-          `translate(${node.coords.x} ${node.coords.y})`,
-        );
+        setSVGAttribute(ref, 'transform', `translate(${roundedX} ${roundedY})`);
 
         this._paper.appendChild(ref);
 
@@ -202,7 +201,7 @@ export class Paper {
       } else {
         console.error(
           `Add node: invalid element returned from node class\nNode ID: ${
-            node.id
+            this._nodes[node.id].id
           }`,
         );
       }
@@ -234,11 +233,8 @@ export class Paper {
    * Update a nodes coordinates. This does NOT append the node onto paper.
    *
    * Order of operations:
-   *
    * 1. Updates the stored node coordinates.
-   *
    * 2. Updates a node position on the paper to provided coordinates.
-   *
    * 3. Update edge position on every edge that connects to the node.
    *
    * @param id The ID of the node to update coordinates.
@@ -365,15 +361,10 @@ export class Paper {
    * onto paper.
    *
    * Order of operations:
-   *
    * 1. If newNodes is given, update any provided edge endpoint nodes.
-   *
    * 2. If coords is given, update edge coords array.
-   *
    * 3. Get source and target nodes and find their midpoints.
-   *
    * 4. Use the node intersection formula to find the actual start & end points.
-   *
    * 5. Call updatePath on the edge instance with the new points.
    *
    * @param id The ID of the node to update coordinates.

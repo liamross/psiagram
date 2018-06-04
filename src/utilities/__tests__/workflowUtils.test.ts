@@ -4,6 +4,7 @@ import {
   roundToNearest,
   getNodeMidpoint,
   getEdgeNodeIntersection,
+  areCoordsEqual,
 } from '../workflowUtils';
 import { Node } from '../..';
 
@@ -137,6 +138,32 @@ describe('Workflow Utilities', () => {
         10,
       );
       expect(intersection).toMatchObject({ x: 40, y: 40 });
+    });
+  });
+
+  describe('areCoordsEqual', () => {
+    it('returns true if coords are equal', () => {
+      const coordsA = { x: 150, y: 250 };
+      const coordsB = { x: 150, y: 250 };
+      expect(areCoordsEqual(coordsA, coordsB)).toBeTruthy();
+    });
+
+    it('returns false if coords are not equal', () => {
+      const coordsA = { x: 150, y: 250 };
+      const coordsB = { x: 150, y: 150 };
+      expect(areCoordsEqual(coordsA, coordsB)).toBeFalsy();
+    });
+
+    it('returns true if coords are equal with z', () => {
+      const coordsA = { x: 150, y: 250, z: 40 };
+      const coordsB = { x: 150, y: 250, z: 40 };
+      expect(areCoordsEqual(coordsA, coordsB)).toBeTruthy();
+    });
+
+    it('returns false if coords z value is not equal', () => {
+      const coordsA = { x: 150, y: 250, z: 40 };
+      const coordsB = { x: 150, y: 250, z: 50 };
+      expect(areCoordsEqual(coordsA, coordsB)).toBeFalsy();
     });
   });
 });

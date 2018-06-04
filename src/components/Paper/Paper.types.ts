@@ -7,8 +7,8 @@ import { ICoordinates, IParameters } from '../../common/types';
 // Paper
 
 export interface IPaperProps {
-  width: string;
-  height: string;
+  width: number;
+  height: number;
   plugins?: Array<{}>;
   attributes?: {
     gridSize?: number;

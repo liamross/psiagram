@@ -2,13 +2,20 @@ import { INodeProps, INodeUpdateProps } from './';
 import { IParameters } from '../../common/types';
 import { createSVGWithAttributes } from '../../utilities/domUtils';
 import { setWorkflowType, WorkflowType } from '../../utilities/dataUtils';
+import { roundToNearest } from '../../utilities/workflowUtils';
 
 export class Node {
   private _props: INodeProps;
   private _element: SVGElement;
 
   constructor(props: INodeProps) {
-    this._props = props;
+    const growthUnit = props.gridSize * 2;
+
+    this._props = {
+      ...props,
+      width: roundToNearest(props.width, growthUnit, growthUnit),
+      height: roundToNearest(props.height, growthUnit, growthUnit),
+    };
 
     const { width, height, title, id } = this._props;
     const FONT_HEIGHT = 14;

@@ -40,9 +40,24 @@ export const isNodeColliding = (
  *
  * @param num The number to round.
  * @param interval The size of the interval to round to.
+ * @param minimum Lowest possible value. Will round up to interval if given.
  */
-export const roundToNearest = (num: number, interval: number = 0): number =>
-  interval ? Math.round(num / interval) * interval : num;
+export const roundToNearest = (
+  num: number,
+  interval: number = 0,
+  minimum: number = 0,
+): number => {
+  if (interval) {
+    return minimum
+      ? Math.max(
+          Math.round(num / interval) * interval,
+          Math.ceil(minimum / interval) * interval,
+        )
+      : Math.round(num / interval) * interval;
+  } else {
+    return minimum ? Math.max(num, minimum) : num;
+  }
+};
 
 /**
  * Find the coordinates of a node's midpoint.
@@ -63,6 +78,13 @@ export const getNodeMidpoint = (
 
 /**
  * Finds the point along the side of the node to trip edge to.
+ *
+ * Order of priority:
+ * 1. Left edge.
+ * 2. Right edge.
+ * 3. Top edge.
+ * 4. Bottom edge.
+ * 5. Midpoint of node.
  *
  * @param node Node with boundary to trim edge at.
  * @param nextPoint The next point closest to the node center.

@@ -16,6 +16,7 @@ const generateNode = (
   y = 0,
   width = 80,
   height = 80,
+  gridSize = 0,
 ): IPaperStoredNode => {
   const xmlns = 'http://www.w3.org/2000/svg';
   const ns = document.createElementNS(xmlns, 'g');
@@ -23,7 +24,7 @@ const generateNode = (
     id,
     coords: { x, y },
     params: { width, height },
-    instance: new Node({ id, title: '', width, height, gridSize: 1 }),
+    instance: new Node({ id, title: '', width, height, gridSize }),
     ref: ns,
   };
 };
@@ -32,6 +33,18 @@ const generateNode = (
 
 describe('Workflow Utilities', () => {
   describe('isNodeColliding', () => {
+    it('returns false if node 1 is not given', () => {
+      const node1 = null;
+      const node2 = generateNode('2', 80);
+      expect(isNodeColliding(node1, node2, 20, true)).toBeFalsy();
+    });
+
+    it('returns false if node 2 is not given', () => {
+      const node1 = generateNode('1');
+      const node2 = null;
+      expect(isNodeColliding(node1, node2, 20, true)).toBeFalsy();
+    });
+
     it('returns true if two nodes overlap', () => {
       const node1 = generateNode('1');
       const node2 = generateNode('2', 40);
@@ -60,18 +73,35 @@ describe('Workflow Utilities', () => {
   describe('roundToNearest', () => {
     it('preserves number if interval is 0', () => {
       expect(roundToNearest(20, 0)).toBe(20);
+      expect(roundToNearest(-20, 0)).toBe(-20);
     });
 
     it('preserves number if interval is not given', () => {
       expect(roundToNearest(20)).toBe(20);
+      expect(roundToNearest(-20)).toBe(-20);
     });
 
-    it('rounds 15 to 16 if interval is 8', () => {
+    it('rounds number up to nearest interval if grid is given', () => {
       expect(roundToNearest(15, 8)).toBe(16);
+      expect(roundToNearest(-15, 7)).toBe(-14);
     });
 
-    it('rounds 15 to 14 if interval is 7', () => {
+    it('rounds number down to nearest interval if interval is given', () => {
       expect(roundToNearest(15, 7)).toBe(14);
+      expect(roundToNearest(-15, 8)).toBe(-16);
+    });
+
+    it('rounds numbers to next interval above minimum if lower', () => {
+      expect(roundToNearest(4, 10, 10)).toBe(10);
+      expect(roundToNearest(-4, 10, 10)).toBe(10);
+      expect(roundToNearest(1, 10, 1)).toBe(10);
+      expect(roundToNearest(-1, 10, 1)).toBe(10);
+      expect(roundToNearest(18, 10, 1)).toBe(20);
+    });
+
+    it('returns minimum if num is lower and no interval is given', () => {
+      expect(roundToNearest(10, undefined, 20)).toBe(20);
+      expect(roundToNearest(-10, undefined, 20)).toBe(20);
     });
   });
 
@@ -97,13 +127,13 @@ describe('Workflow Utilities', () => {
     });
 
     it('finds intersection with midpoint rounded to nearest grid', () => {
-      const node1 = generateNode('1', 0, 0, 85, 85);
+      const node1 = generateNode('1', 0, 0, 85, 85, 20);
       const intersection = getEdgeNodeIntersection(
         node1,
         { x: 120, y: 40 },
         20,
       );
-      expect(intersection).toMatchObject({ x: 85, y: 40 });
+      expect(intersection).toMatchObject({ x: 80, y: 40 });
     });
 
     it('reverts to midpoint if nextPoint is within border', () => {

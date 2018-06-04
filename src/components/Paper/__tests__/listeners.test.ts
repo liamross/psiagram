@@ -33,8 +33,8 @@ describe('Listeners', () => {
   beforeAll(() => {
     paperProps = {
       attributes: { gridSize: 20 },
-      height: '900px',
-      width: '1300px',
+      height: 900,
+      width: 1300,
       plugins: [],
       initialConditions: {
         nodes: [

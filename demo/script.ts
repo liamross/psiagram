@@ -15,8 +15,8 @@ let myPaper: Paper | null = null;
 function loadPaper() {
   const paperProps: IPaperProps = {
     attributes: { gridSize: 20 },
-    height: '900px',
-    width: '1300px',
+    height: 900,
+    width: 1300,
     plugins: [],
     initialConditions: {
       nodes: [
@@ -24,13 +24,13 @@ function loadPaper() {
           id: 'node1',
           component: Node,
           coords: { x: 80, y: 80 },
-          props: { width: 80, height: 80, title: 'node 1' },
+          props: { width: 112, height: 85, title: 'node 1' },
         },
         {
           id: 'node2',
           component: Node,
-          coords: { x: 240, y: 80 },
-          props: { width: 80, height: 80, title: 'node 2' },
+          coords: { x: 240, y: 70 },
+          props: { width: 130, height: 75, title: 'node 2' },
         },
       ],
       edges: [
@@ -65,7 +65,7 @@ function loadPaper() {
   // Node listeners
   // myPaper.addListener('add-node', listenerBuilder('add-node'));
   // myPaper.addListener('update-node', listenerBuilder('update-node'));
-  // myPaper.addListener('move-node', listenerBuilder('move-node'));
+  myPaper.addListener('move-node', listenerBuilder('move-node'));
   // myPaper.addListener('remove-node', listenerBuilder('remove-node'));
 
   // Edge listeners

@@ -9,19 +9,19 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/liamross/psiagram/blob/master/LICENSE">
+  <a href="https://github.com/liamross/psiagram/blob/master/LICENSE" target="_blank">
     <img
       alt="License"
       src="https://img.shields.io/github/license/liamross/psiagram.svg"
     >
   </a>
-  <a href="https://travis-ci.org/liamross/psiagram">
+  <a href="https://travis-ci.org/liamross/psiagram" target="_blank">
     <img
       alt="Build"
       src="https://travis-ci.org/liamross/psiagram.svg?branch=master"
     >
   </a>
-  <a href="https://codecov.io/gh/liamross/psiagram">
+  <a href="https://codecov.io/gh/liamross/psiagram" target="_blank">
     <img
       alt="Coverage"
       src="https://img.shields.io/codecov/c/github/liamross/psiagram.svg"

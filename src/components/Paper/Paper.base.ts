@@ -487,7 +487,10 @@ export class Paper {
 
     // Update active item.
     this._activeItem = activeItem || null;
-    this._callListeners('update-active-item', { activeItem, oldActiveItem });
+    this._callListeners('update-active-item', {
+      activeItem: this._activeItem,
+      oldActiveItem,
+    });
 
     if (activeItem) {
       // TODO: Do any 'initialization' actions on the new active item.

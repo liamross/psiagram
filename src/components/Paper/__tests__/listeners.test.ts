@@ -318,4 +318,27 @@ describe('Listeners', () => {
       expect(testFunc.mock.calls.length).toBe(0);
     });
   });
+
+  describe('update active item', () => {
+    it('can add valid listeners', () => {
+      const testFunc = jest.fn();
+
+      myPaper.addListener('update-active-item', testFunc);
+
+      myPaper.updateActiveItem();
+
+      expect(testFunc.mock.calls.length).toBe(1);
+    });
+
+    it('can remove listeners', () => {
+      const testFunc = jest.fn();
+
+      myPaper.addListener('update-active-item', testFunc);
+      myPaper.removeListener('update-active-item', testFunc);
+
+      myPaper.updateActiveItem();
+
+      expect(testFunc.mock.calls.length).toBe(0);
+    });
+  });
 });

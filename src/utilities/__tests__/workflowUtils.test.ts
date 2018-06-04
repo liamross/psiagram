@@ -5,6 +5,7 @@ import {
   getNodeMidpoint,
   getEdgeNodeIntersection,
   areCoordsEqual,
+  generateRandomString,
 } from '../workflowUtils';
 import { Node } from '../..';
 
@@ -194,6 +195,28 @@ describe('Workflow Utilities', () => {
       const coordsA = { x: 150, y: 250, z: 40 };
       const coordsB = { x: 150, y: 250, z: 50 };
       expect(areCoordsEqual(coordsA, coordsB)).toBeFalsy();
+    });
+  });
+
+  describe('generateRandomString', () => {
+    it('generates strings of the proper length', () => {
+      expect(generateRandomString(36, 4).length).toBe(4);
+      expect(generateRandomString(10, 8).length).toBe(8);
+    });
+
+    it('returns empty string if base is incorrect', () => {
+      // @ts-ignore
+      expect(generateRandomString('', 4)).toBe('');
+      expect(generateRandomString(NaN, 4)).toBe('');
+      expect(generateRandomString(1, 5)).toBe('');
+      expect(generateRandomString(37, 8)).toBe('');
+    });
+
+    it('returns empty string if length is incorrect', () => {
+      // @ts-ignore
+      expect(generateRandomString(36, '')).toBe('');
+      expect(generateRandomString(36, NaN)).toBe('');
+      expect(generateRandomString(14, 0)).toBe('');
     });
   });
 });

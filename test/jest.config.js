@@ -2,8 +2,8 @@ module.exports = {
   rootDir: '../',
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   transform: {
-    // Transform typescript files using tsTransform file.
     '^.+\\.(ts|tsx)$': '<rootDir>/test/utils/tsTransform.js',
+    '^.+\\.(js|jsx)$': 'babel-jest',
   },
   testMatch: [
     // Match anything within __tests__ folders.

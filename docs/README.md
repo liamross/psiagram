@@ -1,5 +1,6 @@
-# Table of Contents
+# Table of contents
 
-- [Read Me](../README.md)
-- [Introduction](introduction/README.md)
-  - [Motivation](introduction/Motivation.md)
+* [Read Me](../README.md)
+* [Introduction](../introduction/README.md)
+  * [Motivation](../introduction/motivation.md)
+

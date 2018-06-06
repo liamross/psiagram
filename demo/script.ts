@@ -1,14 +1,8 @@
-import {
-  Paper, // Paper class.
-  IPaperProps, // Object to initialize paper.
-  IPaperInputNode, // Object to add node.
-  IPaperInputEdge, // Object to add edge.
-  IActiveItem, // Object to change active item.
-  Node, // Node class.
-  Edge, // Edge class.
-  ICoordinates, // Object to represent coordinates on paper.
-} from '../src';
-import { isNodeColliding } from '../src/utilities/workflowUtils';
+/**
+ * Import: psiagram
+ */
+// prettier-ignore
+import { Paper, IPaperProps, IPaperInputNode, IPaperInputEdge, IActiveItem, Node, Edge, ICoordinates, } from '../packages/psiagram';
 
 let myPaper: Paper | null = null;
 

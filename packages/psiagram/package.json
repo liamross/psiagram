@@ -1,0 +1,11 @@
+{
+  "name": "psiagram",
+  "version": "0.1.0",
+  "description": "test",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "author": "Liam Ross <liamross.code@gmail.com>",
+  "homepage": "https://www.psiagram.org",
+  "license": "MIT",
+  "repository": "https://github.com/liamross/psiagram/tree/master/packages/psiagram"
+}

@@ -4,7 +4,15 @@ This is the official Psiagram logo.
 
 ## Just the Logo
 
+<img src='https://raw.githubusercontent.com/liamross/psiagram/master/logo/logo.png' alt='Psiagram Logo' width='200'>
+
+Download as [PNG](https://raw.githubusercontent.com/liamross/psiagram/master/logo/logo.png).
+
 ## Logo in Title
+
+<img src='https://raw.githubusercontent.com/liamross/psiagram/master/logo/logo-title.png' alt='Psiagram Logo in Title' width='600'>
+
+Download as [PNG](https://raw.githubusercontent.com/liamross/psiagram/master/logo/logo-title.png).
 
 ## Credits
 

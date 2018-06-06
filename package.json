@@ -1,6 +1,8 @@
 {
   "name": "psiagram",
   "private": true,
+  "author": "Liam Ross <liamross.code@gmail.com>",
+  "homepage": "https://www.psiagram.org",
   "license": "MIT",
   "scripts": {
     "start": "parcel demo/index.html",

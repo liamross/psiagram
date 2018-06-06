@@ -19,9 +19,9 @@
     "moduleResolution": "node",
     "lib": ["es2017", "dom"],
     "paths": {
-      "workflow/lib/*": ["./src/*"]
+      "workflow/lib/*": ["./packages/*"]
     }
   },
-  "include": ["src"],
+  "include": ["packages"],
   "exclude": ["**/__tests__", "**/*.test.ts", "**/*.spec.ts"]
 }

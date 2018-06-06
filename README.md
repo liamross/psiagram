@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://github.com/liamross/psiagram">
-    <img alt="Psiagram" src="https://raw.githubusercontent.com/liamross/psiagram/master/assets/psiagram.png" width="888" >
+    <img alt="Psiagram" src="https://raw.githubusercontent.com/liamross/psiagram/master/logo/logo-title.png" width="888" >
   </a>
 </p>
 

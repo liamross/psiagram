@@ -1,23 +1,23 @@
-import { INodeProps, INodeUpdateProps } from './';
+import { INodeProperties, INodeUpdateProperties } from './';
 import { IParameters } from '../../common/types';
 import { createSVGWithAttributes } from '../../utilities/domUtils';
 import { setWorkflowType, WorkflowType } from '../../utilities/dataUtils';
 import { roundToNearest } from '../../utilities/workflowUtils';
 
 export class Node {
-  private _props: INodeProps;
+  private _properties: INodeProperties;
   private _element: SVGElement;
 
-  constructor(props: INodeProps) {
-    const growthUnit = props.gridSize * 2;
+  constructor(properties: INodeProperties) {
+    const growthUnit = properties.gridSize * 2;
 
-    this._props = {
-      ...props,
-      width: roundToNearest(props.width, growthUnit, growthUnit),
-      height: roundToNearest(props.height, growthUnit, growthUnit),
+    this._properties = {
+      ...properties,
+      width: roundToNearest(properties.width, growthUnit, growthUnit),
+      height: roundToNearest(properties.height, growthUnit, growthUnit),
     };
 
-    const { width, height, title, id } = this._props;
+    const { width, height, title, id } = this._properties;
     const FONT_HEIGHT = 14;
     const fontX = width / 2;
     const fontY = FONT_HEIGHT / 2 + height / 2;
@@ -28,7 +28,7 @@ export class Node {
       style: 'user-select: none',
     });
 
-    // TODO: this will be dynamic based on props.
+    // TODO: this will be dynamic based on properties.
 
     const shape = createSVGWithAttributes('rect', {
       width,
@@ -58,29 +58,29 @@ export class Node {
     return this._element;
   }
 
-  public updateProps(newProps: INodeUpdateProps): void {
-    this._props = {
-      ...this._props,
-      ...newProps,
+  public updateProperties(newProperties: INodeUpdateProperties): void {
+    this._properties = {
+      ...this._properties,
+      ...newProperties,
     };
 
-    // TODO: Update those props in the actual ref.
+    // TODO: Update those properties in the actual ref.
   }
 
   public getParameters(): IParameters {
     // TODO: needs to return the final full size of the component.
     return {
-      width: this._props.width,
-      height: this._props.height,
+      width: this._properties.width,
+      height: this._properties.height,
     };
   }
 
   public validateNode(): boolean {
-    if (!this._props.title) {
+    if (!this._properties.title) {
       return false;
     }
 
-    if (!(this._props.width && this._props.height)) {
+    if (!(this._properties.width && this._properties.height)) {
       return false;
     }
     // TODO: Validate that node has some style given.

@@ -1,12 +1,10 @@
-import { Node } from '../Node';
-import { Edge } from '../Edge';
+import { Node, Edge, PaperEvent, ICoordinates, IParameters } from '../../';
 import { WorkflowType } from '../../utilities/dataUtils';
-import { ICoordinates, IParameters } from '../../common/types';
 
 // =============================================================================
 // Paper
 
-export interface IPaperProps {
+export interface IPaperProperties {
   width: number;
   height: number;
   plugins?: Array<{}>;
@@ -23,7 +21,7 @@ export interface IPaperProps {
   };
 }
 
-export declare type listenerTypes =
+export declare type paperEventType =
   // Node
   | 'add-node'
   | 'update-node'
@@ -37,7 +35,7 @@ export declare type listenerTypes =
   // Paper
   | 'update-active-item';
 
-export declare type listenerFunction = (env: {}, data: {}) => any;
+export declare type listenerFunction = (evt: PaperEvent) => any;
 
 // =============================================================================
 // Active Item
@@ -61,17 +59,17 @@ export enum PaperItemState {
 export interface IPaperInputNode {
   id: string;
   component: typeof Node;
-  props: IPaperNodeProps;
+  properties: IPaperNodeProperties;
   coords: ICoordinates;
 }
 
-export interface IPaperNodeProps {
+export interface IPaperNodeProperties {
   title: string;
   width: number;
   height: number;
 }
 
-export interface IPaperNodeUpdateProps {
+export interface IPaperNodeUpdateProperties {
   title?: string;
   width?: number;
   height?: number;
@@ -93,15 +91,15 @@ export interface IPaperInputEdge {
   component: typeof Edge;
   source: { id: string };
   target: { id: string };
-  props: IPaperEdgeProps;
+  properties: IPaperEdgeProperties;
   coords: ICoordinates[];
 }
 
-export interface IPaperEdgeProps {
+export interface IPaperEdgeProperties {
   title: string;
 }
 
-export interface IPaperEdgeUpdateProps {
+export interface IPaperEdgeUpdateProperties {
   title?: string;
 }
 

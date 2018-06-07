@@ -1,6 +1,15 @@
-import { Paper, IPaperProps, Edge, Node, listenerFunction } from '../../..';
+import {
+  Paper,
+  IPaperProperties,
+  Edge,
+  Node,
+  listenerFunction,
+  PaperEvent,
+  PaperItemState,
+} from '../../..';
+import { WorkflowType } from '../../../utilities/dataUtils';
 
-let paperProps: IPaperProps = null;
+let paperProperties: IPaperProperties = null;
 let myPaper: Paper = null;
 
 declare var global: any;
@@ -11,7 +20,7 @@ const addNode = () => {
       id: 'node-test',
       component: Node,
       coords: { x: 900, y: 800 },
-      props: { width: 80, height: 80, title: 'node test' },
+      properties: { width: 80, height: 80, title: 'node test' },
     });
   }
 };
@@ -24,14 +33,14 @@ const addEdge = () => {
       source: { id: 'node1' },
       target: { id: 'node2' },
       coords: [],
-      props: { title: 'edge test' },
+      properties: { title: 'edge test' },
     });
   }
 };
 
 describe('Listeners', () => {
   beforeAll(() => {
-    paperProps = {
+    paperProperties = {
       attributes: { gridSize: 20 },
       height: 900,
       width: 1300,
@@ -42,13 +51,13 @@ describe('Listeners', () => {
             id: 'node1',
             component: Node,
             coords: { x: 80, y: 80 },
-            props: { width: 80, height: 80, title: 'node 1' },
+            properties: { width: 80, height: 80, title: 'node 1' },
           },
           {
             id: 'node2',
             component: Node,
             coords: { x: 240, y: 80 },
-            props: { width: 80, height: 80, title: 'node 2' },
+            properties: { width: 80, height: 80, title: 'node 2' },
           },
         ],
         edges: [
@@ -58,7 +67,7 @@ describe('Listeners', () => {
             source: { id: 'node1' },
             target: { id: 'node2' },
             coords: [],
-            props: { title: 'edge 1' },
+            properties: { title: 'edge 1' },
           },
         ],
       },
@@ -66,7 +75,7 @@ describe('Listeners', () => {
   });
 
   beforeEach(() => {
-    myPaper = new Paper(paperProps);
+    myPaper = new Paper(paperProperties);
   });
 
   afterEach(() => {
@@ -90,12 +99,15 @@ describe('Listeners', () => {
       // A single call to the listener.
       expect(testFunc.mock.calls.length).toBe(1);
 
+      const paperRef = (testFunc.mock.calls[0][0] as PaperEvent).paper;
+
       // Only one listener added to 'add-node'.
-      expect(
-        (testFunc.mock.calls[0][0] as { [key: string]: any }).listeners[
-          'add-node'
-        ][0],
-      ).toBe(testFunc);
+      // @ts-ignore
+      expect(paperRef._listeners['add-node'].length).toBe(1);
+
+      // The listener is testFunc.
+      // @ts-ignore
+      expect(paperRef._listeners['add-node'][0]).toBe(testFunc);
     });
   });
 
@@ -122,7 +134,7 @@ describe('Listeners', () => {
     });
   });
 
-  describe('update node props', () => {
+  describe('update node properties', () => {
     it('can add valid listeners', () => {
       const testFunc = jest.fn();
 
@@ -130,7 +142,7 @@ describe('Listeners', () => {
 
       addNode();
 
-      myPaper.updateNodeProps('node-test', { title: 'new-title' });
+      myPaper.updateNodeProperties('node-test', { title: 'new-title' });
 
       expect(testFunc.mock.calls.length).toBe(1);
     });
@@ -143,7 +155,7 @@ describe('Listeners', () => {
 
       addNode();
 
-      myPaper.updateNodeProps('node-test', { title: 'new-title' });
+      myPaper.updateNodeProperties('node-test', { title: 'new-title' });
 
       expect(testFunc.mock.calls.length).toBe(0);
     });
@@ -238,7 +250,7 @@ describe('Listeners', () => {
     });
   });
 
-  describe('update edge props', () => {
+  describe('update edge properties', () => {
     it('can add valid listeners', () => {
       const testFunc = jest.fn();
 
@@ -246,7 +258,7 @@ describe('Listeners', () => {
 
       addEdge();
 
-      myPaper.updateEdgeProps('edge-test', { title: 'new-title' });
+      myPaper.updateEdgeProperties('edge-test', { title: 'new-title' });
 
       expect(testFunc.mock.calls.length).toBe(1);
     });
@@ -259,7 +271,7 @@ describe('Listeners', () => {
 
       addEdge();
 
-      myPaper.updateEdgeProps('edge-test', { title: 'new-title' });
+      myPaper.updateEdgeProperties('edge-test', { title: 'new-title' });
 
       expect(testFunc.mock.calls.length).toBe(0);
     });
@@ -273,7 +285,7 @@ describe('Listeners', () => {
 
       addEdge();
 
-      myPaper.updateEdgePosition('edge-test');
+      myPaper.updateEdgeRoute('edge-test');
 
       expect(testFunc.mock.calls.length).toBe(2);
     });
@@ -286,7 +298,7 @@ describe('Listeners', () => {
 
       addEdge();
 
-      myPaper.updateEdgePosition('edge-test');
+      myPaper.updateEdgeRoute('edge-test');
 
       expect(testFunc.mock.calls.length).toBe(0);
     });
@@ -325,9 +337,45 @@ describe('Listeners', () => {
 
       myPaper.addListener('update-active-item', testFunc);
 
-      myPaper.updateActiveItem();
+      myPaper.updateActiveItem({
+        id: 'test-node',
+        paperItemState: PaperItemState.Moving,
+        workflowType: WorkflowType.Node,
+      });
 
       expect(testFunc.mock.calls.length).toBe(1);
+    });
+
+    it('does not call if active item does not change', () => {
+      const testFunc = jest.fn();
+
+      myPaper.addListener('update-active-item', testFunc);
+
+      myPaper.updateActiveItem({
+        id: 'test-node',
+        paperItemState: PaperItemState.Moving,
+        workflowType: WorkflowType.Node,
+      });
+
+      expect(testFunc.mock.calls.length).toBe(1);
+
+      myPaper.updateActiveItem({
+        id: 'test-node',
+        paperItemState: PaperItemState.Moving,
+        workflowType: WorkflowType.Node,
+      });
+
+      expect(testFunc.mock.calls.length).toBe(1);
+    });
+
+    it('does not call if active item remains nothing', () => {
+      const testFunc = jest.fn();
+
+      myPaper.addListener('update-active-item', testFunc);
+
+      myPaper.updateActiveItem();
+
+      expect(testFunc.mock.calls.length).toBe(0);
     });
 
     it('can remove listeners', () => {

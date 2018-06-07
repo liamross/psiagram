@@ -1,13 +1,14 @@
+// tslint:disable:no-console
 /**
  * Import: psiagram
  */
 // prettier-ignore
-import { Paper, IPaperProps, IPaperInputNode, IPaperInputEdge, IActiveItem, Node, Edge, ICoordinates, } from '../packages/psiagram';
+import { Paper, IPaperProperties, IPaperInputNode, IPaperInputEdge, IActiveItem, Node, Edge, ICoordinates, } from '../packages/psiagram/src';
 
 let myPaper: Paper | null = null;
 
 function loadPaper() {
-  const paperProps: IPaperProps = {
+  const paperProperties: IPaperProperties = {
     attributes: { gridSize: 20 },
     height: 900,
     width: 1300,
@@ -18,13 +19,13 @@ function loadPaper() {
           id: 'node1',
           component: Node,
           coords: { x: 80, y: 80 },
-          props: { width: 112, height: 85, title: 'node 1' },
+          properties: { width: 112, height: 85, title: 'node 1' },
         },
         {
           id: 'node2',
           component: Node,
           coords: { x: 240, y: 70 },
-          props: { width: 130, height: 75, title: 'node 2' },
+          properties: { width: 130, height: 75, title: 'node 2' },
         },
       ],
       edges: [
@@ -34,43 +35,42 @@ function loadPaper() {
           source: { id: 'node1' },
           target: { id: 'node2' },
           coords: [],
-          props: { title: 'edge 1' },
+          properties: { title: 'edge 1' },
         },
       ],
     },
   };
 
-  myPaper = new Paper(paperProps);
+  myPaper = new Paper(paperProperties);
 
-  const listenerBuilder = listenerType => (env, data) => {
-    // tslint:disable-next-line
+  function eventListener(evt) {
+    // prettier-ignore
     console.log(
       '=========================',
-      '\nlistener type: ',
-      listenerType,
-      '\nenv:',
-      env,
-      '\ndata:',
-      data,
+      '\nevt: ', evt,
+      '\neventType: ', evt.eventType,
+      '\npaper: ', evt.paper,
+      '\ntarget: ', evt.target,
+      '\ncanPropogate: ', evt.canPropogate,
+      '\ndata: ', evt.data,
       '\n=========================',
     );
-  };
+  }
 
   // Node listeners
-  // myPaper.addListener('add-node', listenerBuilder('add-node'));
-  // myPaper.addListener('update-node', listenerBuilder('update-node'));
-  // myPaper.addListener('move-node', listenerBuilder('move-node'));
-  // myPaper.addListener('remove-node', listenerBuilder('remove-node'));
+  // myPaper.addListener('add-node', eventListener);
+  // myPaper.addListener('update-node', eventListener);
+  // myPaper.addListener('move-node', eventListener);
+  // myPaper.addListener('remove-node', eventListener);
 
   // Edge listeners
-  // myPaper.addListener('add-edge', listenerBuilder('add-edge'));
-  // myPaper.addListener('update-edge', listenerBuilder('update-edge'));
-  // myPaper.addListener('move-edge', listenerBuilder('move-edge'));
-  // myPaper.addListener('remove-edge', listenerBuilder('remove-edge'));
+  // myPaper.addListener('add-edge', eventListener);
+  // myPaper.addListener('update-edge', eventListener);
+  // myPaper.addListener('move-edge', eventListener);
+  // myPaper.addListener('remove-edge', eventListener);
 
   // Paper listeners
-  // prettier-ignore
-  // myPaper.addListener('update-active-item', listenerBuilder('update-active-item'));
+  // myPaper.addListener('update-active-item', eventListener);
 
   // Append paper into div #_target
   const target = document.getElementById('_target');
@@ -86,7 +86,7 @@ function addNode() {
         y: 160,
       },
       id: `new_node_test`,
-      props: {
+      properties: {
         height: 80,
         title: 'Title 1',
         width: 160,

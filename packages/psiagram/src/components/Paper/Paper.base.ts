@@ -1,6 +1,33 @@
-import { Node, Edge } from '../../';
-import { setPaperDefs } from './definitions/svgDefinitions';
+import { Node, Edge, PaperEvent } from '../../';
+import { setPaperDefs } from './helpers/svgDefinitions';
 import { ICoordinates } from '../../common/types';
+
+import {
+  IPaperProperties,
+  IActiveItem,
+  PaperItemState,
+  IPaperInputNode,
+  IPaperStoredNode,
+  IPaperInputEdge,
+  IPaperStoredEdge,
+  IPaperNodeUpdateProperties,
+  IPaperEdgeUpdateProperties,
+  paperEventType,
+  listenerFunction,
+} from './';
+
+import {
+  setWorkflowType,
+  getWorkflowType,
+  WorkflowType,
+} from '../../utilities/dataUtils';
+
+import {
+  createElementWithAttributes,
+  createSVGWithAttributes,
+  setSVGAttribute,
+} from '../../utilities/domUtils';
+
 import {
   roundToNearest,
   getNodeMidpoint,
@@ -9,29 +36,6 @@ import {
   getWidthHeight,
   generateRandomString,
 } from '../../utilities/workflowUtils';
-import {
-  setWorkflowType,
-  getWorkflowType,
-  WorkflowType,
-} from '../../utilities/dataUtils';
-import {
-  createElementWithAttributes,
-  createSVGWithAttributes,
-  setSVGAttribute,
-} from '../../utilities/domUtils';
-import {
-  IPaperProps,
-  IActiveItem,
-  PaperItemState,
-  IPaperInputNode,
-  IPaperStoredNode,
-  IPaperInputEdge,
-  IPaperStoredEdge,
-  IPaperNodeUpdateProps,
-  IPaperEdgeUpdateProps,
-  listenerTypes,
-  listenerFunction,
-} from './';
 
 export class Paper {
   private _width: number;
@@ -54,7 +58,7 @@ export class Paper {
     plugins,
     attributes,
     initialConditions,
-  }: IPaperProps) {
+  }: IPaperProperties) {
     attributes = attributes || {};
     this._gridSize = attributes.gridSize || 0;
     this._allowBlockOverlap = attributes.allowBlockOverlap || false;
@@ -125,7 +129,7 @@ export class Paper {
    * @param type The type of listener to add.
    * @param listener The listener function triggered when type of event happens.
    */
-  public addListener(type: listenerTypes, listener: listenerFunction): void {
+  public addListener(type: paperEventType, listener: listenerFunction): void {
     if (this._listeners[type] === undefined) {
       this._listeners[type] = [];
     }
@@ -146,7 +150,10 @@ export class Paper {
    * @param type The type of listener to remove.
    * @param listener The listener function to remove.
    */
-  public removeListener(type: listenerTypes, listener: listenerFunction): void {
+  public removeListener(
+    type: paperEventType,
+    listener: listenerFunction,
+  ): void {
     if (this._listeners[type] !== undefined && this._listeners[type].length) {
       const listenerIndex = this._listeners[type].findIndex(
         currentLis => currentLis === listener,
@@ -166,7 +173,7 @@ export class Paper {
     } else {
       // Create instance of class at node.component.
       const instance: Node = new node.component({
-        ...node.props,
+        ...node.properties,
         gridSize: this._gridSize,
         id: node.id,
       });
@@ -175,14 +182,23 @@ export class Paper {
       const params = instance.getParameters();
       const ref = instance.getNodeElement();
 
-      // Add node to nodes.
-      this._nodes[node.id] = {
+      // Create new node.
+      const newNode = {
         coords: node.coords,
         id: node.id,
         instance,
         params,
         ref,
       };
+
+      // const evt = new PaperEvent('add-node', {
+      //   paper: this,
+      //   target: newNode,
+      //   defaultAction: () => {}
+      // })
+
+      // Add node to nodes.
+      this._nodes[node.id] = newNode;
 
       // Round node coords to nearest grid.
       const roundedX = roundToNearest(node.coords.x, this._gridSize);
@@ -209,20 +225,25 @@ export class Paper {
    * Update the appearance of the node with given ID.
    *
    * @param id The ID of the node you wish to update.
-   * @param props Props to visually change the node.
+   * @param properties Properties to visually change the node.
    */
-  public updateNodeProps(id: string, props: IPaperNodeUpdateProps): void {
+  public updateNodeProperties(
+    id: string,
+    properties: IPaperNodeUpdateProperties,
+  ): void {
     if (this._nodes.hasOwnProperty(id)) {
       const node = this._nodes[id];
 
-      this._callListeners('update-node', { node, props });
-      node.instance.updateProps({
-        ...props,
+      this._callListeners('update-node', { node, properties });
+      node.instance.updateProperties({
+        ...properties,
         gridSize: this._gridSize,
         id,
       });
     } else {
-      console.error(`Update node props: node with id ${id} does not exist.`);
+      console.error(
+        `Update node properties: node with id ${id} does not exist.`,
+      );
     }
   }
 
@@ -300,7 +321,7 @@ export class Paper {
     } else {
       // Create instance of class at edge.component.
       const instance: Edge = new edge.component({
-        ...edge.props,
+        ...edge.properties,
         id: edge.id,
       });
 
@@ -337,15 +358,18 @@ export class Paper {
    * Update the appearance of the edge with given ID.
    *
    * @param id The ID of the edge you wish to update.
-   * @param props Props to visually change the edge.
+   * @param properties Properties to visually change the edge.
    */
-  public updateEdgeProps(id: string, props: IPaperEdgeUpdateProps): void {
+  public updateEdgeProperties(
+    id: string,
+    properties: IPaperEdgeUpdateProperties,
+  ): void {
     if (this._edges.hasOwnProperty(id)) {
       const edge = this._edges[id];
 
-      this._callListeners('update-edge', { edge, props });
-      edge.instance.updateProps({
-        ...props,
+      this._callListeners('update-edge', { edge, properties });
+      edge.instance.updateProperties({
+        ...properties,
         id,
       });
     } else {
@@ -492,7 +516,7 @@ export class Paper {
    * @param data Any computed data specific to the listener, and not in env.
    */
   private _callListeners(
-    type: listenerTypes,
+    type: paperEventType,
     data: { [key: string]: any },
   ): void {
     if (this._listeners[type] !== undefined && this._listeners[type].length) {

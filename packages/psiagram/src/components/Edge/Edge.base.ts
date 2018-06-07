@@ -1,4 +1,4 @@
-import { IEdgeProps, IEdgeUpdateProps } from './';
+import { IEdgeProperties, IEdgeUpdateProperties } from './';
 import { ICoordinates } from '../../common/types';
 import { setWorkflowType, WorkflowType } from '../../utilities/dataUtils';
 import {
@@ -7,14 +7,14 @@ import {
 } from '../../utilities/domUtils';
 
 export class Edge {
-  private _props: IEdgeProps;
+  private _properties: IEdgeProperties;
   private _element: SVGElement;
   private _path: SVGElement;
 
-  constructor(props: IEdgeProps) {
-    this._props = props;
+  constructor(properties: IEdgeProperties) {
+    this._properties = properties;
 
-    const { id, title } = this._props;
+    const { id, title } = this._properties;
 
     const group = createSVGWithAttributes('g', {
       id,
@@ -42,13 +42,13 @@ export class Edge {
     return this._element;
   }
 
-  public updateProps(newProps: IEdgeUpdateProps): void {
-    this._props = {
-      ...this._props,
-      ...newProps,
+  public updateProperties(newProperties: IEdgeUpdateProperties): void {
+    this._properties = {
+      ...this._properties,
+      ...newProperties,
     };
 
-    // TODO: Update those props in the actual ref.
+    // TODO: Update those properties in the actual ref.
   }
 
   public updatePath(

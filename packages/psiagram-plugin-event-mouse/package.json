@@ -1,10 +1,10 @@
 {
-  "name": "psiagram",
+  "name": "psiagram-plugin-event-mouse",
   "version": "0.1.0",
-  "description": "Psiagram",
+  "description": "Plugin event mouse",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
-  "repository": "https://github.com/liamross/psiagram/tree/master/packages/psiagram",
+  "repository": "https://github.com/liamross/psiagram/tree/master/packages/psiagram-plugin-event-mouse",
   "author": "Liam Ross <liamross.code@gmail.com>",
   "homepage": "https://www.psiagram.org",
   "license": "MIT"

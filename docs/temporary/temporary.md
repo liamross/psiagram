@@ -9,7 +9,7 @@ myPaper.getPaperElement(); // Returns SVGElement
 INodeComponent
 INodeComponent.getNodeElement()
 INodeComponent.getParameters(): {width height}
-INodeComponent.updateProps(some prop change)
+INodeComponent.updateProperties(some prop change)
 
 myPaper.addNode({
     id: string (unique for paper instance),
@@ -19,7 +19,7 @@ myPaper.addNode({
         [z]
     },
     component: INodeComponent,
-    props: IComponentProps{
+    properties: IComponentProperties{
         [
           content: HTMLElement,
             (or),
@@ -31,15 +31,15 @@ myPaper.addNode({
 
 myPaper.removeNode(id);
 
-myPaper.getNode(id).updateProps({
-    ...patchedProps
+myPaper.getNode(id).updateProperties({
+    ...patchedProperties
 });
 
 myPaper.addEdge({
     id: string (unique),
     points: [ICoords],
     component: IEdgeComponent,
-    props: IEdgeComponentProps{
+    properties: IEdgeComponentProperties{
         [content, (or), title, icon]
     },
     source: { (either an object with id, or ICoords) },
@@ -51,7 +51,7 @@ myPaper.addEdge({
 const myListener = myPaper.addListener('add-edge', async (event, edge) => {
     if (await validate(edge)) {
         try {
-            edge.updateProps(new edge or something)
+            edge.updateProperties(new edge or something)
         }
         catch(e) {
             probably remove edge

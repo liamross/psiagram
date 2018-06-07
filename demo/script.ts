@@ -2,12 +2,12 @@
  * Import: psiagram
  */
 // prettier-ignore
-import { Paper, IPaperProps, IPaperInputNode, IPaperInputEdge, IActiveItem, Node, Edge, ICoordinates, } from '../packages/psiagram';
+import { Paper, IPaperProperties, IPaperInputNode, IPaperInputEdge, IActiveItem, Node, Edge, ICoordinates, } from '../packages/psiagram/src';
 
 let myPaper: Paper | null = null;
 
 function loadPaper() {
-  const paperProps: IPaperProps = {
+  const paperProperties: IPaperProperties = {
     attributes: { gridSize: 20 },
     height: 900,
     width: 1300,
@@ -18,13 +18,13 @@ function loadPaper() {
           id: 'node1',
           component: Node,
           coords: { x: 80, y: 80 },
-          props: { width: 112, height: 85, title: 'node 1' },
+          properties: { width: 112, height: 85, title: 'node 1' },
         },
         {
           id: 'node2',
           component: Node,
           coords: { x: 240, y: 70 },
-          props: { width: 130, height: 75, title: 'node 2' },
+          properties: { width: 130, height: 75, title: 'node 2' },
         },
       ],
       edges: [
@@ -34,13 +34,13 @@ function loadPaper() {
           source: { id: 'node1' },
           target: { id: 'node2' },
           coords: [],
-          props: { title: 'edge 1' },
+          properties: { title: 'edge 1' },
         },
       ],
     },
   };
 
-  myPaper = new Paper(paperProps);
+  myPaper = new Paper(paperProperties);
 
   const listenerBuilder = listenerType => (env, data) => {
     // tslint:disable-next-line
@@ -86,7 +86,7 @@ function addNode() {
         y: 160,
       },
       id: `new_node_test`,
-      props: {
+      properties: {
         height: 80,
         title: 'Title 1',
         width: 160,

@@ -1,4 +1,4 @@
-export interface INodeProps {
+export interface INodeProperties {
   id: string;
   title: string;
   width: number;
@@ -6,7 +6,7 @@ export interface INodeProps {
   gridSize: number;
 }
 
-export interface INodeUpdateProps {
+export interface INodeUpdateProperties {
   id?: string;
   title?: string;
   width?: number;

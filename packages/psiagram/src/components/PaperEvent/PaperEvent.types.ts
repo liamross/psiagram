@@ -13,15 +13,20 @@ export interface IPaperEventProperties {
    */
   target?: any;
   /**
-   * The default action to invoke if all the listeners complete, or
-   * defaultAction is called on the event.
-   * @default null;
-   */
-  defaultAction?: (() => void);
-  /**
    * If canPropogate is true, event will continue to propogate to any remaining
    * listeners. This can be prevented permanently by calling stopPropagation.
    * @default true;
    */
   canPropogate?: boolean;
+  /**
+   * An object to provide any additional information from the event.
+   * @default {};
+   */
+  data?: { [key: string]: any };
+  /**
+   * The default action to invoke if all the listeners complete, or
+   * defaultAction is called on the event.
+   * @default null;
+   */
+  defaultAction?: (() => void);
 }

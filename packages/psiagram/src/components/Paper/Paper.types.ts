@@ -1,7 +1,5 @@
-import { Node } from '../Node';
-import { Edge } from '../Edge';
+import { Node, Edge, PaperEvent, ICoordinates, IParameters } from '../../';
 import { WorkflowType } from '../../utilities/dataUtils';
-import { ICoordinates, IParameters } from '../../common/types';
 
 // =============================================================================
 // Paper
@@ -37,7 +35,7 @@ export declare type paperEventType =
   // Paper
   | 'update-active-item';
 
-export declare type listenerFunction = (env: {}, data: {}) => any;
+export declare type listenerFunction = (evt: PaperEvent) => any;
 
 // =============================================================================
 // Active Item

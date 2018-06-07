@@ -33,7 +33,6 @@ import {
   getNodeMidpoint,
   getEdgeNodeIntersection,
   areCoordsEqual,
-  getWidthHeight,
   generateRandomString,
 } from '../../utilities/workflowUtils';
 
@@ -191,33 +190,38 @@ export class Paper {
         ref,
       };
 
-      // const evt = new PaperEvent('add-node', {
-      //   paper: this,
-      //   target: newNode,
-      //   defaultAction: () => {}
-      // })
-
-      // Add node to nodes.
-      this._nodes[node.id] = newNode;
-
       // Round node coords to nearest grid.
       const roundedX = roundToNearest(node.coords.x, this._gridSize);
       const roundedY = roundToNearest(node.coords.y, this._gridSize);
 
-      // If ref, translate to node.coords and append onto paper.
-      if (ref) {
-        setSVGAttribute(ref, 'transform', `translate(${roundedX} ${roundedY})`);
+      const evt = new PaperEvent('add-node', {
+        paper: this,
+        target: newNode,
+        data: { roundedX, roundedY },
+        defaultAction: () => {
+          // Add node to nodes.
+          this._nodes[node.id] = newNode;
 
-        this._paper.appendChild(ref);
+          // If ref, translate to node.coords and append onto paper.
+          if (ref) {
+            setSVGAttribute(
+              ref,
+              'transform',
+              `translate(${roundedX} ${roundedY})`,
+            );
 
-        this._callListeners('add-node', { node: this._nodes[node.id] });
-      } else {
-        console.error(
-          `Add node: invalid element returned from node class\nNode ID: ${
-            this._nodes[node.id].id
-          }`,
-        );
-      }
+            this._paper.appendChild(ref);
+          } else {
+            console.error(
+              `Add node: invalid element returned from node class\nNode ID: ${
+                this._nodes[node.id].id
+              }`,
+            );
+          }
+        },
+      });
+
+      this._fireEvent(evt);
     }
   }
 
@@ -234,12 +238,20 @@ export class Paper {
     if (this._nodes.hasOwnProperty(id)) {
       const node = this._nodes[id];
 
-      this._callListeners('update-node', { node, properties });
-      node.instance.updateProperties({
-        ...properties,
-        gridSize: this._gridSize,
-        id,
+      const evt = new PaperEvent('update-node', {
+        paper: this,
+        target: node,
+        data: { properties },
+        defaultAction: () => {
+          node.instance.updateProperties({
+            ...properties,
+            gridSize: this._gridSize,
+            id,
+          });
+        },
       });
+
+      this._fireEvent(evt);
     } else {
       console.error(
         `Update node properties: node with id ${id} does not exist.`,
@@ -265,22 +277,30 @@ export class Paper {
       // Only update node position if coordinates have changed.
       if (!areCoordsEqual(node.coords, newCoords)) {
         const oldCoords = { ...node.coords };
-        node.coords = newCoords;
 
-        setSVGAttribute(
-          node.ref,
-          'transform',
-          `translate(${node.coords.x} ${node.coords.y})`,
-        );
+        const evt = new PaperEvent('move-node', {
+          paper: this,
+          target: node,
+          data: { newCoords, oldCoords },
+          defaultAction: () => {
+            node.coords = newCoords;
 
-        this._callListeners('move-node', { node });
+            setSVGAttribute(
+              node.ref,
+              'transform',
+              `translate(${node.coords.x} ${node.coords.y})`,
+            );
 
-        Object.keys(this._edges).forEach(edgeId => {
-          const edge = this._edges[edgeId];
-          if (edge.source.id === id || edge.target.id === id) {
-            this.updateEdgePosition(edgeId);
-          }
+            Object.keys(this._edges).forEach(edgeId => {
+              const edge = this._edges[edgeId];
+              if (edge.source.id === id || edge.target.id === id) {
+                this.updateEdgeRoute(edgeId);
+              }
+            });
+          },
         });
+
+        this._fireEvent(evt);
       }
     } else {
       console.error(`Update node position: node with id ${id} does not exist.`);
@@ -294,17 +314,25 @@ export class Paper {
    */
   public removeNode(id: string): void {
     if (this._nodes.hasOwnProperty(id)) {
-      // Remove all edges that use node as end point.
-      Object.keys(this._edges).forEach(edgeId => {
-        const edge = this._edges[edgeId];
-        if (edge.source.id === id || edge.target.id === id) {
-          this.removeEdge(edgeId);
-        }
+      const evt = new PaperEvent('remove-node', {
+        paper: this,
+        target: this._nodes[id],
+        defaultAction: () => {
+          // Remove all edges that use node as end point.
+          Object.keys(this._edges).forEach(edgeId => {
+            const edge = this._edges[edgeId];
+            if (edge.source.id === id || edge.target.id === id) {
+              this.removeEdge(edgeId);
+            }
+          });
+
+          // Remove node.
+          this._nodes[id].ref.remove();
+          delete this._nodes[id];
+        },
       });
-      // Remove node.
-      this._callListeners('remove-node', { node: this._nodes[id] });
-      this._nodes[id].ref.remove();
-      delete this._nodes[id];
+
+      this._fireEvent(evt);
     } else {
       console.error(`Delete node: node with id ${id} does not exist.`);
     }
@@ -328,8 +356,12 @@ export class Paper {
       // Get ref to element from instance.
       const ref = instance.getEdgeElement();
 
+      // Get actual nodes to ensure they exist.
+      const sourceNode = this._nodes[edge.source.id];
+      const targetNode = this._nodes[edge.target.id];
+
       // Add edge to edges.
-      this._edges[edge.id] = {
+      const newEdge = {
         id: edge.id,
         source: edge.source,
         target: edge.target,
@@ -339,11 +371,20 @@ export class Paper {
       };
 
       // If ref, update edge position and append onto paper.
-      if (ref) {
-        this.updateEdgePosition(edge.id);
-        this._paper.appendChild(ref);
+      if (ref && sourceNode && targetNode) {
+        const evt = new PaperEvent('add-edge', {
+          paper: this,
+          target: newEdge,
+          data: { sourceNode, targetNode },
+          defaultAction: () => {
+            this._edges[edge.id] = newEdge;
 
-        this._callListeners('add-edge', { edge: this._edges[edge.id] });
+            this.updateEdgeRoute(edge.id);
+            this._paper.appendChild(ref);
+          },
+        });
+
+        this._fireEvent(evt);
       } else {
         console.error(
           `Add edge: invalid element returned from edge class\nEdge ID: ${
@@ -367,11 +408,19 @@ export class Paper {
     if (this._edges.hasOwnProperty(id)) {
       const edge = this._edges[id];
 
-      this._callListeners('update-edge', { edge, properties });
-      edge.instance.updateProperties({
-        ...properties,
-        id,
+      const evt = new PaperEvent('update-edge', {
+        paper: this,
+        target: edge,
+        data: { properties },
+        defaultAction: () => {
+          edge.instance.updateProperties({
+            ...properties,
+            id,
+          });
+        },
       });
+
+      this._fireEvent(evt);
     } else {
       console.error(`Update edge: edge with id ${id} does not exist.`);
     }
@@ -394,7 +443,7 @@ export class Paper {
    * @param [newNodes.source] A new source node for the edge.
    * @param [newNodes.target] A new target node for the edge.
    */
-  public updateEdgePosition(
+  public updateEdgeRoute(
     id: string,
     coords?: ICoordinates[],
     newNodes?: { source?: { id: string }; target?: { id: string } },
@@ -411,30 +460,54 @@ export class Paper {
         edge.target.id = newNodes.target ? newNodes.target.id : edge.target.id;
       }
 
+      // TODO: case when source or target IDs do not point to anything. Maybe
+      // check in add node and here? To prevent drawing onto paper.
+
       const sourceNode = this._nodes[edge.source.id];
       const targetNode = this._nodes[edge.target.id];
 
-      const sourceMidPoint = getNodeMidpoint(sourceNode, this._gridSize);
-      const targetMidPoint = getNodeMidpoint(targetNode, this._gridSize);
+      if (sourceNode && targetNode) {
+        const sourceMidPoint = getNodeMidpoint(sourceNode, this._gridSize);
+        const targetMidPoint = getNodeMidpoint(targetNode, this._gridSize);
 
-      // Get sourceNode intersection.
-      const startPoint = getEdgeNodeIntersection(
-        sourceNode,
-        edge.coords[0] || targetMidPoint,
-        this._gridSize,
-      );
+        // Get sourceNode intersection.
+        const sourceIntersect = getEdgeNodeIntersection(
+          sourceNode,
+          edge.coords[0] || targetMidPoint,
+          this._gridSize,
+        );
 
-      // Get targetNode intersection.
-      const endPoint = getEdgeNodeIntersection(
-        targetNode,
-        edge.coords[edge.coords.length - 1] || sourceMidPoint,
-        this._gridSize,
-        4,
-      );
+        // Get targetNode intersection.
+        const targetIntersect = getEdgeNodeIntersection(
+          targetNode,
+          edge.coords[edge.coords.length - 1] || sourceMidPoint,
+          this._gridSize,
+          4,
+        );
 
-      edge.instance.updatePath(startPoint, endPoint, edge.coords);
+        const evt = new PaperEvent('move-edge', {
+          paper: this,
+          target: edge,
+          data: {
+            nodes: { sourceNode, targetNode },
+            midpoints: { sourceMidPoint, targetMidPoint },
+            intersects: { sourceIntersect, targetIntersect },
+          },
+          defaultAction: () => {
+            edge.instance.updatePath(
+              sourceIntersect,
+              targetIntersect,
+              edge.coords,
+            );
+          },
+        });
 
-      this._callListeners('move-edge', { edge });
+        this._fireEvent(evt);
+      } else {
+        console.error(
+          `Update edge position: edge source or target id is not valid.`,
+        );
+      }
     } else {
       console.error(`Update edge position: edge with id ${id} does not exist.`);
     }
@@ -447,10 +520,16 @@ export class Paper {
    */
   public removeEdge(id: string): void {
     if (this._edges.hasOwnProperty(id)) {
-      this._callListeners('remove-edge', { edge: this._edges[id] });
+      const evt = new PaperEvent('remove-edge', {
+        paper: this,
+        target: this._edges[id],
+        defaultAction: () => {
+          this._edges[id].ref.remove();
+          delete this._edges[id];
+        },
+      });
 
-      this._edges[id].ref.remove();
-      delete this._edges[id];
+      this._fireEvent(evt);
     } else {
       console.error(`Delete edge: edge with id ${id} does not exist.`);
     }
@@ -468,76 +547,94 @@ export class Paper {
     const oldActiveItem = this._activeItem;
 
     if (oldActiveItem) {
-      // If all keys are identical, warn and exit function. Else, do exit
-      // actions on the previous active item.
+      // If all keys are identical, exit function.
       if (
         activeItem &&
         Object.keys(activeItem).every(
           key => oldActiveItem[key] === activeItem[key],
         )
       ) {
-        console.error(
-          // TODO: Fix issue #2 - Right-click while moving hits error condition.
-          //
-          // paperItemState: moving
-          //
-          // Options:
-          // 1. Handle right clicks seperately.
-          // 2. Don't worry about it, and hide this specific error condition.
-          //
-          // https://github.com/liamross/workflow/issues/2
-          `Update active item: the ${activeItem.workflowType} with id "${
-            activeItem.id
-          }" is already ${activeItem.paperItemState}.`,
-        );
-
         return;
       } else {
         // TODO: Do any 'exit' actions on oldActiveItem.
       }
     }
 
-    // Update active item.
-    this._activeItem = activeItem || null;
-    this._callListeners('update-active-item', {
-      activeItem: this._activeItem,
-      oldActiveItem,
+    // If both items are null or undefined, exit function.
+    if (activeItem == null && oldActiveItem == null) {
+      return;
+    }
+
+    const evt = new PaperEvent('update-active-item', {
+      paper: this,
+      target: activeItem || null,
+      data: { oldActiveItem },
+      defaultAction: () => {
+        // Update active item.
+        this._activeItem = activeItem || null;
+
+        if (activeItem) {
+          // TODO: Do any 'initialization' actions on the new active item.
+        }
+      },
     });
 
-    if (activeItem) {
-      // TODO: Do any 'initialization' actions on the new active item.
-    }
+    this._fireEvent(evt);
   }
 
-  /**
-   * Calls all listeners of a specific type, with data and env.
-   *
-   * @param type The type of listener to call.
-   * @param data Any computed data specific to the listener, and not in env.
-   */
-  private _callListeners(
-    type: paperEventType,
-    data: { [key: string]: any },
-  ): void {
-    if (this._listeners[type] !== undefined && this._listeners[type].length) {
-      const env = {
-        width: this._width,
-        height: this._height,
-        plugins: this._plugins,
-        nodes: this._nodes,
-        edges: this._edges,
-        initialMouseCoords: this._initialMouseCoords,
-        initialPaperCoords: this._initialPaperCoords,
-        activeItem: this._activeItem,
-        listeners: this._listeners,
-        gridSize: this._gridSize,
-        allowBlockOverlap: this._allowBlockOverlap,
-        paper: this._paper,
-        paperWrapper: this._paperWrapper,
-      };
+  // /**
+  //  * Calls all listeners of a specific type, with data and env.
+  //  *
+  //  * @param type The type of listener to call.
+  //  * @param data Any computed data specific to the listener, and not in env.
+  //  */
+  // private _callListeners(
+  //   type: paperEventType,
+  //   data: { [key: string]: any },
+  // ): void {
+  //   // if (this._listeners[type] !== undefined && this._listeners[type].length) {
+  //   //   const env = {
+  //   //     width: this._width,
+  //   //     height: this._height,
+  //   //     plugins: this._plugins,
+  //   //     nodes: this._nodes,
+  //   //     edges: this._edges,
+  //   //     initialMouseCoords: this._initialMouseCoords,
+  //   //     initialPaperCoords: this._initialPaperCoords,
+  //   //     activeItem: this._activeItem,
+  //   //     listeners: this._listeners,
+  //   //     gridSize: this._gridSize,
+  //   //     allowBlockOverlap: this._allowBlockOverlap,
+  //   //     paper: this._paper,
+  //   //     paperWrapper: this._paperWrapper,
+  //   //   };
+  //   //   this._listeners[type].forEach(listener => listener(env, data));
+  //   // }
+  // }
 
-      this._listeners[type].forEach(listener => listener(env, data));
+  /**
+   * Calls all listeners of a specific paper event type.
+   *
+   * Order of operations:
+   * 1. If listeners of evt.eventType exist begins looping through listeners.
+   * 2. Calls each listener with event if evt.canPropogate is true.
+   * 3. After all listeners called, calls evt.defaultAction. If defaultAction
+   *    has already been called by a listener, this does nothing.
+   *
+   * @param evt The event originating from the paper.
+   */
+  private _fireEvent(evt: PaperEvent): void {
+    const type = evt.eventType;
+
+    if (this._listeners[type] !== undefined && this._listeners[type].length) {
+      this._listeners[type].forEach(listener => {
+        if (evt.canPropogate) {
+          listener(evt);
+        }
+      });
     }
+
+    evt.defaultAction();
   }
 
   private _handleMouseDown = (evt: MouseEvent): void => {

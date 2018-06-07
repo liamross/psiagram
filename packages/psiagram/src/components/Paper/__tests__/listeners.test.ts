@@ -4,7 +4,10 @@ import {
   Edge,
   Node,
   listenerFunction,
+  PaperEvent,
+  PaperItemState,
 } from '../../..';
+import { WorkflowType } from '../../../utilities/dataUtils';
 
 let paperProperties: IPaperProperties = null;
 let myPaper: Paper = null;
@@ -96,12 +99,15 @@ describe('Listeners', () => {
       // A single call to the listener.
       expect(testFunc.mock.calls.length).toBe(1);
 
+      const paperRef = (testFunc.mock.calls[0][0] as PaperEvent).paper;
+
       // Only one listener added to 'add-node'.
-      expect(
-        (testFunc.mock.calls[0][0] as { [key: string]: any }).listeners[
-          'add-node'
-        ][0],
-      ).toBe(testFunc);
+      // @ts-ignore
+      expect(paperRef._listeners['add-node'].length).toBe(1);
+
+      // The listener is testFunc.
+      // @ts-ignore
+      expect(paperRef._listeners['add-node'][0]).toBe(testFunc);
     });
   });
 
@@ -279,7 +285,7 @@ describe('Listeners', () => {
 
       addEdge();
 
-      myPaper.updateEdgePosition('edge-test');
+      myPaper.updateEdgeRoute('edge-test');
 
       expect(testFunc.mock.calls.length).toBe(2);
     });
@@ -292,7 +298,7 @@ describe('Listeners', () => {
 
       addEdge();
 
-      myPaper.updateEdgePosition('edge-test');
+      myPaper.updateEdgeRoute('edge-test');
 
       expect(testFunc.mock.calls.length).toBe(0);
     });
@@ -331,9 +337,45 @@ describe('Listeners', () => {
 
       myPaper.addListener('update-active-item', testFunc);
 
-      myPaper.updateActiveItem();
+      myPaper.updateActiveItem({
+        id: 'test-node',
+        paperItemState: PaperItemState.Moving,
+        workflowType: WorkflowType.Node,
+      });
 
       expect(testFunc.mock.calls.length).toBe(1);
+    });
+
+    it('does not call if active item does not change', () => {
+      const testFunc = jest.fn();
+
+      myPaper.addListener('update-active-item', testFunc);
+
+      myPaper.updateActiveItem({
+        id: 'test-node',
+        paperItemState: PaperItemState.Moving,
+        workflowType: WorkflowType.Node,
+      });
+
+      expect(testFunc.mock.calls.length).toBe(1);
+
+      myPaper.updateActiveItem({
+        id: 'test-node',
+        paperItemState: PaperItemState.Moving,
+        workflowType: WorkflowType.Node,
+      });
+
+      expect(testFunc.mock.calls.length).toBe(1);
+    });
+
+    it('does not call if active item remains nothing', () => {
+      const testFunc = jest.fn();
+
+      myPaper.addListener('update-active-item', testFunc);
+
+      myPaper.updateActiveItem();
+
+      expect(testFunc.mock.calls.length).toBe(0);
     });
 
     it('can remove listeners', () => {

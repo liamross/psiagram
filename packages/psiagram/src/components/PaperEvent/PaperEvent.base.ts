@@ -7,24 +7,22 @@ export class PaperEvent {
   private _target: any;
   private _defaultAction: (() => void) | null;
   private _canPropogate: boolean;
+  private _data: { [key: string]: any };
 
   constructor(
     eventType: paperEventType,
-    { paper, target, defaultAction, canPropogate }: IPaperEventProperties,
+    { paper, target, canPropogate, data, defaultAction }: IPaperEventProperties,
   ) {
     this._eventType = eventType;
     this._paper = paper;
     this._target = target || null;
-    this._defaultAction = defaultAction || null;
     this._canPropogate = canPropogate || true;
-
-    console.error(this._paper);
+    this._data = data || {};
+    this._defaultAction = defaultAction || null;
   }
 
   /**
    * Get the paper event type string.
-   *
-   * @returns {paperEventType}
    */
   get eventType(): paperEventType {
     return this._eventType;
@@ -33,8 +31,6 @@ export class PaperEvent {
   /**
    * Get a reference to the paper instance that created the event. This is
    * useful for calling any paper methods from the listeners.
-   *
-   * @returns {Paper}
    */
   get paper(): Paper {
     return this._paper;
@@ -45,8 +41,6 @@ export class PaperEvent {
    * be actioned on by the default action once all listeners have run. This can
    * be done early by calling defaultAction, and can be prevented permanently by
    * calling preventDefault.
-   *
-   * @returns {any}
    */
   get target(): any {
     return this._target;
@@ -55,11 +49,16 @@ export class PaperEvent {
   /**
    * If canPropogate is true, event will continue to propogate to any remaining
    * listeners. This can be prevented permanently by calling stopPropagation.
-   *
-   * @returns {boolean}
    */
   get canPropogate(): boolean {
     return this._canPropogate;
+  }
+
+  /**
+   * Get the data object. This contains any other data specific to the event.
+   */
+  get data(): { [key: string]: any } {
+    return this._data;
   }
 
   /**

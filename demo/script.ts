@@ -70,7 +70,6 @@ function loadPaper() {
   // myPaper.addListener('remove-edge', eventListener);
 
   // Paper listeners
-  // prettier-ignore
   // myPaper.addListener('update-active-item', eventListener);
 
   // Append paper into div #_target

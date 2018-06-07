@@ -39,7 +39,6 @@ import {
 export class Paper {
   private _width: number;
   private _height: number;
-  private _plugins: Array<{}> | null;
   private _nodes: { [key: string]: IPaperStoredNode };
   private _edges: { [key: string]: IPaperStoredEdge };
   private _initialMouseCoords: ICoordinates | null;
@@ -74,7 +73,9 @@ export class Paper {
     this._activeItem = null;
     this._listeners = {};
 
-    this._plugins = plugins || null;
+    // if (plugins) {
+    //   plugins.forEach(plugin => new plugin(this))
+    // }
 
     // Generate base36 IDs that are 4 characters long.
     const randomId = generateRandomString(36, 4);

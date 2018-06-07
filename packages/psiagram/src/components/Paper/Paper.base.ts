@@ -73,9 +73,9 @@ export class Paper {
     this._activeItem = null;
     this._listeners = {};
 
-    // if (plugins) {
-    //   plugins.forEach(plugin => new plugin(this))
-    // }
+    if (plugins) {
+      plugins.forEach(plugin => console.error(plugin));
+    }
 
     // Generate base36 IDs that are 4 characters long.
     const randomId = generateRandomString(36, 4);

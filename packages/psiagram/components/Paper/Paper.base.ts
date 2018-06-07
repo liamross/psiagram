@@ -538,7 +538,7 @@ export class Paper {
     }
   };
 
-  private _handleNodeMouseDown = (evt: MouseEvent, id: string): void => {
+  private _handleNodeMouseDown(evt: MouseEvent, id: string): void {
     if (this._nodes.hasOwnProperty(id)) {
       const node = this._nodes[id];
 
@@ -569,7 +569,7 @@ export class Paper {
         `Handle node mousedown: node with id ${id} does not exist.`,
       );
     }
-  };
+  }
 
   private _handleNodeMouseMove = (evt: MouseEvent): void => {
     if (
@@ -626,9 +626,9 @@ export class Paper {
     this._resetMouseListeners();
   };
 
-  private _handleEdgeMouseDown = (evt: MouseEvent, id: string): void => {
+  private _handleEdgeMouseDown(evt: MouseEvent, id: string): void {
     // TODO: implement.
-  };
+  }
 
   private _handleEdgeMouseMove = (evt: MouseEvent): void => {
     // TODO: implement.
@@ -638,14 +638,14 @@ export class Paper {
     // TODO: implement.
   };
 
-  private _handlePaperMouseDown = (evt: MouseEvent, id: string): void => {
+  private _handlePaperMouseDown(evt: MouseEvent, id: string): void {
     // TODO: implement.
 
     // Deselect any selected items.
     this.updateActiveItem();
-  };
+  }
 
-  private _resetMouseListeners = (): void => {
+  private _resetMouseListeners(): void {
     // Remove listeners.
     document.removeEventListener('mousemove', this._handleNodeMouseMove);
     document.removeEventListener('mouseup', this._handleNodeMouseUp);
@@ -655,5 +655,5 @@ export class Paper {
     // Reset coordinates.
     this._initialMouseCoords = null;
     this._initialPaperCoords = null;
-  };
+  }
 }

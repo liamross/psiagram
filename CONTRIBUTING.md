@@ -27,12 +27,16 @@ $ npm test
 $ yarn test --watch
 $ npm test --watch
 
-# show coverage
+# show coverage (will by default)
 $ yarn test --coverage
 $ npm test --coverage
 ```
 
 ### Linting
+
+> Note: this will likely show an overly-verbose error if there is one. This is
+> due to lerna reading the error from the failed lint as an error with the
+> scripts.
 
 ```sh
 $ yarn lint
@@ -59,36 +63,24 @@ $ npm start
 # build full version with type files in lib folder
 $ yarn build
 $ npm run build
-
-# build parcel minified single file in dist folder
-$ yarn build:parcel
-$ npm run build:parcel
 ```
 
 ### Clean
 
 ```sh
-# delete dist and lib folders
+# delete all node_modules folders within packages
 $ yarn clean
 $ npm run clean
 
-# delete dist, lib, coverage and .cache folders
-$ yarn deepclean
-$ npm run deepclean
+# delete all build folders (run automatically by build command)
+$ yarn clean-build
+$ npm run clean-build
 
-# delete dist folder
-$ yarn clean:dist
-$ npm run clean:dist
+# delete coverage and .cache folders
+$ yarn clean-deep
+$ npm run clean-deep
 
-# delete lib folder
-$ yarn clean:lib
-$ npm run clean:lib
-
-# delete coverage folder
-$ yarn clean:coverage
-$ npm run clean:coverage
-
-# delete .cache folder
-$ yarn clean:cache
-$ npm run clean:cache
+# runs both of the above cleans
+$ yarn clean-all
+$ npm run clean-all
 ```

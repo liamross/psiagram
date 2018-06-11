@@ -1,9 +1,7 @@
 {
   "compilerOptions": {
-    // Output options.
     "sourceMap": true,
     "declaration": true,
-    // Code checking.
     "strict": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
@@ -11,17 +9,9 @@
     "strictNullChecks": true,
     "preserveConstEnums": true,
     "forceConsistentCasingInFileNames": true,
-    // File utilities.
-    "baseUrl": ".",
-    "outDir": "lib",
     "target": "es5",
     "module": "commonjs",
     "moduleResolution": "node",
-    "lib": ["es2017", "dom"],
-    "paths": {
-      "workflow/lib/*": ["./packages/*"]
-    }
-  },
-  "include": ["packages"],
-  "exclude": ["**/__tests__", "**/*.test.ts", "**/*.spec.ts"]
+    "lib": ["es2017", "dom"]
+  }
 }

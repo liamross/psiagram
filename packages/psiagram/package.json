@@ -15,5 +15,8 @@
   "repository": "https://github.com/liamross/psiagram/tree/master/packages/psiagram",
   "bugs": "https://github.com/liamross/psiagram/issues",
   "homepage": "https://www.psiagram.org",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc"
+  }
 }

@@ -1,0 +1,12 @@
+{
+  "extends": "../../configs/base",
+  "compilerOptions": {
+    "baseUrl": "./packages/psiagram",
+    "paths": {
+      "lib/*": ["src/*"]
+    },
+    "outDir": "lib"
+  },
+  "include": ["src"],
+  "exclude": ["**/__tests__", "**/*.test.ts", "**/*.spec.ts"]
+}

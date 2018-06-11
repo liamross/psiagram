@@ -8,16 +8,11 @@
   "homepage": "https://www.psiagram.org",
   "scripts": {
     "start": "parcel demo/index.html",
-    "test": "jest --config scripts/test/jest.config.js",
-    "lint": "tslint -p . -t verbose",
-    "build": "yarn clean:lib && tsc",
-    "clean": "yarn clean:dist & yarn clean:lib",
-    "deepclean": "yarn clean:cache & yarn clean:coverage & yarn clean",
-    "clean:dist": "rimraf dist",
-    "clean:lib": "rimraf lib",
-    "clean:coverage": "rimraf coverage",
-    "clean:cache": "rimraf .cache",
-    "clean:node": "rimraf node_modules"
+    "test": "jest --config ./scripts/test/jest.config.js",
+    "clean-build": "node ./scripts/clean/builds.js",
+    "clean-deep": "node ./scripts/clean/deep.js",
+    "clean-all": "yarn clean-deep & yarn clean-build",
+    "build:psiagram": "cd ./packages/psiagram && yarn build"
   },
   "devDependencies": {
     "@types/jest": "^23.0.0",

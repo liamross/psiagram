@@ -8,10 +8,9 @@
   "homepage": "https://www.psiagram.org",
   "scripts": {
     "start": "parcel demo/index.html",
-    "test": "jest --config test/jest.config.js",
+    "test": "jest --config scripts/test/jest.config.js",
     "lint": "tslint -p . -t verbose",
     "build": "yarn clean:lib && tsc",
-    "build:parcel": "yarn clean:dist && parcel build src/index.ts",
     "clean": "yarn clean:dist & yarn clean:lib",
     "deepclean": "yarn clean:cache & yarn clean:coverage & yarn clean",
     "clean:dist": "rimraf dist",
@@ -27,6 +26,7 @@
     "parcel-bundler": "^1.8.1",
     "prettier": "^1.13.5",
     "rimraf": "^2.6.2",
+    "ts-jest": "^22.4.6",
     "tslint": "^5.10.0",
     "tslint-config-prettier": "^1.13.0",
     "typescript": "^2.9.1"

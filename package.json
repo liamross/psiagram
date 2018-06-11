@@ -9,10 +9,10 @@
   "scripts": {
     "start": "parcel demo/index.html",
     "test": "jest --config ./scripts/test/jest.config.js",
+    "build": "yarn clean-build && lerna run build",
     "clean-build": "node ./scripts/clean/builds.js",
     "clean-deep": "node ./scripts/clean/deep.js",
-    "clean-all": "yarn clean-deep & yarn clean-build",
-    "build:psiagram": "cd ./packages/psiagram && yarn build"
+    "clean-all": "yarn clean-deep & yarn clean-build"
   },
   "devDependencies": {
     "@types/jest": "^23.0.0",

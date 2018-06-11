@@ -1,9 +1,11 @@
 {
-  "name": "psiagram",
   "private": true,
-  "author": "Liam Ross <liamross.code@gmail.com>",
+  "version": "0.0.0",
+  "workspaces": [
+    "packages/*"
+  ],
+  "repository": "https://github.com/liamross/psiagram",
   "homepage": "https://www.psiagram.org",
-  "license": "MIT",
   "scripts": {
     "start": "parcel demo/index.html",
     "test": "jest --config test/jest.config.js",
@@ -15,14 +17,15 @@
     "clean:dist": "rimraf dist",
     "clean:lib": "rimraf lib",
     "clean:coverage": "rimraf coverage",
-    "clean:cache": "rimraf .cache"
+    "clean:cache": "rimraf .cache",
+    "clean:node": "rimraf node_modules"
   },
   "devDependencies": {
     "@types/jest": "^23.0.0",
     "jest": "^23.1.0",
     "lerna": "^2.11.0",
     "parcel-bundler": "^1.8.1",
-    "prettier": "^1.13.4",
+    "prettier": "^1.13.5",
     "rimraf": "^2.6.2",
     "tslint": "^5.10.0",
     "tslint-config-prettier": "^1.13.0",

@@ -17,6 +17,7 @@
   "homepage": "https://www.psiagram.org",
   "license": "MIT",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "lint": "tslint -p . -t verbose"
   }
 }

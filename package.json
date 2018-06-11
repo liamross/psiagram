@@ -12,7 +12,8 @@
     "build": "yarn clean-build && lerna run build",
     "clean-build": "node ./scripts/clean/builds.js",
     "clean-deep": "node ./scripts/clean/deep.js",
-    "clean-all": "yarn clean-deep & yarn clean-build"
+    "clean-all": "yarn clean-deep & yarn clean-build",
+    "lint": "lerna run lint"
   },
   "devDependencies": {
     "@types/jest": "^23.0.0",

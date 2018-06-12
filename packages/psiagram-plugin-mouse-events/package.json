@@ -1,23 +1,25 @@
 {
-  "name": "psiagram",
-  "description": "JavaScript diagramming framework for workflows.",
+  "name": "psiagram-plugin-mouse-events",
+  "description": "A plugin that provides mouse events to the Psiagram framework.",
   "keywords": [
-    "diagram",
-    "flowchart",
-    "graph",
     "psiagram",
-    "visualization"
+    "psiagram-plugin",
+    "mouse",
+    "event"
   ],
   "version": "0.0.0",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "author": "Liam Ross <liamross.code@gmail.com>",
-  "repository": "https://github.com/liamross/psiagram/tree/master/packages/psiagram",
+  "repository": "https://github.com/liamross/psiagram/tree/master/packages/psiagram-plugin-mouse-events",
   "bugs": "https://github.com/liamross/psiagram/issues",
   "homepage": "https://www.psiagram.org",
   "license": "MIT",
   "scripts": {
     "build": "tsc",
     "lint": "tslint -p . -t verbose"
+  },
+  "dependencies": {
+    "psiagram": "^0.0.0"
   }
 }

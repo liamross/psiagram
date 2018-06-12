@@ -12,12 +12,13 @@
     "build": "yarn clean-build && lerna run build",
     "bootstrap": "yarn build && lerna bootstrap",
     "clean-build": "node ./scripts/clean/builds.js",
-    "clean-deep": "node ./scripts/clean/deep.js",
-    "clean-all": "yarn clean-deep & yarn clean-build",
+    "clean-cache": "node ./scripts/clean/cache.js",
+    "clean-deep": "node ./scripts/clean/deep.js && lerna clean --yes",
+    "clean-all": "yarn clean-cache && yarn clean-build && yarn clean-deep",
     "lint": "lerna run lint"
   },
   "devDependencies": {
-    "@types/jest": "^23.0.0",
+    "@types/jest": "^23.0.1",
     "jest": "^23.1.0",
     "lerna": "^2.11.0",
     "parcel-bundler": "^1.8.1",

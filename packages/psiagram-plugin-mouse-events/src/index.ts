@@ -1,1 +1,1 @@
-export * from './plugin/PsiagramPluginMouseEvents';
+export * from './plugin/MouseEvents';

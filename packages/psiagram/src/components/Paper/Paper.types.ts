@@ -1,5 +1,12 @@
-import { Node, Edge, PaperEvent, ICoordinates, IParameters } from '../../';
-import { WorkflowType } from '../../utilities/dataUtils';
+import {
+  Node,
+  Edge,
+  PaperEvent,
+  ICoordinates,
+  IParameters,
+  PsiagramPlugin,
+  WorkflowType,
+} from '../../';
 
 // =============================================================================
 // Paper
@@ -7,7 +14,7 @@ import { WorkflowType } from '../../utilities/dataUtils';
 export interface IPaperProperties {
   width: number;
   height: number;
-  plugins?: Array<{}>;
+  plugins?: Array<typeof PsiagramPlugin>;
   attributes?: {
     gridSize?: number;
     allowBlockOverlap?: boolean;

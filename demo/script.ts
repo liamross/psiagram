@@ -3,8 +3,8 @@
 /**
  * Import: psiagram
  */
-// prettier-ignore
-import { Paper, IPaperProperties, IPaperInputNode, IPaperInputEdge, IActiveItem, Node, Edge, ICoordinates, } from '../packages/psiagram/src';
+import { Paper, IPaperProperties, IPaperInputNode, Node, Edge } from 'psiagram';
+import { MouseEvents } from 'psiagram-plugin-mouse-events';
 
 let myPaper: Paper | null = null;
 
@@ -13,7 +13,7 @@ function loadPaper() {
     attributes: { gridSize: 20 },
     height: 900,
     width: 1300,
-    plugins: [],
+    plugins: [MouseEvents],
     initialConditions: {
       nodes: [
         {

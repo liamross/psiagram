@@ -37,18 +37,18 @@ import {
 } from '../../utilities/workflowUtils';
 
 export class Paper {
-  private _width: number;
-  private _height: number;
-  private _nodes: { [key: string]: IPaperStoredNode };
-  private _edges: { [key: string]: IPaperStoredEdge };
-  private _initialMouseCoords: ICoordinates | null;
-  private _initialPaperCoords: ICoordinates | null;
-  private _activeItem: IActiveItem | null;
-  private _listeners: { [key: string]: listenerFunction[] };
-  private _gridSize: number;
-  private _allowBlockOverlap: boolean;
-  private _paper: SVGElement;
-  private _paperWrapper: HTMLElement;
+  public _width: number;
+  public _height: number;
+  public _nodes: { [key: string]: IPaperStoredNode };
+  public _edges: { [key: string]: IPaperStoredEdge };
+  public _initialMouseCoords: ICoordinates | null;
+  public _initialPaperCoords: ICoordinates | null;
+  public _activeItem: IActiveItem | null;
+  public _listeners: { [key: string]: listenerFunction[] };
+  public _gridSize: number;
+  public _allowBlockOverlap: boolean;
+  public _paper: SVGElement;
+  public _paperWrapper: HTMLElement;
 
   constructor({
     width,
@@ -73,10 +73,6 @@ export class Paper {
     this._activeItem = null;
     this._listeners = {};
 
-    if (plugins) {
-      plugins.forEach(plugin => console.error(plugin));
-    }
-
     // Generate base36 IDs that are 4 characters long.
     const randomId = generateRandomString(36, 4);
     const paperWrapperId = `paper-wrapper_${randomId}`;
@@ -99,7 +95,6 @@ export class Paper {
       style: `width:${this._width}px; height:${this._height}px`,
     });
     this._paperWrapper.appendChild(this._paper);
-    this._paperWrapper.addEventListener('mousedown', this._handleMouseDown);
 
     // Add all initial nodes.
     if (initialConditions && initialConditions.nodes) {
@@ -109,6 +104,14 @@ export class Paper {
     // Add all initial edges.
     if (initialConditions && initialConditions.edges) {
       initialConditions.edges.forEach(edge => this.addEdge(edge));
+    }
+
+    // Initialize all plugins.
+    if (plugins) {
+      plugins.forEach(plugin => {
+        const pluginInstance = new plugin(this);
+        pluginInstance.initialize();
+      });
     }
   }
 
@@ -638,144 +641,144 @@ export class Paper {
     evt.defaultAction();
   }
 
-  private _handleMouseDown = (evt: MouseEvent): void => {
-    const containerElement = (evt.target as Element).parentElement;
-    const workflowType = getWorkflowType(containerElement);
+  // private _handleMouseDown = (evt: MouseEvent): void => {
+  //   const containerElement = (evt.target as Element).parentElement;
+  //   const workflowType = getWorkflowType(containerElement);
 
-    if (containerElement) {
-      switch (workflowType) {
-        case WorkflowType.Node:
-          this._handleNodeMouseDown(evt, containerElement.id);
-          break;
-        case WorkflowType.Edge:
-          this._handleEdgeMouseDown(evt, containerElement.id);
-          break;
-        case WorkflowType.Paper:
-          // Do we need to give ID?
-          this._handlePaperMouseDown(evt, containerElement.id);
-          break;
-        default:
-          break;
-      }
-    }
-  };
+  //   if (containerElement) {
+  //     switch (workflowType) {
+  //       case WorkflowType.Node:
+  //         this._handleNodeMouseDown(evt, containerElement.id);
+  //         break;
+  //       case WorkflowType.Edge:
+  //         this._handleEdgeMouseDown(evt, containerElement.id);
+  //         break;
+  //       case WorkflowType.Paper:
+  //         // Do we need to give ID?
+  //         this._handlePaperMouseDown(evt, containerElement.id);
+  //         break;
+  //       default:
+  //         break;
+  //     }
+  //   }
+  // };
 
-  private _handleNodeMouseDown(evt: MouseEvent, id: string): void {
-    if (this._nodes.hasOwnProperty(id)) {
-      const node = this._nodes[id];
+  // private _handleNodeMouseDown(evt: MouseEvent, id: string): void {
+  //   if (this._nodes.hasOwnProperty(id)) {
+  //     const node = this._nodes[id];
 
-      // Set clicked node as moving item.
-      this.updateActiveItem({
-        id,
-        paperItemState: PaperItemState.Moving,
-        workflowType: WorkflowType.Node,
-      });
+  //     // Set clicked node as moving item.
+  //     this.updateActiveItem({
+  //       id,
+  //       paperItemState: PaperItemState.Moving,
+  //       workflowType: WorkflowType.Node,
+  //     });
 
-      // Store initial mouse coordinates.
-      this._initialMouseCoords = { x: evt.clientX, y: evt.clientY };
+  //     // Store initial mouse coordinates.
+  //     this._initialMouseCoords = { x: evt.clientX, y: evt.clientY };
 
-      // Store original coordinates in paper (to nearest grid).
-      this._initialPaperCoords = {
-        x: roundToNearest(node.coords.x, this._gridSize),
-        y: roundToNearest(node.coords.y, this._gridSize),
-      };
+  //     // Store original coordinates in paper (to nearest grid).
+  //     this._initialPaperCoords = {
+  //       x: roundToNearest(node.coords.x, this._gridSize),
+  //       y: roundToNearest(node.coords.y, this._gridSize),
+  //     };
 
-      // Move node to top within paper.
-      this._paper.appendChild(node.ref);
+  //     // Move node to top within paper.
+  //     this._paper.appendChild(node.ref);
 
-      // Initialize mouse movement and release listeners.
-      document.addEventListener('mousemove', this._handleNodeMouseMove);
-      document.addEventListener('mouseup', this._handleNodeMouseUp);
-    } else {
-      console.error(
-        `Handle node mousedown: node with id ${id} does not exist.`,
-      );
-    }
-  }
+  //     // Initialize mouse movement and release listeners.
+  //     document.addEventListener('mousemove', this._handleNodeMouseMove);
+  //     document.addEventListener('mouseup', this._handleNodeMouseUp);
+  //   } else {
+  //     console.error(
+  //       `Handle node mousedown: node with id ${id} does not exist.`,
+  //     );
+  //   }
+  // }
 
-  private _handleNodeMouseMove = (evt: MouseEvent): void => {
-    if (
-      this._activeItem &&
-      this._activeItem.workflowType === WorkflowType.Node &&
-      this._activeItem.paperItemState === PaperItemState.Moving &&
-      this._initialMouseCoords &&
-      this._initialPaperCoords
-    ) {
-      const id = this._activeItem.id;
+  // private _handleNodeMouseMove = (evt: MouseEvent): void => {
+  //   if (
+  //     this._activeItem &&
+  //     this._activeItem.workflowType === WorkflowType.Node &&
+  //     this._activeItem.paperItemState === PaperItemState.Moving &&
+  //     this._initialMouseCoords &&
+  //     this._initialPaperCoords
+  //   ) {
+  //     const id = this._activeItem.id;
 
-      // Find mouse deltas vs original coordinates.
-      const mouseDeltaX = this._initialMouseCoords.x - evt.clientX;
-      const mouseDeltaY = this._initialMouseCoords.y - evt.clientY;
+  //     // Find mouse deltas vs original coordinates.
+  //     const mouseDeltaX = this._initialMouseCoords.x - evt.clientX;
+  //     const mouseDeltaY = this._initialMouseCoords.y - evt.clientY;
 
-      // Round mouse deltas to nearest grid.
-      const roundedMouseDeltaX = roundToNearest(mouseDeltaX, this._gridSize);
-      const roundedMouseDeltaY = roundToNearest(mouseDeltaY, this._gridSize);
+  //     // Round mouse deltas to nearest grid.
+  //     const roundedMouseDeltaX = roundToNearest(mouseDeltaX, this._gridSize);
+  //     const roundedMouseDeltaY = roundToNearest(mouseDeltaY, this._gridSize);
 
-      // Find new block coordinates.
-      const blockX = this._initialPaperCoords.x - roundedMouseDeltaX;
-      const blockY = this._initialPaperCoords.y - roundedMouseDeltaY;
+  //     // Find new block coordinates.
+  //     const blockX = this._initialPaperCoords.x - roundedMouseDeltaX;
+  //     const blockY = this._initialPaperCoords.y - roundedMouseDeltaY;
 
-      // TODO: Check if dragged block is overlapping.
+  //     // TODO: Check if dragged block is overlapping.
 
-      this.moveNode(id, { x: blockX, y: blockY });
-    } else {
-      console.error(
-        `Handle node mousemove: no current moving node. Active item: `,
-        this._activeItem,
-      );
-    }
-  };
+  //     this.moveNode(id, { x: blockX, y: blockY });
+  //   } else {
+  //     console.error(
+  //       `Handle node mousemove: no current moving node. Active item: `,
+  //       this._activeItem,
+  //     );
+  //   }
+  // };
 
-  private _handleNodeMouseUp = (): void => {
-    if (
-      this._activeItem &&
-      this._activeItem.workflowType === WorkflowType.Node &&
-      this._activeItem.paperItemState === PaperItemState.Moving
-    ) {
-      // Set active node to selected state.
-      this.updateActiveItem({
-        ...this._activeItem,
-        paperItemState: PaperItemState.Selected,
-      });
-    } else {
-      console.error(
-        `Handle node mouseup: no current moving node. Active item: `,
-        this._activeItem,
-      );
-    }
+  // private _handleNodeMouseUp = (): void => {
+  //   if (
+  //     this._activeItem &&
+  //     this._activeItem.workflowType === WorkflowType.Node &&
+  //     this._activeItem.paperItemState === PaperItemState.Moving
+  //   ) {
+  //     // Set active node to selected state.
+  //     this.updateActiveItem({
+  //       ...this._activeItem,
+  //       paperItemState: PaperItemState.Selected,
+  //     });
+  //   } else {
+  //     console.error(
+  //       `Handle node mouseup: no current moving node. Active item: `,
+  //       this._activeItem,
+  //     );
+  //   }
 
-    // Remove listeners and reset coordinates.
-    this._resetMouseListeners();
-  };
+  //   // Remove listeners and reset coordinates.
+  //   this._resetMouseListeners();
+  // };
 
-  private _handleEdgeMouseDown(evt: MouseEvent, id: string): void {
-    // TODO: implement.
-  }
+  // private _handleEdgeMouseDown(evt: MouseEvent, id: string): void {
+  //   // TODO: implement.
+  // }
 
-  private _handleEdgeMouseMove = (evt: MouseEvent): void => {
-    // TODO: implement.
-  };
+  // private _handleEdgeMouseMove = (evt: MouseEvent): void => {
+  //   // TODO: implement.
+  // };
 
-  private _handleEdgeMouseUp = (): void => {
-    // TODO: implement.
-  };
+  // private _handleEdgeMouseUp = (): void => {
+  //   // TODO: implement.
+  // };
 
-  private _handlePaperMouseDown(evt: MouseEvent, id: string): void {
-    // TODO: implement.
+  // private _handlePaperMouseDown(evt: MouseEvent, id: string): void {
+  //   // TODO: implement.
 
-    // Deselect any selected items.
-    this.updateActiveItem();
-  }
+  //   // Deselect any selected items.
+  //   this.updateActiveItem();
+  // }
 
-  private _resetMouseListeners(): void {
-    // Remove listeners.
-    document.removeEventListener('mousemove', this._handleNodeMouseMove);
-    document.removeEventListener('mouseup', this._handleNodeMouseUp);
-    document.removeEventListener('mousemove', this._handleEdgeMouseMove);
-    document.removeEventListener('mouseup', this._handleEdgeMouseUp);
+  // private _resetMouseListeners(): void {
+  //   // Remove listeners.
+  //   document.removeEventListener('mousemove', this._handleNodeMouseMove);
+  //   document.removeEventListener('mouseup', this._handleNodeMouseUp);
+  //   document.removeEventListener('mousemove', this._handleEdgeMouseMove);
+  //   document.removeEventListener('mouseup', this._handleEdgeMouseUp);
 
-    // Reset coordinates.
-    this._initialMouseCoords = null;
-    this._initialPaperCoords = null;
-  }
+  //   // Reset coordinates.
+  //   this._initialMouseCoords = null;
+  //   this._initialPaperCoords = null;
+  // }
 }

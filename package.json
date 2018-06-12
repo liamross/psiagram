@@ -10,7 +10,7 @@
     "start": "parcel demo/index.html",
     "test": "jest --config ./scripts/test/jest.config.js",
     "build": "yarn clean-build && lerna run build",
-    "clean": "lerna clean --yes",
+    "bootstrap": "yarn build && lerna bootstrap",
     "clean-build": "node ./scripts/clean/builds.js",
     "clean-deep": "node ./scripts/clean/deep.js",
     "clean-all": "yarn clean-deep & yarn clean-build",

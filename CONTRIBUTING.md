@@ -68,19 +68,19 @@ $ npm run build
 ### Clean
 
 ```sh
-# delete all node_modules folders within packages
-$ yarn clean
-$ npm run clean
+# delete coverage and .cache folders
+$ yarn clean-cache
+$ npm run clean-cache
 
 # delete all build folders (run automatically by build command)
 $ yarn clean-build
 $ npm run clean-build
 
-# delete coverage and .cache folders
+# delete all node_modules folders
 $ yarn clean-deep
 $ npm run clean-deep
 
-# runs both of the above cleans
+# runs all of the above cleans
 $ yarn clean-all
 $ npm run clean-all
 ```

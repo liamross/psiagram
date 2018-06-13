@@ -8,7 +8,7 @@
     "psiagram",
     "visualization"
   ],
-  "version": "0.0.0",
+  "version": "0.0.1-alpha.0",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "author": "Liam Ross <liamross.code@gmail.com>",

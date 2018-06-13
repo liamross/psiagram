@@ -13,6 +13,10 @@ $ git clone https://github.com/liamross/psiagram.git && cd psiagram
 # install node_modules
 $ yarn
 $ npm i
+
+# bootstrap the packages to build any inter-dependencies
+$ yarn bootstrap
+$ npm run bootstrap
 ```
 
 ## Commands
@@ -53,6 +57,10 @@ $ npm run lint --fix
 # starts development server of contents in demo folder
 $ yarn start
 $ npm start
+
+# builds the lerna npm packages, then starts development server
+$ yarn buildstart
+$ npm run buildstart
 ```
 
 ### Build

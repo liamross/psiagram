@@ -1,31 +1,56 @@
+/**
+ * Copyright (c) 2017-present, Liam Ross
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 import {
+  Paper,
   getWorkflowType,
   WorkflowType,
-  Paper,
   PaperItemState,
   roundToNearest,
   PsiagramPlugin,
+  ICoordinates,
+  IPaperStoredNode,
+  IPaperStoredEdge,
+  IPluginProperties,
 } from 'psiagram';
 
 export class MouseEvents implements PsiagramPlugin {
   private _paperInstance: Paper;
+  private _nodes: { [key: string]: IPaperStoredNode };
+  private _edges: { [key: string]: IPaperStoredEdge };
+  private _initialMouseCoords: ICoordinates | null;
+  private _initialPaperCoords: ICoordinates | null;
+  private _gridSize: number;
+  private _paper: SVGElement;
+  private _paperWrapper: HTMLElement;
 
-  constructor(paper: Paper) {
+  constructor(
+    paper: Paper,
+    nodes: { [key: string]: IPaperStoredNode },
+    edges: { [key: string]: IPaperStoredEdge },
+    properties: IPluginProperties,
+  ) {
     this._paperInstance = paper;
+    this._nodes = nodes;
+    this._edges = edges;
+    this._initialMouseCoords = null;
+    this._initialPaperCoords = null;
+    this._gridSize = properties.attributes.gridSize;
+
+    this._paperWrapper = this._paperInstance.getPaperElement();
+    this._paper = this._paperInstance._getDrawSurface();
   }
 
   public initialize(): void {
-    this._paperInstance._paperWrapper.addEventListener(
-      'mousedown',
-      this._handleMouseDown,
-    );
+    this._paperWrapper.addEventListener('mousedown', this._handleMouseDown);
   }
 
   public teardown(): void {
-    this._paperInstance._paperWrapper.removeEventListener(
-      'mousedown',
-      this._handleMouseDown,
-    );
+    this._paperWrapper.removeEventListener('mousedown', this._handleMouseDown);
   }
 
   private _handleMouseDown = (evt: MouseEvent): void => {
@@ -48,9 +73,10 @@ export class MouseEvents implements PsiagramPlugin {
       }
     }
   };
+
   private _handleNodeMouseDown(evt: MouseEvent, id: string): void {
-    if (this._paperInstance._nodes.hasOwnProperty(id)) {
-      const node = this._paperInstance._nodes[id];
+    if (this._nodes.hasOwnProperty(id)) {
+      const node = this._nodes[id];
       // Set clicked node as moving item.
       this._paperInstance.updateActiveItem({
         id,
@@ -58,17 +84,17 @@ export class MouseEvents implements PsiagramPlugin {
         workflowType: WorkflowType.Node,
       });
       // Store initial mouse coordinates.
-      this._paperInstance._initialMouseCoords = {
+      this._initialMouseCoords = {
         x: evt.clientX,
         y: evt.clientY,
       };
       // Store original coordinates in paper (to nearest grid).
-      this._paperInstance._initialPaperCoords = {
-        x: roundToNearest(node.coords.x, this._paperInstance._gridSize),
-        y: roundToNearest(node.coords.y, this._paperInstance._gridSize),
+      this._initialPaperCoords = {
+        x: roundToNearest(node.coords.x, this._gridSize),
+        y: roundToNearest(node.coords.y, this._gridSize),
       };
       // Move node to top within paper.
-      this._paperInstance._paper.appendChild(node.ref);
+      this._paper.appendChild(node.ref);
       // Initialize mouse movement and release listeners.
       document.addEventListener('mousemove', this._handleNodeMouseMove);
       document.addEventListener('mouseup', this._handleNodeMouseUp);
@@ -78,78 +104,78 @@ export class MouseEvents implements PsiagramPlugin {
       );
     }
   }
+
   private _handleNodeMouseMove = (evt: MouseEvent): void => {
+    const activeItem = this._paperInstance.getActiveItem();
+
     if (
-      this._paperInstance._activeItem &&
-      this._paperInstance._activeItem.workflowType === WorkflowType.Node &&
-      this._paperInstance._activeItem.paperItemState ===
-        PaperItemState.Moving &&
-      this._paperInstance._initialMouseCoords &&
-      this._paperInstance._initialPaperCoords
+      activeItem &&
+      activeItem.workflowType === WorkflowType.Node &&
+      activeItem.paperItemState === PaperItemState.Moving &&
+      this._initialMouseCoords &&
+      this._initialPaperCoords
     ) {
-      const id = this._paperInstance._activeItem.id;
+      const id = activeItem.id;
       // Find mouse deltas vs original coordinates.
-      const mouseDeltaX =
-        this._paperInstance._initialMouseCoords.x - evt.clientX;
-      const mouseDeltaY =
-        this._paperInstance._initialMouseCoords.y - evt.clientY;
+      const mouseDeltaX = this._initialMouseCoords.x - evt.clientX;
+      const mouseDeltaY = this._initialMouseCoords.y - evt.clientY;
       // Round mouse deltas to nearest grid.
-      const roundedMouseDeltaX = roundToNearest(
-        mouseDeltaX,
-        this._paperInstance._gridSize,
-      );
-      const roundedMouseDeltaY = roundToNearest(
-        mouseDeltaY,
-        this._paperInstance._gridSize,
-      );
+      const roundedMouseDeltaX = roundToNearest(mouseDeltaX, this._gridSize);
+      const roundedMouseDeltaY = roundToNearest(mouseDeltaY, this._gridSize);
       // Find new block coordinates.
-      const blockX =
-        this._paperInstance._initialPaperCoords.x - roundedMouseDeltaX;
-      const blockY =
-        this._paperInstance._initialPaperCoords.y - roundedMouseDeltaY;
+      const blockX = this._initialPaperCoords.x - roundedMouseDeltaX;
+      const blockY = this._initialPaperCoords.y - roundedMouseDeltaY;
       // TODO: Check if dragged block is overlapping.
       this._paperInstance.moveNode(id, { x: blockX, y: blockY });
     } else {
       console.error(
         `Handle node mousemove: no current moving node. Active item: `,
-        this._paperInstance._activeItem,
+        activeItem,
       );
     }
   };
+
   private _handleNodeMouseUp = (): void => {
+    const activeItem = this._paperInstance.getActiveItem();
+
     if (
-      this._paperInstance._activeItem &&
-      this._paperInstance._activeItem.workflowType === WorkflowType.Node &&
-      this._paperInstance._activeItem.paperItemState === PaperItemState.Moving
+      activeItem &&
+      activeItem.workflowType === WorkflowType.Node &&
+      activeItem.paperItemState === PaperItemState.Moving
     ) {
       // Set active node to selected state.
       this._paperInstance.updateActiveItem({
-        ...this._paperInstance._activeItem,
+        ...activeItem,
         paperItemState: PaperItemState.Selected,
       });
     } else {
       console.error(
         `Handle node mouseup: no current moving node. Active item: `,
-        this._paperInstance._activeItem,
+        activeItem,
       );
     }
     // Remove listeners and reset coordinates.
     this._resetMouseListeners();
   };
+
   private _handleEdgeMouseDown(evt: MouseEvent, id: string): void {
     // TODO: implement.
   }
+
   private _handleEdgeMouseMove = (evt: MouseEvent): void => {
     // TODO: implement.
   };
+
   private _handleEdgeMouseUp = (): void => {
     // TODO: implement.
   };
+
   private _handlePaperMouseDown(evt: MouseEvent, id: string): void {
     // TODO: implement.
     // Deselect any selected items.
     this._paperInstance.updateActiveItem();
   }
+
   private _resetMouseListeners(): void {
     // Remove listeners.
     document.removeEventListener('mousemove', this._handleNodeMouseMove);
@@ -157,7 +183,7 @@ export class MouseEvents implements PsiagramPlugin {
     document.removeEventListener('mousemove', this._handleEdgeMouseMove);
     document.removeEventListener('mouseup', this._handleEdgeMouseUp);
     // Reset coordinates.
-    this._paperInstance._initialMouseCoords = null;
-    this._paperInstance._initialPaperCoords = null;
+    this._initialMouseCoords = null;
+    this._initialPaperCoords = null;
   }
 }

@@ -1,11 +1,19 @@
-import { Node, Edge, PaperEvent } from '../../';
+/**
+ * Copyright (c) 2017-present, Liam Ross
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 import { setPaperDefs } from './helpers/svgDefinitions';
-import { ICoordinates } from '../../common/types';
 
 import {
+  Node,
+  Edge,
+  PaperEvent,
+  ICoordinates,
   IPaperProperties,
   IActiveItem,
-  PaperItemState,
   IPaperInputNode,
   IPaperStoredNode,
   IPaperInputEdge,
@@ -14,41 +22,29 @@ import {
   IPaperEdgeUpdateProperties,
   paperEventType,
   listenerFunction,
-} from './';
-
-import {
   setWorkflowType,
-  getWorkflowType,
   WorkflowType,
-} from '../../utilities/dataUtils';
-
-import {
   createElementWithAttributes,
   createSVGWithAttributes,
   setSVGAttribute,
-} from '../../utilities/domUtils';
-
-import {
   roundToNearest,
   getNodeMidpoint,
   getEdgeNodeIntersection,
   areCoordsEqual,
   generateRandomString,
-} from '../../utilities/workflowUtils';
+} from '../../';
 
 export class Paper {
-  public _width: number;
-  public _height: number;
-  public _nodes: { [key: string]: IPaperStoredNode };
-  public _edges: { [key: string]: IPaperStoredEdge };
-  public _initialMouseCoords: ICoordinates | null;
-  public _initialPaperCoords: ICoordinates | null;
-  public _activeItem: IActiveItem | null;
-  public _listeners: { [key: string]: listenerFunction[] };
-  public _gridSize: number;
-  public _allowBlockOverlap: boolean;
-  public _paper: SVGElement;
-  public _paperWrapper: HTMLElement;
+  private _width: number;
+  private _height: number;
+  private _nodes: { [key: string]: IPaperStoredNode };
+  private _edges: { [key: string]: IPaperStoredEdge };
+  private _activeItem: IActiveItem | null;
+  private _listeners: { [key: string]: listenerFunction[] };
+  private _gridSize: number;
+  private _allowBlockOverlap: boolean;
+  private _paper: SVGElement;
+  private _paperWrapper: HTMLElement;
 
   constructor({
     width,
@@ -68,8 +64,6 @@ export class Paper {
     this._height = roundToNearest(height, this._gridSize, this._gridSize);
     this._nodes = {};
     this._edges = {};
-    this._initialMouseCoords = null;
-    this._initialPaperCoords = null;
     this._activeItem = null;
     this._listeners = {};
 
@@ -109,7 +103,19 @@ export class Paper {
     // Initialize all plugins.
     if (plugins) {
       plugins.forEach(plugin => {
-        const pluginInstance = new plugin(this);
+        const pluginInstance = new plugin(this, this._nodes, this._edges, {
+          width: this._width,
+          height: this._height,
+          plugins,
+          attributes: {
+            gridSize: this._gridSize,
+            allowBlockOverlap: this._allowBlockOverlap,
+            gridColor,
+            paperWrapperClass,
+            paperClass,
+          },
+          initialConditions,
+        });
         pluginInstance.initialize();
       });
     }
@@ -587,6 +593,16 @@ export class Paper {
   }
 
   /**
+   * Returns the current active item object, or null if there is no active item.
+   */
+  public getActiveItem(): IActiveItem | null {
+    return this._activeItem;
+  }
+
+  /**
+   * WARNING: The underscore "_" denotes that this should be used in plugins.
+   * Non-underscore methods should cover all other use cases.
+   *
    * Calls all listeners of a specific paper event type.
    *
    * Order of operations:
@@ -597,7 +613,7 @@ export class Paper {
    *
    * @param evt The event originating from the paper.
    */
-  private _fireEvent(evt: PaperEvent): void {
+  public _fireEvent(evt: PaperEvent): void {
     const type = evt.eventType;
 
     if (this._listeners[type] !== undefined && this._listeners[type].length) {
@@ -609,5 +625,20 @@ export class Paper {
     }
 
     evt.defaultAction();
+  }
+
+  /**
+   * WARNING: The underscore "_" denotes that this should be used in plugins.
+   * Non-underscore methods should cover all other use cases.
+   *
+   * If you are trying to get the paper to render in your application, you
+   * probably want to use getPaperElement().
+   *
+   * Returns the SVG element contained within the paper wrapper.
+   *
+   * @returns {SVGElement} Returns the SVG Paper element.
+   */
+  public _getDrawSurface(): SVGElement {
+    return this._paper;
   }
 }

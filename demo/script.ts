@@ -3,7 +3,9 @@
 /**
  * Import: psiagram
  */
+// @ts-ignore
 import { Paper, IPaperProperties, IPaperInputNode, Node, Edge } from 'psiagram';
+// @ts-ignore
 import { MouseEvents } from 'psiagram-plugin-mouse-events';
 
 let myPaper: Paper | null = null;

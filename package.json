@@ -8,6 +8,7 @@
   "homepage": "https://www.psiagram.org",
   "scripts": {
     "start": "parcel demo/index.html",
+    "buildstart": "yarn build && parcel demo/index.html",
     "test": "jest --config ./scripts/test/jest.config.js",
     "build": "yarn clean-build && lerna run build",
     "bootstrap": "yarn build && lerna bootstrap",
@@ -18,7 +19,7 @@
     "lint": "lerna run lint"
   },
   "devDependencies": {
-    "@types/jest": "^23.0.1",
+    "@types/jest": "^23.0.2",
     "jest": "^23.1.0",
     "lerna": "^2.11.0",
     "parcel-bundler": "^1.8.1",

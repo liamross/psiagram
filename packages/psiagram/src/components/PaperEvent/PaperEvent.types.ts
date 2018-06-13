@@ -20,11 +20,11 @@ export interface IPaperEventProperties {
    */
   target?: any;
   /**
-   * If canPropogate is true, event will continue to propogate to any remaining
+   * If canPropagate is true, event will continue to propagate to any remaining
    * listeners. This can be prevented permanently by calling stopPropagation.
    * @default true;
    */
-  canPropogate?: boolean;
+  canPropagate?: boolean;
   /**
    * An object to provide any additional information from the event.
    * @default {};

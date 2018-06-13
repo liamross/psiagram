@@ -13,17 +13,17 @@ export class PaperEvent {
   private _paper: Paper;
   private _target: any;
   private _defaultAction: (() => void) | null;
-  private _canPropogate: boolean;
+  private _canPropagate: boolean;
   private _data: { [key: string]: any };
 
   constructor(
     eventType: paperEventType,
-    { paper, target, canPropogate, data, defaultAction }: IPaperEventProperties,
+    { paper, target, canPropagate, data, defaultAction }: IPaperEventProperties,
   ) {
     this._eventType = eventType;
     this._paper = paper;
     this._target = target || null;
-    this._canPropogate = canPropogate || true;
+    this._canPropagate = canPropagate || true;
     this._data = data || {};
     this._defaultAction = defaultAction || null;
   }
@@ -54,11 +54,11 @@ export class PaperEvent {
   }
 
   /**
-   * If canPropogate is true, event will continue to propogate to any remaining
+   * If canPropagate is true, event will continue to propagate to any remaining
    * listeners. This can be prevented permanently by calling stopPropagation.
    */
-  get canPropogate(): boolean {
-    return this._canPropogate;
+  get canPropagate(): boolean {
+    return this._canPropagate;
   }
 
   /**
@@ -92,12 +92,12 @@ export class PaperEvent {
   }
 
   /**
-   * Prevents the event from propogating any further. This will prevent any
+   * Prevents the event from propagating any further. This will prevent any
    * other listeners from receiving the event. The default action will still be
    * fired after all listeners have completed unless it was already called or
-   * preventDefault is called seperately.
+   * preventDefault is called separately.
    */
   public stopPropagation(): void {
-    this._canPropogate = false;
+    this._canPropagate = false;
   }
 }

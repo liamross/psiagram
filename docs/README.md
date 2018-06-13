@@ -1,12 +1,10 @@
-Psiagram is a diagramming framework that provides a robust and performant base
-on which to build visual, interactive diagrams and workflows in JavaScript.
+Psiagram is a diagramming framework for JavaScript.
 
-## 🚧 Under Construction 🚧
+It provides a high-performance foundation on which to build diagrams and
+workflows. It achieves this without the use of external dependencies to allow
+for seamless, framework-agnostic integration into any application.
 
-> The core functionality is currently under development, so everything will be
-> undergoing massive changes with **no** documentation. Once the core of the
-> framework is built and the major decisions have been made, documentation will
-> catch up. Most code at this stage is highly dynamic, so check back later once
-> everything has settled down!
->
-> \- Liam
+## Installation
+
+> Psiagram is currently in pre-release. This section will be updated when a
+> stable version is released.

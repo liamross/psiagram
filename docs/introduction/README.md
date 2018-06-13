@@ -1,4 +1,4 @@
 # Introduction
 
-* [Motivation](motivation.md)
-
+- [Motivation](motivation.md)
+- [Core Concepts](core-concepts.md)

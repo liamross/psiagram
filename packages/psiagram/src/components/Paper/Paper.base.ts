@@ -33,6 +33,7 @@ import {
   areCoordsEqual,
   generateRandomString,
 } from '../../';
+import { IPluginProperties } from '../../common';
 
 export class Paper {
   private _width: number;
@@ -103,20 +104,21 @@ export class Paper {
     // Initialize all plugins.
     if (plugins) {
       plugins.forEach(plugin => {
-        const pluginInstance = new plugin(this, this._nodes, this._edges, {
-          width: this._width,
-          height: this._height,
-          plugins,
-          attributes: {
-            gridSize: this._gridSize,
-            allowBlockOverlap: this._allowBlockOverlap,
-            gridColor,
-            paperWrapperClass,
-            paperClass,
-          },
-          initialConditions,
-        });
-        pluginInstance.initialize();
+        if (plugin.initialize) {
+          plugin.initialize(this, this._nodes, this._edges, {
+            width: this._width,
+            height: this._height,
+            plugins,
+            attributes: {
+              gridSize: this._gridSize,
+              allowBlockOverlap: this._allowBlockOverlap,
+              gridColor,
+              paperWrapperClass,
+              paperClass,
+            },
+            initialConditions,
+          });
+        }
       });
     }
   }

@@ -19,38 +19,52 @@ import {
 } from 'psiagram';
 
 export class MouseEvents implements PsiagramPlugin {
-  private _paperInstance: Paper;
+  private _paperInstance: Paper | null;
+  private _paper: SVGElement | null;
+  private _paperWrapper: HTMLElement | null;
   private _nodes: { [key: string]: IPaperStoredNode };
   private _edges: { [key: string]: IPaperStoredEdge };
   private _initialMouseCoords: ICoordinates | null;
   private _initialPaperCoords: ICoordinates | null;
   private _gridSize: number;
-  private _paper: SVGElement;
-  private _paperWrapper: HTMLElement;
 
-  constructor(
+  constructor() {
+    this._paperInstance = null;
+    this._paperWrapper = null;
+    this._paper = null;
+    this._nodes = {};
+    this._edges = {};
+    this._initialMouseCoords = null;
+    this._initialPaperCoords = null;
+    this._gridSize = 0;
+  }
+
+  public initialize(
     paper: Paper,
     nodes: { [key: string]: IPaperStoredNode },
     edges: { [key: string]: IPaperStoredEdge },
     properties: IPluginProperties,
-  ) {
+  ): void {
     this._paperInstance = paper;
+    this._paperWrapper = this._paperInstance.getPaperElement();
+    this._paper = this._paperInstance._getDrawSurface();
+
     this._nodes = nodes;
     this._edges = edges;
     this._initialMouseCoords = null;
     this._initialPaperCoords = null;
     this._gridSize = properties.attributes.gridSize;
 
-    this._paperWrapper = this._paperInstance.getPaperElement();
-    this._paper = this._paperInstance._getDrawSurface();
-  }
-
-  public initialize(): void {
     this._paperWrapper.addEventListener('mousedown', this._handleMouseDown);
   }
 
   public teardown(): void {
-    this._paperWrapper.removeEventListener('mousedown', this._handleMouseDown);
+    if (this._paperWrapper) {
+      this._paperWrapper.removeEventListener(
+        'mousedown',
+        this._handleMouseDown,
+      );
+    }
   }
 
   private _handleMouseDown = (evt: MouseEvent): void => {
@@ -75,7 +89,7 @@ export class MouseEvents implements PsiagramPlugin {
   };
 
   private _handleNodeMouseDown(evt: MouseEvent, id: string): void {
-    if (this._nodes.hasOwnProperty(id)) {
+    if (this._nodes.hasOwnProperty(id) && this._paperInstance && this._paper) {
       const node = this._nodes[id];
       // Set clicked node as moving item.
       this._paperInstance.updateActiveItem({
@@ -106,14 +120,17 @@ export class MouseEvents implements PsiagramPlugin {
   }
 
   private _handleNodeMouseMove = (evt: MouseEvent): void => {
-    const activeItem = this._paperInstance.getActiveItem();
+    const activeItem = this._paperInstance
+      ? this._paperInstance.getActiveItem()
+      : null;
 
     if (
       activeItem &&
       activeItem.workflowType === WorkflowType.Node &&
       activeItem.paperItemState === PaperItemState.Moving &&
       this._initialMouseCoords &&
-      this._initialPaperCoords
+      this._initialPaperCoords &&
+      this._paperInstance
     ) {
       const id = activeItem.id;
       // Find mouse deltas vs original coordinates.
@@ -136,12 +153,15 @@ export class MouseEvents implements PsiagramPlugin {
   };
 
   private _handleNodeMouseUp = (): void => {
-    const activeItem = this._paperInstance.getActiveItem();
+    const activeItem = this._paperInstance
+      ? this._paperInstance.getActiveItem()
+      : null;
 
     if (
       activeItem &&
       activeItem.workflowType === WorkflowType.Node &&
-      activeItem.paperItemState === PaperItemState.Moving
+      activeItem.paperItemState === PaperItemState.Moving &&
+      this._paperInstance
     ) {
       // Set active node to selected state.
       this._paperInstance.updateActiveItem({
@@ -173,7 +193,9 @@ export class MouseEvents implements PsiagramPlugin {
   private _handlePaperMouseDown(evt: MouseEvent, id: string): void {
     // TODO: implement.
     // Deselect any selected items.
-    this._paperInstance.updateActiveItem();
+    if (this._paperInstance) {
+      this._paperInstance.updateActiveItem();
+    }
   }
 
   private _resetMouseListeners(): void {

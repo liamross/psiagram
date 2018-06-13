@@ -1,11 +1,19 @@
-import { Node, Edge, PaperEvent } from '../../';
+/**
+ * Copyright (c) 2017-present, Liam Ross
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 import { setPaperDefs } from './helpers/svgDefinitions';
-import { ICoordinates } from '../../common/types';
 
 import {
+  Node,
+  Edge,
+  PaperEvent,
+  ICoordinates,
   IPaperProperties,
   IActiveItem,
-  PaperItemState,
   IPaperInputNode,
   IPaperStoredNode,
   IPaperInputEdge,
@@ -14,41 +22,29 @@ import {
   IPaperEdgeUpdateProperties,
   paperEventType,
   listenerFunction,
-} from './';
-
-import {
   setWorkflowType,
-  getWorkflowType,
   WorkflowType,
-} from '../../utilities/dataUtils';
-
-import {
   createElementWithAttributes,
   createSVGWithAttributes,
   setSVGAttribute,
-} from '../../utilities/domUtils';
-
-import {
   roundToNearest,
   getNodeMidpoint,
   getEdgeNodeIntersection,
   areCoordsEqual,
   generateRandomString,
-} from '../../utilities/workflowUtils';
+} from '../../';
 
 export class Paper {
-  public _width: number;
-  public _height: number;
-  public _nodes: { [key: string]: IPaperStoredNode };
-  public _edges: { [key: string]: IPaperStoredEdge };
-  public _initialMouseCoords: ICoordinates | null;
-  public _initialPaperCoords: ICoordinates | null;
-  public _activeItem: IActiveItem | null;
-  public _listeners: { [key: string]: listenerFunction[] };
-  public _gridSize: number;
-  public _allowBlockOverlap: boolean;
-  public _paper: SVGElement;
-  public _paperWrapper: HTMLElement;
+  private _width: number;
+  private _height: number;
+  private _nodes: { [key: string]: IPaperStoredNode };
+  private _edges: { [key: string]: IPaperStoredEdge };
+  private _activeItem: IActiveItem | null;
+  private _listeners: { [key: string]: listenerFunction[] };
+  private _gridSize: number;
+  private _allowBlockOverlap: boolean;
+  private _paper: SVGElement;
+  private _paperWrapper: HTMLElement;
 
   constructor({
     width,
@@ -68,8 +64,6 @@ export class Paper {
     this._height = roundToNearest(height, this._gridSize, this._gridSize);
     this._nodes = {};
     this._edges = {};
-    this._initialMouseCoords = null;
-    this._initialPaperCoords = null;
     this._activeItem = null;
     this._listeners = {};
 
@@ -109,7 +103,19 @@ export class Paper {
     // Initialize all plugins.
     if (plugins) {
       plugins.forEach(plugin => {
-        const pluginInstance = new plugin(this);
+        const pluginInstance = new plugin(this, this._nodes, this._edges, {
+          width: this._width,
+          height: this._height,
+          plugins,
+          attributes: {
+            gridSize: this._gridSize,
+            allowBlockOverlap: this._allowBlockOverlap,
+            gridColor,
+            paperWrapperClass,
+            paperClass,
+          },
+          initialConditions,
+        });
         pluginInstance.initialize();
       });
     }
@@ -586,37 +592,17 @@ export class Paper {
     this._fireEvent(evt);
   }
 
-  // /**
-  //  * Calls all listeners of a specific type, with data and env.
-  //  *
-  //  * @param type The type of listener to call.
-  //  * @param data Any computed data specific to the listener, and not in env.
-  //  */
-  // private _callListeners(
-  //   type: paperEventType,
-  //   data: { [key: string]: any },
-  // ): void {
-  //   // if (this._listeners[type] !== undefined && this._listeners[type].length) {
-  //   //   const env = {
-  //   //     width: this._width,
-  //   //     height: this._height,
-  //   //     plugins: this._plugins,
-  //   //     nodes: this._nodes,
-  //   //     edges: this._edges,
-  //   //     initialMouseCoords: this._initialMouseCoords,
-  //   //     initialPaperCoords: this._initialPaperCoords,
-  //   //     activeItem: this._activeItem,
-  //   //     listeners: this._listeners,
-  //   //     gridSize: this._gridSize,
-  //   //     allowBlockOverlap: this._allowBlockOverlap,
-  //   //     paper: this._paper,
-  //   //     paperWrapper: this._paperWrapper,
-  //   //   };
-  //   //   this._listeners[type].forEach(listener => listener(env, data));
-  //   // }
-  // }
+  /**
+   * Returns the current active item object, or null if there is no active item.
+   */
+  public getActiveItem(): IActiveItem | null {
+    return this._activeItem;
+  }
 
   /**
+   * WARNING: The underscore "_" denotes that this should be used in plugins.
+   * Non-underscore methods should cover all other use cases.
+   *
    * Calls all listeners of a specific paper event type.
    *
    * Order of operations:
@@ -627,7 +613,7 @@ export class Paper {
    *
    * @param evt The event originating from the paper.
    */
-  private _fireEvent(evt: PaperEvent): void {
+  public _fireEvent(evt: PaperEvent): void {
     const type = evt.eventType;
 
     if (this._listeners[type] !== undefined && this._listeners[type].length) {
@@ -641,144 +627,18 @@ export class Paper {
     evt.defaultAction();
   }
 
-  // private _handleMouseDown = (evt: MouseEvent): void => {
-  //   const containerElement = (evt.target as Element).parentElement;
-  //   const workflowType = getWorkflowType(containerElement);
-
-  //   if (containerElement) {
-  //     switch (workflowType) {
-  //       case WorkflowType.Node:
-  //         this._handleNodeMouseDown(evt, containerElement.id);
-  //         break;
-  //       case WorkflowType.Edge:
-  //         this._handleEdgeMouseDown(evt, containerElement.id);
-  //         break;
-  //       case WorkflowType.Paper:
-  //         // Do we need to give ID?
-  //         this._handlePaperMouseDown(evt, containerElement.id);
-  //         break;
-  //       default:
-  //         break;
-  //     }
-  //   }
-  // };
-
-  // private _handleNodeMouseDown(evt: MouseEvent, id: string): void {
-  //   if (this._nodes.hasOwnProperty(id)) {
-  //     const node = this._nodes[id];
-
-  //     // Set clicked node as moving item.
-  //     this.updateActiveItem({
-  //       id,
-  //       paperItemState: PaperItemState.Moving,
-  //       workflowType: WorkflowType.Node,
-  //     });
-
-  //     // Store initial mouse coordinates.
-  //     this._initialMouseCoords = { x: evt.clientX, y: evt.clientY };
-
-  //     // Store original coordinates in paper (to nearest grid).
-  //     this._initialPaperCoords = {
-  //       x: roundToNearest(node.coords.x, this._gridSize),
-  //       y: roundToNearest(node.coords.y, this._gridSize),
-  //     };
-
-  //     // Move node to top within paper.
-  //     this._paper.appendChild(node.ref);
-
-  //     // Initialize mouse movement and release listeners.
-  //     document.addEventListener('mousemove', this._handleNodeMouseMove);
-  //     document.addEventListener('mouseup', this._handleNodeMouseUp);
-  //   } else {
-  //     console.error(
-  //       `Handle node mousedown: node with id ${id} does not exist.`,
-  //     );
-  //   }
-  // }
-
-  // private _handleNodeMouseMove = (evt: MouseEvent): void => {
-  //   if (
-  //     this._activeItem &&
-  //     this._activeItem.workflowType === WorkflowType.Node &&
-  //     this._activeItem.paperItemState === PaperItemState.Moving &&
-  //     this._initialMouseCoords &&
-  //     this._initialPaperCoords
-  //   ) {
-  //     const id = this._activeItem.id;
-
-  //     // Find mouse deltas vs original coordinates.
-  //     const mouseDeltaX = this._initialMouseCoords.x - evt.clientX;
-  //     const mouseDeltaY = this._initialMouseCoords.y - evt.clientY;
-
-  //     // Round mouse deltas to nearest grid.
-  //     const roundedMouseDeltaX = roundToNearest(mouseDeltaX, this._gridSize);
-  //     const roundedMouseDeltaY = roundToNearest(mouseDeltaY, this._gridSize);
-
-  //     // Find new block coordinates.
-  //     const blockX = this._initialPaperCoords.x - roundedMouseDeltaX;
-  //     const blockY = this._initialPaperCoords.y - roundedMouseDeltaY;
-
-  //     // TODO: Check if dragged block is overlapping.
-
-  //     this.moveNode(id, { x: blockX, y: blockY });
-  //   } else {
-  //     console.error(
-  //       `Handle node mousemove: no current moving node. Active item: `,
-  //       this._activeItem,
-  //     );
-  //   }
-  // };
-
-  // private _handleNodeMouseUp = (): void => {
-  //   if (
-  //     this._activeItem &&
-  //     this._activeItem.workflowType === WorkflowType.Node &&
-  //     this._activeItem.paperItemState === PaperItemState.Moving
-  //   ) {
-  //     // Set active node to selected state.
-  //     this.updateActiveItem({
-  //       ...this._activeItem,
-  //       paperItemState: PaperItemState.Selected,
-  //     });
-  //   } else {
-  //     console.error(
-  //       `Handle node mouseup: no current moving node. Active item: `,
-  //       this._activeItem,
-  //     );
-  //   }
-
-  //   // Remove listeners and reset coordinates.
-  //   this._resetMouseListeners();
-  // };
-
-  // private _handleEdgeMouseDown(evt: MouseEvent, id: string): void {
-  //   // TODO: implement.
-  // }
-
-  // private _handleEdgeMouseMove = (evt: MouseEvent): void => {
-  //   // TODO: implement.
-  // };
-
-  // private _handleEdgeMouseUp = (): void => {
-  //   // TODO: implement.
-  // };
-
-  // private _handlePaperMouseDown(evt: MouseEvent, id: string): void {
-  //   // TODO: implement.
-
-  //   // Deselect any selected items.
-  //   this.updateActiveItem();
-  // }
-
-  // private _resetMouseListeners(): void {
-  //   // Remove listeners.
-  //   document.removeEventListener('mousemove', this._handleNodeMouseMove);
-  //   document.removeEventListener('mouseup', this._handleNodeMouseUp);
-  //   document.removeEventListener('mousemove', this._handleEdgeMouseMove);
-  //   document.removeEventListener('mouseup', this._handleEdgeMouseUp);
-
-  //   // Reset coordinates.
-  //   this._initialMouseCoords = null;
-  //   this._initialPaperCoords = null;
-  // }
+  /**
+   * WARNING: The underscore "_" denotes that this should be used in plugins.
+   * Non-underscore methods should cover all other use cases.
+   *
+   * If you are trying to get the paper to render in your application, you
+   * probably want to use getPaperElement().
+   *
+   * Returns the SVG element contained within the paper wrapper.
+   *
+   * @returns {SVGElement} Returns the SVG Paper element.
+   */
+  public _getDrawSurface(): SVGElement {
+    return this._paper;
+  }
 }

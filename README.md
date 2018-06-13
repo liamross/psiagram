@@ -31,7 +31,7 @@
 
 ---
 
-# 🚧 Under Construction 🚧
+## 🚧 Under Construction 🚧
 
 > The core functionality is currently under development, so everything will be
 > undergoing massive changes with **no** documentation. Once the core of the

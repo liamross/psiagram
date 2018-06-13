@@ -1,3 +1,10 @@
+/**
+ * Copyright (c) 2017-present, Liam Ross
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 import {
   Paper,
   IPaperProperties,
@@ -102,9 +109,11 @@ describe('Listeners', () => {
       const paperRef = (testFunc.mock.calls[0][0] as PaperEvent).paper;
 
       // Only one listener added to 'add-node'.
+      // @ts-ignore
       expect(paperRef._listeners['add-node'].length).toBe(1);
 
       // The listener is testFunc.
+      // @ts-ignore
       expect(paperRef._listeners['add-node'][0]).toBe(testFunc);
     });
   });

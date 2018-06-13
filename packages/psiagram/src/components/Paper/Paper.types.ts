@@ -21,7 +21,7 @@ import {
 export interface IPaperProperties {
   width: number;
   height: number;
-  plugins?: Array<typeof PsiagramPlugin>;
+  plugins?: PsiagramPlugin[];
   attributes?: {
     gridSize?: number;
     allowBlockOverlap?: boolean;

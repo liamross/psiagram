@@ -10,12 +10,14 @@ import { MouseEvents } from 'psiagram-plugin-mouse-events';
 
 let myPaper: Paper | null = null;
 
+const initializedMouseEventPlugin = new MouseEvents();
+
 function loadPaper() {
   const paperProperties: IPaperProperties = {
     attributes: { gridSize: 20 },
     height: 900,
     width: 1300,
-    plugins: [MouseEvents],
+    plugins: [initializedMouseEventPlugin],
     initialConditions: {
       nodes: [
         {

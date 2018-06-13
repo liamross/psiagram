@@ -52,11 +52,11 @@ function loadPaper() {
     // prettier-ignore
     console.log(
       '=========================',
-      '\nevt: ', evt,
+      '\nevent: ', evt,
       '\neventType: ', evt.eventType,
       '\npaper: ', evt.paper,
       '\ntarget: ', evt.target,
-      '\ncanPropogate: ', evt.canPropogate,
+      '\ncanPropagate: ', evt.canPropagate,
       '\ndata: ', evt.data,
       '\n=========================',
     );

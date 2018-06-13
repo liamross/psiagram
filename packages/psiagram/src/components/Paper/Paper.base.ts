@@ -609,7 +609,7 @@ export class Paper {
    *
    * Order of operations:
    * 1. If listeners of evt.eventType exist begins looping through listeners.
-   * 2. Calls each listener with event if evt.canPropogate is true.
+   * 2. Calls each listener with event if evt.canPropagate is true.
    * 3. After all listeners called, calls evt.defaultAction. If defaultAction
    *    has already been called by a listener, this does nothing.
    *
@@ -620,7 +620,7 @@ export class Paper {
 
     if (this._listeners[type] !== undefined && this._listeners[type].length) {
       this._listeners[type].forEach(listener => {
-        if (evt.canPropogate) {
+        if (evt.canPropagate) {
           listener(evt);
         }
       });

@@ -55,6 +55,9 @@ cloning, initializing and running, see the
 
 ## Packages
 
+- [Psiagram](#psiagram)
+- [Psiagram Plugin Mouse Events](#psiagram-plugin-mouse-events)
+
 ### Psiagram
 
 [![NPM Version](https://badge.fury.io/js/psiagram.svg)](https://www.npmjs.com/package/psiagram)
@@ -81,7 +84,7 @@ var { Psiagram } = require('psiagram');
 import { Psiagram } from 'psiagram';
 ```
 
-### Psiagram Plugin Mouse Event
+### Psiagram Plugin Mouse Events
 
 [![NPM Version](https://badge.fury.io/js/psiagram-plugin-mouse-events.svg)](https://www.npmjs.com/package/psiagram-plugin-mouse-events)
 
@@ -92,18 +95,18 @@ To install:
 
 ```sh
 # If you use Yarn:
-yarn add psiagram-plugin-mouse-handler
+yarn add psiagram-plugin-mouse-events
 
 # If you use npm:
-npm i psiagram-plugin-mouse-handler
+npm i psiagram-plugin-mouse-events
 ```
 
 To use:
 
 ```js
 // ES5
-var { MouseHandler } = require('psiagram-plugin-mouse-handler');
+var { MouseEvents } = require('psiagram-plugin-mouse-events');
 
 // ES6
-import { MouseHandler } from 'psiagram-plugin-mouse-handler';
+import { MouseEvents } from 'psiagram-plugin-mouse-events';
 ```

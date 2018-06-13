@@ -1,6 +1,7 @@
 # Psiagram Plugin Mouse Handler
 
-An npm package to access the Psiagram Plugin Mouse Handler.
+An npm package to allow selection and drag-n-drop functionality in the Psiagram
+diagramming framework.
 
 For documentation, see the [Documentation Site](https://www.psiagram.org/).
 
@@ -11,8 +12,8 @@ For the code base, and to see other packages, see
 
 ```js
 // ES5
-var { MouseHandler } = require('psiagram-plugin-mouse-handler');
+var { MouseEvents } = require('psiagram-plugin-mouse-events');
 
 // ES6
-import { MouseHandler } from 'psiagram-plugin-mouse-handler';
+import { MouseEvents } from 'psiagram-plugin-mouse-events';
 ```

@@ -78,10 +78,10 @@ To use:
 
 ```js
 // ES5
-var { Psiagram } = require('psiagram');
+var { Paper, Node, Edge } = require('psiagram');
 
 // ES6
-import { Psiagram } from 'psiagram';
+import { Paper, Node, Edge } from 'psiagram';
 ```
 
 ### Psiagram Plugin Mouse Events

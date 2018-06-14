@@ -1,3 +1,0 @@
-# Paper Event
-
-> To come

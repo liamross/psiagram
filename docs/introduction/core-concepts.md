@@ -7,12 +7,12 @@ manipulate the graph you are building.
 The things you can use to control the paper are:
 
 1.  The properties passed into Paper during initialization
-1.  The API of the paper object (methods and listeners)
 1.  Plugins that are passed into the paper during initialization
+1.  The API of the paper object (methods and listeners)
 
 Here is an example of a very basic Paper initialization. You don't have to
 understand everything right now! If you want more details on anything below,
-check out the Core section.
+check out the [basics section](../basics/README.md).
 
 ```js
 // The main building blocks of Psiagram are Paper, Nodes and Edges.
@@ -21,8 +21,7 @@ import { Paper, Node, Edge } from 'psiagram';
 // This is an example of a plugin (and a useful one at that).
 import { MouseEvents } from 'psiagram-plugin-mouse-events';
 
-// Paper variable is created outside of the function because you'll need this
-// instance to be able to access the mounted paper's API later.
+// This will soon become your paper instance!
 let myPaper = null;
 
 function mountPaperInApplication() {
@@ -30,8 +29,8 @@ function mountPaperInApplication() {
   //    (MouseEvents plugin doesn't require any settings at initialization).
   const initializedMouseEventPlugin = new MouseEvents();
 
-  // 2. Build out all of the properties to initialize the paper with.
-  //    You can see the details of this in the Core section
+  // 2. Build a properties object with any initial properties you want to pass
+  //    to paper during initialization.
   const paperProperties = {
     attributes: { gridSize: 20 },
     height: 900,
@@ -83,8 +82,21 @@ function mountPaperInApplication() {
 }
 ```
 
-That's it! You now have a paper being rendered in your application with some
-initial nodes and edges rendered onto it! From here, any manipulation can be
-done using the API contained within the paper instance `myPaper`. Mouse events
-like moving and selecting are already done for free thanks to the `MouseEvents`
-plugin.
+That's it! You now have a paper being rendered in your application with two
+initial Nodes and one Edge connecting them. What can you do with it?
+
+For starters, you can click and drag the Nodes around the paper thanks to the
+MouseEvents plugin you added.
+
+Additionally, you have `myPaper`, which is assigned the paper instance. You can
+manipulate the paper element by calling Paper methods.
+
+For example, if you want to remove the initial Edge that was passed in to
+initialize Paper, you could call `removeEdge` with the Edge ID:
+
+```js
+myPaper.removeEdge('edge-1-id');
+```
+
+To find out more about working with Paper, see the
+[basics section](../basics/README.md).

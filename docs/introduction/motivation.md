@@ -11,3 +11,6 @@ framework.
 **Psiagram attempts to simplify graphing** by enabling complex and interactive
 workflows and graphs to be built easily, in any project, and without the need
 for external dependencies.
+
+This ensures that any project can use Psiagram, whether it's written in vanilla
+JavaScript or a modern front end framework.

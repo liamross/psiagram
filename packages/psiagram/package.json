@@ -8,6 +8,10 @@
     "psiagram",
     "visualization"
   ],
+  "files": [
+    "README.md",
+    "lib/"
+  ],
   "version": "0.0.1-alpha.1",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",

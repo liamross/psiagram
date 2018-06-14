@@ -11,8 +11,8 @@ For the code base, and to see other packages, see
 
 ```js
 // ES5
-var { Psiagram } = require('psiagram');
+var { Paper, Node, Edge } = require('psiagram');
 
 // ES6
-import { Psiagram } from 'psiagram';
+import { Paper, Node, Edge } from 'psiagram';
 ```

@@ -6,23 +6,26 @@ everything right now!** Once you have taken a peek and are craving something
 more in-depth and well-explained, head to the
 [basics section](../basics/README.md).
 
+To start, let's import all of the tools we are going to need. The main building
+blocks of Psiagram are Paper, Nodes and Edges. In addition, you can enhance
+Psiagram with various Plugins:
+
 ```js
-// The main building blocks of Psiagram are Paper, Nodes and Edges. In addition,
-// you can enhance Psiagram with various plugins.
 import { Paper, Node, Edge } from 'psiagram';
 import { MouseEvents } from 'psiagram-plugin-mouse-events';
+```
 
-// Once it is initialized, you will assign your Paper instance to myPaper.
+Set up a variable to assign the instance of Paper to:
+
+```js
 let myPaper = null;
+```
 
-/**
- * An example function to run once the page is loaded.
- *
- * It mounts an initialized Paper into a div with id="_target".
- */
+Let's build out an example function to run once the page is loaded. It mounts an
+initialized Paper into a div with id="\_target".
+
+```js
 function initializeAndMountPaper() {
-  // Now it's time to run through the steps to initialize and mount Paper!
-
   // 1. Initialize plugins with any settings they require
   //    (MouseEvents plugin doesn't require any settings at initialization)
   const initializedMouseEvents = new MouseEvents();
@@ -73,26 +76,27 @@ function initializeAndMountPaper() {
   //    is mounted in the DOM.
   const paperElement = myPaper.getPaperElement();
 
-  // 5. Now you're ready to mount the element into the DOM! We have already set
-  //    up a target div with id="_target" to mount the Paper to.
+  // 5. Now you're ready to mount the element into the DOM! Assume that we have
+  // already set up a target div with id="_target" to mount the Paper to.
   const target = document.getElementById('_target');
   target.appendChild(paperElement);
 }
+```
 
-/**
- * Heres an example function to remove an Edge by id.
- */
+Now that the Paper is mounted, try building a function that will remove an Edge
+based on its ID:
+
+```js
 function removeEdgeFromPaper(edgeId) {
   myPaper.removeEdge(edgeId);
 }
+```
 
-/**
- * Here's an example function that prohibits adding any Nodes with a height over
- * 200px.
- *
- * This is a pretty basic example, but you can do very complex things with the
- * listener API.
- */
+Here's an example function that prohibits adding any Nodes with a height over
+200px. This is a pretty basic example, but you can do very complex things with
+the listener API.
+
+```js
 function validateAddedNode(paperEvent) {
   const targetNode = paperEvent.target;
 
@@ -102,7 +106,11 @@ function validateAddedNode(paperEvent) {
     paperEvent.preventDefault();
   }
 }
+```
 
+And finally:
+
+```js
 function drawRainbowTrailBehindNode(paperEvent) {
   // TODO: I'll let you figure out how to do this one.
 }

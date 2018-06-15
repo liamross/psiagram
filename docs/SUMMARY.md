@@ -2,8 +2,8 @@
 
 - [What is Psiagram?](README.md)
 - [Introduction](introduction/README.md)
-  - [Motivation](introduction/motivation.md)
-  - [Core Concepts](introduction/core-concepts.md)
+  - [Inspiration](introduction/inspiration.md)
+  - [First Look](introduction/first-look.md)
 - [Basics](basics/README.md)
   - [Paper](basics/paper.md)
   - [Node](basics/node.md)

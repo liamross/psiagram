@@ -65,15 +65,6 @@ export class Node {
     return this._element;
   }
 
-  public updateProperties(newProperties: INodeUpdateProperties): void {
-    this._properties = {
-      ...this._properties,
-      ...newProperties,
-    };
-
-    // TODO: Update those properties in the actual ref.
-  }
-
   public getParameters(): IParameters {
     // TODO: needs to return the final full size of the component.
     return {
@@ -82,16 +73,12 @@ export class Node {
     };
   }
 
-  public validateNode(): boolean {
-    if (!this._properties.title) {
-      return false;
-    }
+  public updateProperties(newProperties: INodeUpdateProperties): void {
+    this._properties = {
+      ...this._properties,
+      ...newProperties,
+    };
 
-    if (!(this._properties.width && this._properties.height)) {
-      return false;
-    }
-    // TODO: Validate that node has some style given.
-
-    return true;
+    // TODO: Update those properties in the actual ref.
   }
 }

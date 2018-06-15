@@ -105,12 +105,12 @@ export interface IPaperInputEdge {
   component: typeof Edge;
   source: { id: string };
   target: { id: string };
-  properties: IPaperEdgeProperties;
+  properties?: IPaperEdgeProperties;
   coords: ICoordinates[];
 }
 
 export interface IPaperEdgeProperties {
-  title: string;
+  title?: string;
 }
 
 export interface IPaperEdgeUpdateProperties {

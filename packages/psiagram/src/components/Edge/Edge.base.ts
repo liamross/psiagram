@@ -69,9 +69,4 @@ export class Edge {
 
     setSVGAttribute(this._path, 'd', dString);
   }
-
-  public validateEdge(): boolean {
-    // TODO: implement validation (check Node.ts for help).
-    return true;
-  }
 }

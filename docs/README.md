@@ -6,9 +6,9 @@
 > documentation TODOs and just plain missing information. Thank you for your
 > patience.
 
-**Psiagram attempts to simplify graphing** by enabling complex and interactive
-workflows and graphs to be built easily, in any project, and without the need
-for external dependencies.
+Psiagram is a framework that enables anyone to build complex and interactive
+diagrams and workflows easily, in any project, and without the need for external
+dependencies.
 
 ## Flexible
 

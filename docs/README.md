@@ -14,7 +14,7 @@ dependencies.
 
 The entire framework and all supported plugins are built without any external
 dependencies. This saves you from installing massive packages solely to support
-your graphing framework, as well as ensuring easy integration into any front
+your diagramming framework, as well as ensuring easy integration into any front
 end.
 
 For an introduction to the framework, see the
@@ -22,8 +22,8 @@ For an introduction to the framework, see the
 
 ## Simple
 
-Psiagram takes much of the complexity out of generating workflows and graphs by
-taking basic initial conditions and exposing a simple API. Most of the heavy
+Psiagram takes much of the complexity out of generating workflows and diagrams
+by taking basic initial conditions and exposing a simple API. Most of the heavy
 lifting is done within the framework, and within logical plugins.
 
 To start creating using Psiagram, see the [basics section](./basics/README.md).
@@ -31,7 +31,7 @@ To start creating using Psiagram, see the [basics section](./basics/README.md).
 ## Extensible
 
 Psiagram exposes a robust API to allow listeners and plugins to enhance and
-augment any part of a graph lifecycle.
+augment any part of a diagram.
 
 Check out some of the official plugins in the
 [plugins section](./plugins/README.md).

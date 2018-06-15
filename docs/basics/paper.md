@@ -212,23 +212,15 @@ When an event occurs, this is what happens:
     - The paper event type (a string representing the event)
     - A reference to the Paper instance that created the event
     - The target of the event (ex: the Node that is being created)
-    - Any additional helpful data (ex: the Node coordinates rounded to nearest
-      grid)
-    - A boolean representing whether the event will continue to propagate to
-      other listeners
-    - A default action to be carried out once after all listeners have been
-      called
-1.  All listeners that have been added for that specific paper event type are
-    called with the Paper Event. These listeners have access to the Paper
-    Event's API, and can:
+    - Any additional helpful data (ex: the Node coordinates rounded to nearest grid)
+    - A boolean representing whether the event will continue to propagate to other listeners
+    - A default action to be carried out once after all listeners have been called
+1.  All listeners that have been added for that specific paper event type are called with the Paper Event. These listeners have access to the Paper Event's API, and can:
     - Access the API of the issuing Paper instance to do any method calls
     - Do any sort of validation given the target and data of the event
-    - Call the stopPropagation method to prevent any other listeners from
-      getting called
-    - Call the preventDefault method to prevent the Paper Event's default action
-      from being completed
-1.  The default action is completed if preventDefault was not called by any
-    listener
+    - Call the stopPropagation method to prevent any other listeners from getting called
+    - Call the preventDefault method to prevent the Paper Event's default action from being completed
+1.  The default action is completed if preventDefault was not called by any listener
 
 This lifecycle provides multiple utilities to allow you to build complex
 functionality. That will be touched on in the (upcoming) Advanced

@@ -1,6 +1,6 @@
 {
   "name": "psiagram",
-  "description": "JavaScript diagramming framework for workflows.",
+  "description": "JavaScript diagramming framework with no dependencies.",
   "keywords": [
     "diagram",
     "flowchart",

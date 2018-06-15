@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  Ψ JavaScript diagramming framework for workflows.
+  Ψ JavaScript diagramming framework with no dependencies.
 </p>
 
 <p align="center">

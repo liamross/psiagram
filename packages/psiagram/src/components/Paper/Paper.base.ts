@@ -33,7 +33,6 @@ import {
   areCoordsEqual,
   generateRandomString,
 } from '../../';
-import { IPluginProperties } from '../../common';
 
 export class Paper {
   private _width: number;
@@ -131,46 +130,6 @@ export class Paper {
    */
   public getPaperElement(): HTMLElement {
     return this._paperWrapper;
-  }
-
-  /**
-   * Add a listener for a specific type of event. This listener will be called
-   * every time the event is triggered.
-   *
-   * @param type The type of listener to add.
-   * @param listener The listener function triggered when type of event happens.
-   */
-  public addListener(type: paperEventType, listener: listenerFunction): void {
-    if (this._listeners[type] === undefined) {
-      this._listeners[type] = [];
-    }
-
-    if (this._listeners[type].every(currentLis => currentLis !== listener)) {
-      this._listeners[type].push(listener);
-    } else {
-      console.error(
-        `Add listener: identical listener already exists for "${type}".`,
-      );
-    }
-  }
-
-  /**
-   * Add a listener for a specific type of event. This listener will be called
-   * every time the event is triggered.
-   *
-   * @param type The type of listener to remove.
-   * @param listener The listener function to remove.
-   */
-  public removeListener(
-    type: paperEventType,
-    listener: listenerFunction,
-  ): void {
-    if (this._listeners[type] !== undefined && this._listeners[type].length) {
-      const listenerIndex = this._listeners[type].findIndex(
-        currentLis => currentLis === listener,
-      );
-      this._listeners[type].splice(listenerIndex, 1);
-    }
   }
 
   /**
@@ -548,6 +507,13 @@ export class Paper {
   }
 
   /**
+   * Returns the current active item object, or null if there is no active item.
+   */
+  public getActiveItem(): IActiveItem | null {
+    return this._activeItem;
+  }
+
+  /**
    * Updates the current active item if an active item is given, or removes any
    * active items if no parameters are given. You must provide an Active Item
    * object with the workflow item type, id of the item, and the state you wish
@@ -595,10 +561,43 @@ export class Paper {
   }
 
   /**
-   * Returns the current active item object, or null if there is no active item.
+   * Add a listener for a specific type of event. This listener will be called
+   * every time the event is triggered.
+   *
+   * @param type The type of listener to add.
+   * @param listener The listener function triggered when type of event happens.
    */
-  public getActiveItem(): IActiveItem | null {
-    return this._activeItem;
+  public addListener(type: paperEventType, listener: listenerFunction): void {
+    if (this._listeners[type] === undefined) {
+      this._listeners[type] = [];
+    }
+
+    if (this._listeners[type].every(currentLis => currentLis !== listener)) {
+      this._listeners[type].push(listener);
+    } else {
+      console.error(
+        `Add listener: identical listener already exists for "${type}".`,
+      );
+    }
+  }
+
+  /**
+   * Add a listener for a specific type of event. This listener will be called
+   * every time the event is triggered.
+   *
+   * @param type The type of listener to remove.
+   * @param listener The listener function to remove.
+   */
+  public removeListener(
+    type: paperEventType,
+    listener: listenerFunction,
+  ): void {
+    if (this._listeners[type] !== undefined && this._listeners[type].length) {
+      const listenerIndex = this._listeners[type].findIndex(
+        currentLis => currentLis === listener,
+      );
+      this._listeners[type].splice(listenerIndex, 1);
+    }
   }
 
   /**

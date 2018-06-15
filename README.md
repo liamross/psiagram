@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://github.com/liamross/psiagram">
-    <img alt="Psiagram" src="https://raw.githubusercontent.com/liamross/psiagram/master/logo/logo-title.png" width="888" >
+    <img alt="Psiagram" src="https://raw.githubusercontent.com/liamross/psiagram/master/logo/logo-title.png" width="700" >
   </a>
 </p>
 
@@ -31,19 +31,11 @@
 
 ---
 
-> 🚧 Under Construction 🚧
->
-> The core functionality is currently under development, so everything will be
-> undergoing massive changes with **minor** documentation. Once the core of the
-> framework is built and the major decisions have been made, documentation will
-> catch up. Most code at this stage is highly dynamic, so check back later once
-> everything has settled down!
+Psiagram is a framework that enables anyone to build complex and interactive
+diagrams and workflows easily, in any project, and without the need for external
+dependencies.
 
 # Use Psiagram
-
-Psiagram is a monorepo, meaning it has multiple packages in one GitHub
-repository. This ensures that inter-dependency between packages is maintained,
-and allows for consistent versioning between psiagram and its plugins.
 
 For instructions on how to use Psiagram, as well as documentation on the API,
 use in your project, and all of the official plugins, see the
@@ -52,6 +44,10 @@ use in your project, and all of the official plugins, see the
 For instructions on how to **work with the GitHub repository**, including
 cloning, initializing and running, see the
 [Contributing Document](https://github.com/liamross/psiagram/blob/master/CONTRIBUTING.md).
+
+Psiagram is a monorepo, meaning it has multiple packages in one GitHub
+repository. This ensures that inter-dependency between packages is maintained,
+and allows for consistent versioning between psiagram and its plugins.
 
 ## Packages
 
@@ -78,10 +74,10 @@ To use:
 
 ```js
 // ES5
-var { Psiagram } = require('psiagram');
+var { Paper, Node, Edge } = require('psiagram');
 
 // ES6
-import { Psiagram } from 'psiagram';
+import { Paper, Node, Edge } from 'psiagram';
 ```
 
 ### Psiagram Plugin Mouse Events

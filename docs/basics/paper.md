@@ -215,7 +215,7 @@ When an event occurs, this is what happens:
     - Any additional helpful data (ex: the Node coordinates rounded to nearest grid)
     - A boolean representing whether the event will continue to propagate to other listeners
     - A default action to be carried out once after all listeners have been called
-1.  All listeners that have been added for that specific paper event type are called with the Paper Event. These listeners have access to the Paper Event's API, and can:
+1.  All listeners for that specific paper event type are called with the Paper Event. They can:
     - Access the API of the issuing Paper instance to do any method calls
     - Do any sort of validation given the target and data of the event
     - Call the stopPropagation method to prevent any other listeners from getting called

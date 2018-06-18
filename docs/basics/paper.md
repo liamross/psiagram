@@ -218,6 +218,7 @@ When an event occurs, this is what happens:
 1.  All listeners for that specific paper event type are called with the Paper Event. They can:
     - Access the API of the issuing Paper instance to do any method calls
     - Do any sort of validation given the target and data of the event
+    - Transform any properties of the target (ex: change an added Node's coordinates)
     - Call the stopPropagation method to prevent any other listeners from getting called
     - Call the preventDefault method to prevent the Paper Event's default action from being completed
 1.  The default action is completed if preventDefault was not called by any listener

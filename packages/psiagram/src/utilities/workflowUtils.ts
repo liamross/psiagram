@@ -5,8 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { IPaperStoredNode } from '../components/Paper';
-import { IParameters, ICoordinates } from '../common/types';
+import { IPaperStoredNode, IParameters, ICoordinates, PaperError } from '../';
 
 /**
  * Returns true if nodes are overlapping in the workspace, false otherwise.
@@ -210,20 +209,18 @@ export const areCoordsEqual = (
  * @param length The length of the random number string. Must be greater than 0.
  */
 export const generateRandomString = (base: number, length: number): string => {
-  if (
-    typeof base === 'number' &&
-    typeof length === 'number' &&
-    base > 2 &&
-    base <= 36 &&
-    length > 0
-  ) {
+  if (base > 2 && base <= 36 && length > 0) {
     return Math.round(Math.random() * Math.pow(base, length))
       .toString(base)
       .concat('0'.repeat(length))
       .substring(0, length)
       .toUpperCase();
   } else {
-    console.error('Generate random string: invalid base or length provided.');
-    return '';
+    throw new PaperError(
+      'ERANGE',
+      'Invalid range on base or length property',
+      'workflowUtils.ts',
+      'generateRandomString',
+    );
   }
 };

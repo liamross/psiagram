@@ -4,7 +4,14 @@
  * Import: psiagram
  */
 // @ts-ignore
-import { Paper, IPaperProperties, IPaperInputNode, Node, Edge } from 'psiagram';
+import {
+  Paper,
+  IPaperProperties,
+  IPaperInputNode,
+  Node,
+  Edge,
+  PaperError,
+} from 'psiagram';
 // @ts-ignore
 import { MouseEvents } from 'psiagram-plugin-mouse-events';
 // @ts-ignore
@@ -101,7 +108,15 @@ function addNode() {
         width: 160,
       },
     };
-    myPaper.addNode(node);
+
+    // myPaper.addNode(node);
+
+    try {
+      myPaper.addNode(node);
+    } catch (err) {
+      const error = err as PaperError;
+      console.error(error.toString());
+    }
   }
 }
 

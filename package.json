@@ -12,21 +12,21 @@
     "test": "jest --config ./scripts/test/jest.config.js",
     "build": "yarn clean-build && lerna run build",
     "bootstrap": "yarn build && lerna bootstrap",
-    "clean-build": "node ./scripts/clean/builds.js",
     "clean-cache": "node ./scripts/clean/cache.js",
+    "clean-build": "node ./scripts/clean/builds.js",
     "clean-deep": "node ./scripts/clean/deep.js && lerna clean --yes",
     "clean-all": "yarn clean-cache && yarn clean-build && yarn clean-deep",
     "lint": "lerna run lint"
   },
   "devDependencies": {
-    "@types/jest": "^23.0.2",
+    "@types/jest": "^23.1.1",
     "jest": "^23.1.0",
     "lerna": "^2.11.0",
-    "parcel-bundler": "^1.8.1",
+    "parcel-bundler": "^1.9.2",
     "prettier": "^1.13.5",
     "rimraf": "^2.6.2",
     "tslint": "^5.10.0",
     "tslint-config-prettier": "^1.13.0",
-    "typescript": "^2.9.1"
+    "typescript": "^2.9.2"
   }
 }

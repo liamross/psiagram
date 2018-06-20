@@ -90,16 +90,11 @@ describe('Listeners', () => {
   });
 
   describe('all types', () => {
-    it('prohibits adding duplicate listeners to a type', () => {
+    it('only adds equal listener callback once to same event type', () => {
       const testFunc = jest.fn();
 
-      // TODO: Update once console errors are callback error codes.
-      const spy = jest.spyOn(global.console, 'error');
-
       myPaper.addListener('add-node', testFunc);
-      expect(spy).toHaveBeenCalledTimes(0);
       myPaper.addListener('add-node', testFunc);
-      expect(spy).toHaveBeenCalledTimes(1);
 
       addNode();
 

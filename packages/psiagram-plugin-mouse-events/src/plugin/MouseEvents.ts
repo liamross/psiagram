@@ -16,6 +16,7 @@ import {
   IPaperStoredNode,
   IPaperStoredEdge,
   IPluginProperties,
+  PaperError,
 } from 'psiagram';
 
 export class MouseEvents implements PsiagramPlugin {
@@ -115,8 +116,11 @@ export class MouseEvents implements PsiagramPlugin {
       document.addEventListener('mousemove', this._handleNodeMouseMove);
       document.addEventListener('mouseup', this._handleNodeMouseUp);
     } else {
-      console.error(
-        `Handle node mousedown: node with id ${id} does not exist.`,
+      throw new PaperError(
+        'E_NO_ID',
+        `Node with id ${id} does not exist.`,
+        'MouseEvents.ts',
+        '_handleNodeMouseDown',
       );
     }
   }
@@ -147,9 +151,11 @@ export class MouseEvents implements PsiagramPlugin {
       // TODO: Check if dragged block is overlapping.
       this._paperInstance.moveNode(id, { x: blockX, y: blockY });
     } else {
-      console.error(
-        `Handle node mousemove: no current moving node. Active item: `,
-        activeItem,
+      throw new PaperError(
+        'E_NO_MOVE',
+        `No current moving node. Active item: ${JSON.stringify(activeItem)}`,
+        'MouseEvents.ts',
+        '_handleNodeMouseMove',
       );
     }
   };
@@ -171,9 +177,11 @@ export class MouseEvents implements PsiagramPlugin {
         paperItemState: PaperItemState.Selected,
       });
     } else {
-      console.error(
-        `Handle node mouseup: no current moving node. Active item: `,
-        activeItem,
+      throw new PaperError(
+        'E_NO_MOVE',
+        `No current moving node. Active item: ${JSON.stringify(activeItem)}`,
+        'MouseEvents.ts',
+        '_handleNodeMouseUp',
       );
     }
     // Remove listeners and reset coordinates.

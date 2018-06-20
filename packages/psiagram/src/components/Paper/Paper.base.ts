@@ -30,6 +30,7 @@ import {
   getEdgeNodeIntersection,
   areCoordsEqual,
   generateRandomString,
+  PaperError,
 } from '../../';
 
 export class Paper {
@@ -139,7 +140,12 @@ export class Paper {
    */
   public addNode(node: IPaperInputNode): void {
     if (this._nodes.hasOwnProperty(node.id)) {
-      console.error(`Add node: node with id ${node.id} already exists.`);
+      throw new PaperError(
+        'E_DUP_ID',
+        `Node with id ${node.id} already exists.`,
+        'Paper.base.ts',
+        'addNode',
+      );
     } else {
       // Create instance of class at node.component.
       const instance: Node = new node.component({
@@ -183,10 +189,11 @@ export class Paper {
 
             this._paper.appendChild(ref);
           } else {
-            console.error(
-              `Add node: invalid element returned from node class\nNode ID: ${
-                this._nodes[node.id].id
-              }`,
+            throw new PaperError(
+              'E_INV_EL',
+              'Invalid element returned from node',
+              'Paper.base.ts',
+              'addNode',
             );
           }
         },
@@ -224,8 +231,11 @@ export class Paper {
 
       this._fireEvent(evt);
     } else {
-      console.error(
-        `Update node properties: node with id ${id} does not exist.`,
+      throw new PaperError(
+        'E_NO_ID',
+        `Node with id ${id} does not exist.`,
+        'Paper.base.ts',
+        'updateNodeProperties',
       );
     }
   }
@@ -274,7 +284,12 @@ export class Paper {
         this._fireEvent(evt);
       }
     } else {
-      console.error(`Update node position: node with id ${id} does not exist.`);
+      throw new PaperError(
+        'E_NO_ID',
+        `Node with id ${id} does not exist.`,
+        'Paper.base.ts',
+        'moveNode',
+      );
     }
   }
 
@@ -305,7 +320,12 @@ export class Paper {
 
       this._fireEvent(evt);
     } else {
-      console.error(`Delete node: node with id ${id} does not exist.`);
+      throw new PaperError(
+        'E_NO_ID',
+        `Node with id ${id} does not exist.`,
+        'Paper.base.ts',
+        'removeNode',
+      );
     }
   }
 
@@ -316,7 +336,12 @@ export class Paper {
    */
   public addEdge(edge: IPaperInputEdge): void {
     if (this._edges.hasOwnProperty(edge.id)) {
-      console.error(`Add edge: edge with id ${edge.id} already exists.`);
+      throw new PaperError(
+        'E_DUP_ID',
+        `Edge with id ${edge.id} already exists.`,
+        'Paper.base.ts',
+        'addEdge',
+      );
     } else {
       // Create instance of class at edge.component.
       const instance: Edge = new edge.component({
@@ -357,10 +382,11 @@ export class Paper {
 
         this._fireEvent(evt);
       } else {
-        console.error(
-          `Add edge: invalid element returned from edge class\nEdge ID: ${
-            edge.id
-          }`,
+        throw new PaperError(
+          'E_INV_EL',
+          'Invalid element returned from edge',
+          'Paper.base.ts',
+          'addEdge',
         );
       }
     }
@@ -393,7 +419,12 @@ export class Paper {
 
       this._fireEvent(evt);
     } else {
-      console.error(`Update edge: edge with id ${id} does not exist.`);
+      throw new PaperError(
+        'E_NO_ID',
+        `Edge with id ${id} does not exist.`,
+        'Paper.base.ts',
+        'updateEdgeProperties',
+      );
     }
   }
 
@@ -475,12 +506,20 @@ export class Paper {
 
         this._fireEvent(evt);
       } else {
-        console.error(
-          `Update edge position: edge source or target id is not valid.`,
+        throw new PaperError(
+          'E_NO_ID',
+          'Node with Edge source or target Node ID does not exist.',
+          'Paper.base.ts',
+          'updateEdgeRoute',
         );
       }
     } else {
-      console.error(`Update edge position: edge with id ${id} does not exist.`);
+      throw new PaperError(
+        'E_NO_ID',
+        `Edge with id ${id} does not exist.`,
+        'Paper.base.ts',
+        'updateEdgeRoute',
+      );
     }
   }
 
@@ -502,7 +541,12 @@ export class Paper {
 
       this._fireEvent(evt);
     } else {
-      console.error(`Delete edge: edge with id ${id} does not exist.`);
+      throw new PaperError(
+        'E_NO_ID',
+        `Edge with id ${id} does not exist.`,
+        'Paper.base.ts',
+        'removeEdge',
+      );
     }
   }
 
@@ -574,10 +618,6 @@ export class Paper {
 
     if (this._listeners[type].every(currentLis => currentLis !== listener)) {
       this._listeners[type].push(listener);
-    } else {
-      console.error(
-        `Add listener: identical listener already exists for "${type}".`,
-      );
     }
   }
 

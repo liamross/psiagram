@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { IPaperStoredNode } from '../../components/Paper';
 import {
   isNodeColliding,
   roundToNearest,
@@ -14,7 +13,7 @@ import {
   areCoordsEqual,
   generateRandomString,
 } from '../workflowUtils';
-import { Node } from '../..';
+import { IPaperStoredNode, Node } from '../..';
 
 /** Helpers */
 
@@ -211,19 +210,15 @@ describe('Workflow Utilities', () => {
       expect(generateRandomString(10, 8).length).toBe(8);
     });
 
-    it('returns empty string if base is incorrect', () => {
-      // @ts-ignore
-      expect(generateRandomString('', 4)).toBe('');
-      expect(generateRandomString(NaN, 4)).toBe('');
-      expect(generateRandomString(1, 5)).toBe('');
-      expect(generateRandomString(37, 8)).toBe('');
+    it('throws PaperError if base is incorrect', () => {
+      expect(() => generateRandomString(NaN, 4)).toThrow();
+      expect(() => generateRandomString(1, 5)).toThrow();
+      expect(() => generateRandomString(37, 8)).toThrow();
     });
 
-    it('returns empty string if length is incorrect', () => {
-      // @ts-ignore
-      expect(generateRandomString(36, '')).toBe('');
-      expect(generateRandomString(36, NaN)).toBe('');
-      expect(generateRandomString(14, 0)).toBe('');
+    it('throws PaperError if length is incorrect', () => {
+      expect(() => generateRandomString(36, NaN)).toThrow();
+      expect(() => generateRandomString(14, 0)).toThrow();
     });
   });
 });

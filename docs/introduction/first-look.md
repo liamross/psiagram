@@ -12,6 +12,7 @@ Psiagram with various Plugins:
 
 ```js
 import { Paper, Node, Edge } from 'psiagram';
+import { Grid } from 'psiagram-plugin-grid';
 import { MouseEvents } from 'psiagram-plugin-mouse-events';
 ```
 
@@ -26,17 +27,13 @@ initialized Paper into a div with id="\_target".
 
 ```js
 function initializeAndMountPaper() {
-  // 1. Initialize plugins with any settings they require
-  //    (MouseEvents plugin doesn't require any settings at initialization)
-  const initializedMouseEvents = new MouseEvents();
-
-  // 2. Initialize Paper with any initial Paper Properties you want to pass to
+  // 1. Initialize Paper with any initial Paper Properties you want to pass to
   //    Paper during initialization.
   myPaper = new Paper({
     attributes: { gridSize: 20 },
     height: 900,
     width: 1300,
-    plugins: [initializedMouseEvents],
+    plugins: [new Grid(), new MouseEvents()],
     initialConditions: {
       nodes: [
         {
@@ -65,18 +62,18 @@ function initializeAndMountPaper() {
     },
   });
 
-  // 3. At this point, you can really do anything you want to do before mounting
+  // 2. At this point, you can really do anything you want to do before mounting
   //    the Paper. For this example, let's add some listeners.
   //    (You can actually call Paper methods any time, not just before mounting)
   myPaper.addListener('add-node', validateAddedNode);
   myPaper.addListener('move-node', drawRainbowTrailBehindNode);
 
-  // 4. Now that the Paper is all set up, it's time to get the actual element!
+  // 3. Now that the Paper is all set up, it's time to get the actual element!
   //    This will continue to be manipulated by the Paper instance even once it
   //    is mounted in the DOM.
   const paperElement = myPaper.getPaperElement();
 
-  // 5. Now you're ready to mount the element into the DOM! Assume that we have
+  // 4. Now you're ready to mount the element into the DOM! Assume that we have
   // already set up a target div with id="_target" to mount the Paper to.
   const target = document.getElementById('_target');
   target.appendChild(paperElement);

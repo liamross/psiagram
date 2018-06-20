@@ -1,8 +1,4 @@
 // tslint:disable:no-console
-
-/**
- * Import: psiagram
- */
 // @ts-ignore
 import {
   Paper,
@@ -13,22 +9,18 @@ import {
   PaperError,
 } from 'psiagram';
 // @ts-ignore
-import { MouseEvents } from 'psiagram-plugin-mouse-events';
-// @ts-ignore
 import { Grid } from 'psiagram-plugin-grid';
+// @ts-ignore
+import { MouseEvents } from 'psiagram-plugin-mouse-events';
 
 let myPaper: Paper | null = null;
-
-const initializedMouseEventPlugin = new MouseEvents();
-
-const initializedGridPlugin = new Grid();
 
 function loadPaper() {
   const paperProperties: IPaperProperties = {
     attributes: { gridSize: 20 },
     height: 900,
     width: 1300,
-    plugins: [initializedMouseEventPlugin, initializedGridPlugin],
+    plugins: [new Grid(), new MouseEvents()],
     initialConditions: {
       nodes: [
         {

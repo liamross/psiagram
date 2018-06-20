@@ -1,7 +1,7 @@
 {
   "extends": "../../configs/base",
   "compilerOptions": {
-    "baseUrl": "./packages/psiagram-plugin-mouse-events",
+    "baseUrl": "./packages/psiagram-plugin-grid",
     "paths": {
       "lib/*": ["src/*"]
     },

@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { setPaperDefs } from './helpers/svgDefinitions';
-
 import {
   Node,
   Edge,
@@ -56,7 +54,6 @@ export class Paper {
     attributes = attributes || {};
     this._gridSize = attributes.gridSize || 0;
     this._allowBlockOverlap = attributes.allowBlockOverlap || false;
-    const gridColor: string = attributes.gridColor || '#EEE';
     const paperWrapperClass: string = attributes.paperWrapperClass || '';
     const paperClass: string = attributes.paperClass || '';
 
@@ -79,7 +76,6 @@ export class Paper {
       height: '100%',
       class: paperClass || null,
     });
-    setPaperDefs(this._paper, this._gridSize, gridColor);
     setWorkflowType(this._paper, WorkflowType.Paper);
 
     // Set up paper wrapper.
@@ -104,19 +100,23 @@ export class Paper {
     if (plugins) {
       plugins.forEach(plugin => {
         if (plugin.initialize) {
-          plugin.initialize(this, this._nodes, this._edges, {
-            width: this._width,
-            height: this._height,
-            plugins,
-            attributes: {
-              gridSize: this._gridSize,
-              allowBlockOverlap: this._allowBlockOverlap,
-              gridColor,
-              paperWrapperClass,
-              paperClass,
+          plugin.initialize(
+            this,
+            {
+              width: this._width,
+              height: this._height,
+              plugins,
+              attributes: {
+                gridSize: this._gridSize,
+                allowBlockOverlap: this._allowBlockOverlap,
+                paperWrapperClass,
+                paperClass,
+              },
+              initialConditions,
             },
-            initialConditions,
-          });
+            this._nodes,
+            this._edges,
+          );
         }
       });
     }

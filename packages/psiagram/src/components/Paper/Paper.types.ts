@@ -25,7 +25,6 @@ export interface IPaperProperties {
   attributes?: {
     gridSize?: number;
     allowBlockOverlap?: boolean;
-    gridColor?: string;
     paperWrapperClass?: string;
     paperClass?: string;
   };

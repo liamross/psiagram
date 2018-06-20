@@ -1,7 +1,6 @@
 # Psiagram Plugin Mouse Handler
 
-An npm package to allow selection and drag-n-drop functionality in the Psiagram
-diagramming framework.
+An npm package to create a visual grid layer for Psiagram.
 
 For documentation, see the [Documentation Site](https://www.psiagram.org/).
 
@@ -11,9 +10,9 @@ For the code base, and to see other packages, see
 ## To Use
 
 ```js
-import { MouseEvents } from 'psiagram-plugin-mouse-events';
+import { Grid } from 'psiagram-plugin-grid';
 
-const initializedMouseEvents = new MouseEvents();
+const initializedGrid = new Grid();
 
 // Then pass into Psiagram as a Plugin!
 ```

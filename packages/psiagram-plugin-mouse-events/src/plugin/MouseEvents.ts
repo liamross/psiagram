@@ -41,9 +41,9 @@ export class MouseEvents implements PsiagramPlugin {
 
   public initialize(
     paper: Paper,
+    properties: IPluginProperties,
     nodes: { [key: string]: IPaperStoredNode },
     edges: { [key: string]: IPaperStoredEdge },
-    properties: IPluginProperties,
   ): void {
     this._paperInstance = paper;
     this._paperWrapper = this._paperInstance.getPaperElement();
@@ -55,7 +55,9 @@ export class MouseEvents implements PsiagramPlugin {
     this._initialPaperCoords = null;
     this._gridSize = properties.attributes.gridSize;
 
-    this._paperWrapper.addEventListener('mousedown', this._handleMouseDown);
+    if (this._paperWrapper) {
+      this._paperWrapper.addEventListener('mousedown', this._handleMouseDown);
+    }
   }
 
   public teardown(): void {

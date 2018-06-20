@@ -7,17 +7,21 @@
 import { Paper, IPaperProperties, IPaperInputNode, Node, Edge } from 'psiagram';
 // @ts-ignore
 import { MouseEvents } from 'psiagram-plugin-mouse-events';
+// @ts-ignore
+import { Grid } from 'psiagram-plugin-grid';
 
 let myPaper: Paper | null = null;
 
 const initializedMouseEventPlugin = new MouseEvents();
+
+const initializedGridPlugin = new Grid();
 
 function loadPaper() {
   const paperProperties: IPaperProperties = {
     attributes: { gridSize: 20 },
     height: 900,
     width: 1300,
-    plugins: [initializedMouseEventPlugin],
+    plugins: [initializedMouseEventPlugin, initializedGridPlugin],
     initialConditions: {
       nodes: [
         {

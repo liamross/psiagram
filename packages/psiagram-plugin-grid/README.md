@@ -10,9 +10,9 @@ For the code base, and to see other packages, see
 ## To Use
 
 ```js
-// ES5
-var { Grid } = require('psiagram-plugin-grid');
-
-// ES6
 import { Grid } from 'psiagram-plugin-grid';
+
+const initializedGrid = new Grid();
+
+// Then pass into Psiagram as a Plugin!
 ```

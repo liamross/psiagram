@@ -85,7 +85,7 @@ import { Paper, Node, Edge } from 'psiagram';
 [![NPM Version](https://badge.fury.io/js/psiagram-plugin-mouse-events.svg)](https://www.npmjs.com/package/psiagram-plugin-mouse-events)
 
 Psiagram's official mouse event plugin provides mouse event capabilities such as
-selection and drag-and-drop for nodes and edges.
+selection and drag-n-drop for nodes and edges.
 
 To install:
 

@@ -41,9 +41,9 @@ export class MouseEvents implements PsiagramPlugin {
 
   public initialize(
     paper: Paper,
+    properties: IPluginProperties,
     nodes: { [key: string]: IPaperStoredNode },
     edges: { [key: string]: IPaperStoredEdge },
-    properties: IPluginProperties,
   ): void {
     this._paperInstance = paper;
     this._paperWrapper = this._paperInstance.getPaperElement();

@@ -11,9 +11,9 @@ For the code base, and to see other packages, see
 ## To Use
 
 ```js
-// ES5
-var { MouseEvents } = require('psiagram-plugin-mouse-events');
-
-// ES6
 import { MouseEvents } from 'psiagram-plugin-mouse-events';
+
+const initializedMouseEvents = new MouseEvents();
+
+// Then pass into Psiagram as a Plugin!
 ```

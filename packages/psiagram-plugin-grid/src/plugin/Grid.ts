@@ -19,21 +19,15 @@ export interface IGridProperties {
 export class Grid implements PsiagramPlugin {
   private _gridColor: string;
 
-  constructor({ gridColor }: IGridProperties) {
-    this._gridColor = gridColor || '#EEE';
+  constructor(gridProperties?: IGridProperties) {
+    this._gridColor = (gridProperties && gridProperties.gridColor) || '#EEE';
   }
 
-  public initialize(
-    paper: Paper,
-    _nodes: any,
-    _edges: any,
-    properties: IPluginProperties,
-  ): void {
+  public initialize(paper: Paper, properties: IPluginProperties): void {
     const paperElement = paper._getDrawSurface();
     const gridSize = properties.attributes.gridSize;
 
     const defs = createSVGWithAttributes('defs');
-    paperElement.appendChild(defs);
 
     // Add grid to definitions if valid grid size is provided.
     if (gridSize > 0) {
@@ -83,7 +77,7 @@ export class Grid implements PsiagramPlugin {
       });
 
       // Add grid to paper.
-      paperElement.appendChild(gridContainer);
+      paperElement.insertBefore(gridContainer, paperElement.firstChild);
     }
 
     // Add edge arrowheads to definitions.
@@ -103,5 +97,7 @@ export class Grid implements PsiagramPlugin {
     });
     arrowhead.appendChild(arrowheadPath);
     defs.appendChild(arrowhead);
+
+    paperElement.insertBefore(defs, paperElement.firstChild);
   }
 }

@@ -3,6 +3,6 @@
 const clean = require('./clean');
 
 // Add paths to items you wish to remove.
-const paths = ['coverage', '.cache'];
+const paths = ['.cache', 'dist'];
 
-clean('Cleaning caches and test files', paths);
+clean('Cleaning caches and development files', paths);

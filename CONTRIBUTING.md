@@ -76,9 +76,9 @@ $ npm run build
 ### Clean
 
 ```sh
-# delete coverage and .cache folders
-$ yarn clean-cache
-$ npm run clean-cache
+# delete dist and .cache folders (cleans before development server)
+$ yarn clean-dev
+$ npm run clean-dev
 
 # delete all build folders (run automatically by build command)
 $ yarn clean-build

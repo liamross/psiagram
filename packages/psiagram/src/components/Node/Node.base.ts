@@ -104,10 +104,10 @@ export class Node {
   get title(): string {
     return this._properties.title;
   }
-  set title(newTitle) {
+  set title(title: string) {
     if (this._text) {
-      this._properties.title = newTitle;
-      this._text.textContent = newTitle;
+      this._properties.title = title;
+      this._text.textContent = title;
     }
   }
 

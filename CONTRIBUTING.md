@@ -58,9 +58,9 @@ $ npm run lint --fix
 $ yarn start
 $ npm start
 
-# builds the lerna npm packages, then starts development server
-$ yarn buildstart
-$ npm run buildstart
+# cleans the dist and cache folders, then starts development server
+$ yarn cleanstart
+$ npm run cleanstart
 ```
 
 ### Build

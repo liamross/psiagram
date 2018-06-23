@@ -7,11 +7,11 @@ import {
   Node,
   Edge,
   PaperError,
-} from 'psiagram';
+} from '../packages/psiagram/src';
 // @ts-ignore
-import { Grid } from 'psiagram-plugin-grid';
+import { Grid } from '../packages/psiagram-plugin-grid/src';
 // @ts-ignore
-import { MouseEvents } from 'psiagram-plugin-mouse-events';
+import { MouseEvents } from '../packages/psiagram-plugin-mouse-events/src';
 
 let myPaper: Paper | null = null;
 

@@ -5,57 +5,46 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { IEdgeProperties, IEdgeUpdateProperties } from './';
-import { ICoordinates } from '../../common/types';
-import { setWorkflowType, WorkflowType } from '../../utilities/dataUtils';
 import {
+  IEdgeProperties,
+  ICoordinates,
+  setWorkflowType,
+  WorkflowType,
   createSVGWithAttributes,
   setSVGAttribute,
-} from '../../utilities/domUtils';
+  PaperError,
+} from '../../';
+
+// const FONT_HEIGHT = 14;
 
 export class Edge {
   private _properties: IEdgeProperties;
-  private _element: SVGElement;
-  private _path: SVGElement;
+
+  private _group: SVGElement;
+  private _path: SVGElement | null;
+  // private _text: SVGElement | null;
 
   constructor(properties: IEdgeProperties) {
-    this._properties = properties;
+    this._path = null;
+    // this._text = null;
 
-    const { id, title } = this._properties;
+    this._properties = {
+      ...properties,
+      title: properties.title || '',
+    };
 
-    const group = createSVGWithAttributes('g', {
-      id,
-      // Temporary:
+    this._group = createSVGWithAttributes('g', {
+      id: this._properties.id,
       style: 'user-select: none',
     });
 
-    const path = createSVGWithAttributes('path', {
-      fill: 'none',
-      stroke: '#333',
-      'stroke-linecap': 'round',
-      'stroke-width': '1px',
-      'marker-end': 'url(#_arrow)',
-    });
+    setWorkflowType(this._group, WorkflowType.Edge);
 
-    group.appendChild(path);
-
-    setWorkflowType(group, WorkflowType.Edge);
-
-    this._path = path;
-    this._element = group;
+    this.initialize();
   }
 
   public getEdgeElement(): SVGElement {
-    return this._element;
-  }
-
-  public updateProperties(newProperties: IEdgeUpdateProperties): void {
-    this._properties = {
-      ...this._properties,
-      ...newProperties,
-    };
-
-    // TODO: Update those properties in the actual ref.
+    return this._group;
   }
 
   public updatePath(
@@ -63,10 +52,54 @@ export class Edge {
     target: ICoordinates,
     coords?: ICoordinates[],
   ): void {
-    const dString = `M ${source.x} ${source.y} ${
-      coords ? coords.map(point => `L ${point.x} ${point.y} `).join() : ''
-    }L ${target.x} ${target.y}`;
+    if (this._path) {
+      const dString = `M ${source.x} ${source.y} ${
+        coords ? coords.map(point => `L ${point.x} ${point.y} `).join() : ''
+      }L ${target.x} ${target.y}`;
 
-    setSVGAttribute(this._path, 'd', dString);
+      setSVGAttribute(this._path as SVGElement, 'd', dString);
+    } else {
+      throw new PaperError(
+        'E_NO_EL',
+        `No path exists for Edge ID: ${this._properties.id}`,
+        'Edge.base.ts',
+        'updatePath',
+      );
+    }
   }
+
+  protected initialize(): void {
+    const { title, id } = this._properties;
+
+    this._path = createSVGWithAttributes('path', {
+      id: id + '_path',
+      fill: 'none',
+      stroke: '#333',
+      'stroke-linecap': 'round',
+      'stroke-width': '1px',
+      'marker-end': 'url(#_arrow)',
+    });
+
+    // TODO: Implement title block.
+
+    this._group.appendChild(this._path);
+  }
+
+  // TODO: Title get + set.
+  // get title(): string {
+  //   return this._properties.title as string;
+  // }
+  // set title(title: string) {
+  //   if (this._text) {
+  //     this._properties.title = title;
+  //     this._text.textContent = title;
+  //   } else {
+  //     throw new PaperError(
+  //       'E_NO_EL',
+  //       `No text exists for Edge ID: ${this._properties.id}`,
+  //       'Node.base.ts',
+  //       'set title',
+  //     );
+  //   }
+  // }
 }

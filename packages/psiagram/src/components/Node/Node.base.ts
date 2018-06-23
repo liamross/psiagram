@@ -13,6 +13,7 @@ import {
   setWorkflowType,
   WorkflowType,
   roundToNearest,
+  PaperError,
 } from '../../';
 
 const FONT_HEIGHT = 14;
@@ -42,6 +43,7 @@ export class Node {
         this._growthUnit,
         this._growthUnit,
       ),
+      title: properties.title || '',
     };
 
     this._group = createSVGWithAttributes('g', {
@@ -81,15 +83,15 @@ export class Node {
       'font-size': FONT_HEIGHT,
     });
 
-    this._updateTextPosition();
+    this.updateTextPosition();
 
-    this._text.textContent = title;
+    this._text.textContent = title || '';
     this._group.appendChild(this._shape);
     this._group.appendChild(this._text);
   }
 
-  private _updateTextPosition(): void {
-    const { width, height, title, id } = this._properties;
+  protected updateTextPosition(): void {
+    const { width, height } = this._properties;
 
     const fontX = width / 2;
     const fontY = FONT_HEIGHT / 2 + height / 2;
@@ -102,12 +104,19 @@ export class Node {
 
   // Title get + set.
   get title(): string {
-    return this._properties.title;
+    return this._properties.title as string;
   }
   set title(title: string) {
     if (this._text) {
       this._properties.title = title;
       this._text.textContent = title;
+    } else {
+      throw new PaperError(
+        'E_NO_EL',
+        `No text exists for Node ID: ${this._properties.id}`,
+        'Node.base.ts',
+        'set title',
+      );
     }
   }
 
@@ -120,7 +129,14 @@ export class Node {
       width = roundToNearest(width, this._growthUnit, this._growthUnit);
       this._properties.width = width;
       setSVGAttribute(this._shape, 'width', width);
-      this._updateTextPosition();
+      this.updateTextPosition();
+    } else {
+      throw new PaperError(
+        'E_NO_EL',
+        `No shape exists for Node ID: ${this._properties.id}`,
+        'Node.base.ts',
+        'set width',
+      );
     }
   }
 
@@ -133,7 +149,14 @@ export class Node {
       height = roundToNearest(height, this._growthUnit, this._growthUnit);
       this._properties.width = height;
       setSVGAttribute(this._shape, 'height', height);
-      this._updateTextPosition();
+      this.updateTextPosition();
+    } else {
+      throw new PaperError(
+        'E_NO_EL',
+        `No shape exists for Node ID: ${this._properties.id}`,
+        'Node.base.ts',
+        'set height',
+      );
     }
   }
 }

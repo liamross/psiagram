@@ -11,7 +11,7 @@
     "start-clean": "yarn clean-dev && yarn start",
     "start-build": "yarn build && yarn start",
     "start-build-clean": "yarn build && yarn clean-dev && yarn start",
-    "test": "jest --config ./scripts/test/jest.config.js",
+    "test": "jest --config ./configs/test/jest.config.js",
     "build": "yarn clean-build && lerna run build",
     "bootstrap": "yarn build && lerna bootstrap",
     "clean-dev": "node ./scripts/clean/development.js",

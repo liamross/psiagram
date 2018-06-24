@@ -12,9 +12,10 @@ import {
   getEdgeNodeIntersection,
   areCoordsEqual,
   generateRandomString,
-} from '../workflowUtils';
-import { IPaperStoredNode, Node } from '../..';
-
+  IPaperStoredNode,
+  PaperNode,
+  Node,
+} from '../..';
 /** Helpers */
 
 const generateNode = (
@@ -25,15 +26,22 @@ const generateNode = (
   height = 80,
   gridSize = 0,
 ): IPaperStoredNode => {
-  const xmlns = 'http://www.w3.org/2000/svg';
-  const ns = document.createElementNS(xmlns, 'g');
-  return {
+  const newNode = new Node({
+    id,
+    gridSize,
+    title: '',
+    width,
+    height,
+  });
+  Object.defineProperty(newNode, 'coords', {
+    value: { x, y },
+  });
+  const storedNode: IPaperStoredNode = {
     id,
     coords: { x, y },
-    params: { width, height },
-    instance: new Node({ id, title: '', width, height, gridSize }),
-    ref: ns,
+    instance: newNode as PaperNode,
   };
+  return storedNode;
 };
 
 /** Tests */

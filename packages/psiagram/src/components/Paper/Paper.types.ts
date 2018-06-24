@@ -113,5 +113,5 @@ export interface IPaperStoredEdge {
 export declare class PaperEdge extends Edge {
   public source: { id: string };
   public target: { id: string };
-  public coords: ICoordinates;
+  public coords: ICoordinates[];
 }

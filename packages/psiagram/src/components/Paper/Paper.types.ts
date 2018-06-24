@@ -37,12 +37,10 @@ export interface IPaperProperties {
 export declare type paperEventType =
   // Node
   | 'add-node'
-  | 'update-node'
   | 'move-node'
   | 'remove-node'
   // Edge
   | 'add-edge'
-  | 'update-edge'
   | 'move-edge'
   | 'remove-edge'
   // Paper
@@ -72,28 +70,22 @@ export enum PaperItemState {
 export interface IPaperInputNode {
   id: string;
   component: typeof Node;
-  properties: IPaperNodeProperties;
   coords: ICoordinates;
-}
-
-export interface IPaperNodeProperties {
-  title: string;
-  width: number;
-  height: number;
-}
-
-export interface IPaperNodeUpdateProperties {
-  title?: string;
-  width?: number;
-  height?: number;
+  properties: {
+    width: number;
+    height: number;
+    title?: string;
+  };
 }
 
 export interface IPaperStoredNode {
   id: string;
   coords: ICoordinates;
-  params: IParameters;
-  instance: Node;
-  ref: SVGElement;
+  instance: PaperNode;
+}
+
+export declare class PaperNode extends Node {
+  public coords: ICoordinates;
 }
 
 // =============================================================================
@@ -104,16 +96,10 @@ export interface IPaperInputEdge {
   component: typeof Edge;
   source: { id: string };
   target: { id: string };
-  properties?: IPaperEdgeProperties;
   coords: ICoordinates[];
-}
-
-export interface IPaperEdgeProperties {
-  title?: string;
-}
-
-export interface IPaperEdgeUpdateProperties {
-  title?: string;
+  properties?: {
+    title?: string;
+  };
 }
 
 export interface IPaperStoredEdge {
@@ -121,6 +107,11 @@ export interface IPaperStoredEdge {
   source: { id: string };
   target: { id: string };
   coords: ICoordinates[];
-  instance: Edge;
-  ref: SVGElement;
+  instance: PaperEdge;
+}
+
+export declare class PaperEdge extends Edge {
+  public source: { id: string };
+  public target: { id: string };
+  public coords: ICoordinates[];
 }

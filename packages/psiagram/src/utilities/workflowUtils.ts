@@ -94,8 +94,8 @@ export const getNodeMidpoint = (
  *
  * @param node Node with boundary to trim edge at.
  * @param nextPoint The next point closest to the node center.
- * @param [gridSize] The size of the grid to snap to.
- * @param [nodeOutline] Distance in px away from node to trim edge.
+ * @param [gridSize] Optional. The size of the grid to snap to.
+ * @param [nodeOutline] Optional. Distance in px away from node to trim edge.
  */
 export const getEdgeNodeIntersection = (
   node: IPaperStoredNode,
@@ -132,13 +132,12 @@ export const getEdgeNodeIntersection = (
 };
 
 /**
- * Returns node's width and height. Attempts to call getParameters on instance,
- * and defaults to node.params if unsuccessful.
+ * Returns node's width and height.
  *
  * @param node The node to find width and height of.
  */
 export const getWidthHeight = (node: IPaperStoredNode): IParameters => {
-  const params = node.instance.getParameters() || node.params;
+  const params = { width: node.instance.width, height: node.instance.height };
   return params;
 };
 
@@ -172,10 +171,10 @@ export function lineIntersect(
   x4: number,
   y4: number,
 ): { x: number; y: number } | null {
-  const denom = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
-  if (denom) {
-    const ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denom;
-    const ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denom;
+  const denominator = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
+  if (denominator) {
+    const ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denominator;
+    const ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denominator;
     return ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1
       ? { x: x1 + ua * (x2 - x1), y: y1 + ua * (y2 - y1) }
       : null;

@@ -111,7 +111,7 @@ export class MouseEvents implements PsiagramPlugin {
         y: roundToNearest(node.coords.y, this._gridSize),
       };
       // Move node to top within paper.
-      this._paper.appendChild(node.ref);
+      this._paper.appendChild(node.instance.getNodeElement());
       // Initialize mouse movement and release listeners.
       document.addEventListener('mousemove', this._handleNodeMouseMove);
       document.addEventListener('mouseup', this._handleNodeMouseUp);
@@ -148,11 +148,11 @@ export class MouseEvents implements PsiagramPlugin {
       // Find new block coordinates.
       const blockX = this._initialPaperCoords.x - roundedMouseDeltaX;
       const blockY = this._initialPaperCoords.y - roundedMouseDeltaY;
-      // TODO: Check if dragged block is overlapping.
-      this._paperInstance.moveNode(id, { x: blockX, y: blockY });
+      const node = this._paperInstance.getNode(id);
+      node.coords = { x: blockX, y: blockY };
     } else {
       throw new PaperError(
-        'E_NO_MOVE',
+        'E_INV_ACT',
         `No current moving node. Active item: ${JSON.stringify(activeItem)}`,
         'MouseEvents.ts',
         '_handleNodeMouseMove',
@@ -178,7 +178,7 @@ export class MouseEvents implements PsiagramPlugin {
       });
     } else {
       throw new PaperError(
-        'E_NO_MOVE',
+        'E_INV_ACT',
         `No current moving node. Active item: ${JSON.stringify(activeItem)}`,
         'MouseEvents.ts',
         '_handleNodeMouseUp',

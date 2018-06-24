@@ -5,6 +5,7 @@
     "ordered-imports": false,
     "object-literal-sort-keys": false,
     "no-unused-variable": true,
+    "max-classes-per-file": false,
     "variable-name": [
       true,
       "ban-keywords",

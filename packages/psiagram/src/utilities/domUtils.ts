@@ -41,7 +41,7 @@ export const createSVGWithAttributes = (
 export const setElementAttribute = (
   element: HTMLElement,
   attribute: string,
-  value: string,
+  value: any,
 ): void => {
   element.setAttribute(attribute, value);
 };
@@ -49,7 +49,29 @@ export const setElementAttribute = (
 export const setSVGAttribute = (
   svgElement: SVGElement,
   attribute: string,
-  value: string,
+  value: any,
 ): void => {
   svgElement.setAttributeNS('', attribute, value);
+};
+
+export const setBatchElementAttributes = (
+  element: HTMLElement,
+  attributes: { [key: string]: any },
+) => {
+  for (const attribute in attributes) {
+    if (attributes.hasOwnProperty(attribute)) {
+      setElementAttribute(element, attribute, attributes[attribute]);
+    }
+  }
+};
+
+export const setBatchSVGAttribute = (
+  svgElement: SVGElement,
+  attributes: { [key: string]: any },
+) => {
+  for (const attribute in attributes) {
+    if (attributes.hasOwnProperty(attribute)) {
+      setSVGAttribute(svgElement, attribute, attributes[attribute]);
+    }
+  }
 };

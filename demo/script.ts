@@ -1,5 +1,4 @@
 // tslint:disable:no-console
-// @ts-ignore
 import {
   Paper,
   IPaperProperties,
@@ -8,9 +7,7 @@ import {
   Edge,
   PaperError,
 } from 'psiagram';
-// @ts-ignore
 import { Grid } from 'psiagram-plugin-grid';
-// @ts-ignore
 import { MouseEvents } from 'psiagram-plugin-mouse-events';
 
 let myPaper: Paper | null = null;
@@ -67,13 +64,11 @@ function loadPaper() {
 
   // Node listeners
   // myPaper.addListener('add-node', eventListener);
-  // myPaper.addListener('update-node', eventListener);
   // myPaper.addListener('move-node', eventListener);
   // myPaper.addListener('remove-node', eventListener);
 
   // Edge listeners
   // myPaper.addListener('add-edge', eventListener);
-  // myPaper.addListener('update-edge', eventListener);
   // myPaper.addListener('move-edge', eventListener);
   // myPaper.addListener('remove-edge', eventListener);
 
@@ -115,7 +110,8 @@ function addNode() {
 function moveNode() {
   const node = document.getElementById('new_node_test');
   if (myPaper && node) {
-    myPaper.moveNode('new_node_test', { x: 0, y: 0 });
+    const nodeInstance = myPaper.getNode('new_node_test');
+    nodeInstance.coords = { x: 0, y: 0 };
   }
 }
 

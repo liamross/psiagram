@@ -16,8 +16,6 @@ import {
   IPaperStoredNode,
   IPaperInputEdge,
   IPaperStoredEdge,
-  IPaperNodeUpdateProperties,
-  IPaperEdgeUpdateProperties,
   paperEventType,
   listenerFunction,
   setWorkflowType,
@@ -31,6 +29,8 @@ import {
   areCoordsEqual,
   generateRandomString,
   PaperError,
+  PaperNode,
+  PaperEdge,
 } from '../../';
 
 export class Paper {
@@ -178,7 +178,7 @@ export class Paper {
       const newNode: IPaperStoredNode = {
         id: node.id,
         coords: node.coords,
-        instance,
+        instance: instance as PaperNode,
       };
 
       // Round node coords to nearest grid.
@@ -221,7 +221,7 @@ export class Paper {
    *
    * @param id The ID of the Node.
    */
-  public getNode(id: string): Node {
+  public getNode(id: string): PaperNode {
     if (this._nodes.hasOwnProperty(id)) {
       return this._nodes[id].instance;
     } else {
@@ -360,13 +360,12 @@ export class Paper {
       const targetNode = this._nodes[edge.target.id];
 
       // Add edge to edges.
-      const newEdge = {
+      const newEdge: IPaperStoredEdge = {
         id: edge.id,
         source: edge.source,
         target: edge.target,
         coords: edge.coords,
-        instance,
-        ref,
+        instance: instance as PaperEdge,
       };
 
       // If ref, update edge position and append onto paper.
@@ -400,7 +399,7 @@ export class Paper {
    *
    * @param id The ID of the Edge.
    */
-  public getEdge(id: string): Edge {
+  public getEdge(id: string): PaperEdge {
     if (this._edges.hasOwnProperty(id)) {
       return this._edges[id].instance;
     } else {

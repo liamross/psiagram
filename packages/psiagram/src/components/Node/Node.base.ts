@@ -63,11 +63,6 @@ export class Node {
   protected initialize(): void {
     const { width, height, title, id } = this._properties;
 
-    this._group = createSVGWithAttributes('g', {
-      id,
-      style: 'user-select: none',
-    });
-
     this._shape = createSVGWithAttributes('rect', {
       id: id + '_shape',
       width,

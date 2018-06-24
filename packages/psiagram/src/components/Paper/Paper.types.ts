@@ -70,26 +70,22 @@ export enum PaperItemState {
 export interface IPaperInputNode {
   id: string;
   component: typeof Node;
-  properties: IPaperNodeProperties;
   coords: ICoordinates;
-}
-
-export interface IPaperNodeProperties {
-  title?: string;
-  width: number;
-  height: number;
-}
-
-export interface IPaperNodeUpdateProperties {
-  title?: string;
-  width?: number;
-  height?: number;
+  properties: {
+    width: number;
+    height: number;
+    title?: string;
+  };
 }
 
 export interface IPaperStoredNode {
   id: string;
   coords: ICoordinates;
-  instance: Node;
+  instance: PaperNode;
+}
+
+export declare class PaperNode extends Node {
+  public coords: ICoordinates;
 }
 
 // =============================================================================
@@ -100,16 +96,10 @@ export interface IPaperInputEdge {
   component: typeof Edge;
   source: { id: string };
   target: { id: string };
-  properties?: IPaperEdgeProperties;
   coords: ICoordinates[];
-}
-
-export interface IPaperEdgeProperties {
-  title?: string;
-}
-
-export interface IPaperEdgeUpdateProperties {
-  title?: string;
+  properties?: {
+    title?: string;
+  };
 }
 
 export interface IPaperStoredEdge {
@@ -117,5 +107,11 @@ export interface IPaperStoredEdge {
   source: { id: string };
   target: { id: string };
   coords: ICoordinates[];
-  instance: Edge;
+  instance: PaperEdge;
+}
+
+export declare class PaperEdge extends Edge {
+  public source: { id: string };
+  public target: { id: string };
+  public coords: ICoordinates;
 }

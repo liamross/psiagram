@@ -42,6 +42,14 @@ function loadPaper() {
           coords: [],
           properties: { title: 'edge 1' },
         },
+        {
+          id: 'edge2',
+          component: Edge,
+          source: { id: 'node2' },
+          target: { x: 254, y: 356 },
+          coords: [],
+          properties: { title: 'edge 2' },
+        },
       ],
     },
   };

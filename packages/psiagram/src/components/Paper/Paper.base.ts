@@ -31,6 +31,7 @@ import {
   PaperError,
   PaperNode,
   PaperEdge,
+  edgeEndPoint,
 } from '../../';
 
 export class Paper {
@@ -327,7 +328,7 @@ export class Paper {
           get() {
             return this._getEdgeSourceProxy(this._properties.id);
           },
-          set(source: { id: string }) {
+          set(source: edgeEndPoint) {
             this._setEdgeSourceProxy(this._properties.id, source);
           },
           configurable: true,
@@ -336,7 +337,7 @@ export class Paper {
           get() {
             return this._getEdgeTargetProxy(this._properties.id);
           },
-          set(target: { id: string }) {
+          set(target: edgeEndPoint) {
             this._setEdgeTargetProxy(this._properties.id, target);
           },
           configurable: true,
@@ -356,10 +357,13 @@ export class Paper {
       const ref = instance.getEdgeElement();
 
       // Get actual nodes to ensure they exist.
-      const sourceNode = this._nodes[edge.source.id];
-      const targetNode = this._nodes[edge.target.id];
+      const hasSource = edge.source.hasOwnProperty('id')
+        ? this._nodes[(edge.source as { id: string }).id]
+        : edge.source.hasOwnProperty('x');
+      const hasTarget = edge.target.hasOwnProperty('id')
+        ? this._nodes[(edge.target as { id: string }).id]
+        : edge.target.hasOwnProperty('x');
 
-      // Add edge to edges.
       const newEdge: IPaperStoredEdge = {
         id: edge.id,
         source: edge.source,
@@ -369,16 +373,15 @@ export class Paper {
       };
 
       // If ref, update edge position and append onto paper.
-      if (ref && sourceNode && targetNode) {
+      if (ref && hasSource && hasTarget) {
         const evt = new PaperEvent('add-edge', {
           paper: this,
           target: newEdge,
-          data: { sourceNode, targetNode },
           defaultAction: () => {
             this._edges[edge.id] = newEdge;
 
             this._updateEdgeRoute(edge.id);
-            this._paper.appendChild(ref);
+            this._paper.insertBefore(ref, this._paper.firstChild);
           },
         });
 
@@ -579,41 +582,69 @@ export class Paper {
   private _updateEdgeRoute(id: string) {
     if (this._edges.hasOwnProperty(id)) {
       const edge = this._edges[id];
+      let sourcePoint: ICoordinates | null = null;
+      let targetPoint: ICoordinates | null = null;
 
-      const sourceNode = this._nodes[edge.source.id];
-      const targetNode = this._nodes[edge.target.id];
+      let sourceNode: IPaperStoredNode | null = null;
+      let targetNode: IPaperStoredNode | null = null;
 
-      if (sourceNode && targetNode) {
-        const sourceMidPoint = getNodeMidpoint(sourceNode, this._gridSize);
-        const targetMidPoint = getNodeMidpoint(targetNode, this._gridSize);
+      if (edge.source.hasOwnProperty('id')) {
+        const source = edge.source as { id: string };
+        sourceNode = this._nodes[source.id];
+      } else {
+        const source = edge.source as ICoordinates;
+        sourcePoint = {
+          x: roundToNearest(source.x, this._gridSize),
+          y: roundToNearest(source.y, this._gridSize),
+        };
+      }
 
-        // Get sourceNode intersection.
-        const sourceIntersect = getEdgeNodeIntersection(
-          sourceNode,
-          edge.coords[0] || targetMidPoint,
-          this._gridSize,
-        );
+      if (edge.target.hasOwnProperty('id')) {
+        const target = edge.target as { id: string };
+        targetNode = this._nodes[target.id];
+      } else {
+        const target = edge.target as ICoordinates;
+        targetPoint = {
+          x: roundToNearest(target.x, this._gridSize),
+          y: roundToNearest(target.y, this._gridSize),
+        };
+      }
 
-        // Get targetNode intersection.
-        const targetIntersect = getEdgeNodeIntersection(
-          targetNode,
-          edge.coords[edge.coords.length - 1] || sourceMidPoint,
-          this._gridSize,
-          4,
-        );
+      if ((sourcePoint || sourceNode) && (targetPoint || targetNode)) {
+        if (sourceNode) {
+          sourcePoint = getNodeMidpoint(sourceNode, this._gridSize);
+        }
+        if (targetNode) {
+          targetPoint = getNodeMidpoint(targetNode, this._gridSize);
+        }
+
+        if (sourceNode) {
+          sourcePoint = getEdgeNodeIntersection(
+            sourceNode,
+            edge.coords[0] || targetPoint,
+            this._gridSize,
+          );
+        }
+        if (targetNode) {
+          targetPoint = getEdgeNodeIntersection(
+            targetNode,
+            edge.coords[edge.coords.length - 1] || sourcePoint,
+            this._gridSize,
+            4,
+          );
+        }
 
         const evt = new PaperEvent('move-edge', {
           paper: this,
           target: edge,
           data: {
             nodes: { sourceNode, targetNode },
-            midpoints: { sourceMidPoint, targetMidPoint },
-            intersects: { sourceIntersect, targetIntersect },
+            points: { sourcePoint, targetPoint },
           },
           defaultAction: () => {
             edge.instance.updatePath(
-              sourceIntersect,
-              targetIntersect,
+              sourcePoint as ICoordinates,
+              targetPoint as ICoordinates,
               edge.coords,
             );
           },
@@ -722,7 +753,7 @@ export class Paper {
    * @param id The ID of the Edge.
    * @private
    */
-  private _getEdgeSource = (id: string): { id: string } => {
+  private _getEdgeSource = (id: string): edgeEndPoint => {
     if (this._edges.hasOwnProperty(id)) {
       return this._edges[id].source;
     } else {
@@ -742,7 +773,7 @@ export class Paper {
    * @param newSource The new source of the Edge.
    * @private
    */
-  private _setEdgeSource = (id: string, newSource: { id: string }): void => {
+  private _setEdgeSource = (id: string, newSource: edgeEndPoint): void => {
     if (this._edges.hasOwnProperty(id)) {
       this._edges[id].source = newSource;
       this._updateEdgeRoute(id);
@@ -762,7 +793,7 @@ export class Paper {
    * @param id The ID of the Edge.
    * @private
    */
-  private _getEdgeTarget = (id: string): { id: string } => {
+  private _getEdgeTarget = (id: string): edgeEndPoint => {
     if (this._edges.hasOwnProperty(id)) {
       return this._edges[id].target;
     } else {
@@ -782,7 +813,7 @@ export class Paper {
    * @param newTarget The new target of the Edge.
    * @private
    */
-  private _setEdgeTarget = (id: string, newTarget: { id: string }): void => {
+  private _setEdgeTarget = (id: string, newTarget: edgeEndPoint): void => {
     if (this._edges.hasOwnProperty(id)) {
       this._edges[id].target = newTarget;
       this._updateEdgeRoute(id);

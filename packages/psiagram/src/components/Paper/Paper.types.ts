@@ -94,8 +94,8 @@ export declare class PaperNode extends Node {
 export interface IPaperInputEdge {
   id: string;
   component: typeof Edge;
-  source: { id: string };
-  target: { id: string };
+  source: edgeEndPoint;
+  target: edgeEndPoint;
   coords: ICoordinates[];
   properties?: {
     title?: string;
@@ -104,14 +104,16 @@ export interface IPaperInputEdge {
 
 export interface IPaperStoredEdge {
   id: string;
-  source: { id: string };
-  target: { id: string };
+  source: edgeEndPoint;
+  target: edgeEndPoint;
   coords: ICoordinates[];
   instance: PaperEdge;
 }
 
 export declare class PaperEdge extends Edge {
-  public source: { id: string };
-  public target: { id: string };
+  public source: edgeEndPoint;
+  public target: edgeEndPoint;
   public coords: ICoordinates[];
 }
+
+export declare type edgeEndPoint = { id: string } | ICoordinates;

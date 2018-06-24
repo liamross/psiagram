@@ -112,7 +112,7 @@ export class Node {
       this._text.textContent = title;
     } else {
       throw new PaperError(
-        'E_NO_EL',
+        'E_NO_ELEM',
         `No text exists for Node ID: ${this._properties.id}`,
         'Node.base.ts',
         'set title',
@@ -132,7 +132,7 @@ export class Node {
       this.updateTextPosition();
     } else {
       throw new PaperError(
-        'E_NO_EL',
+        'E_NO_ELEM',
         `No shape exists for Node ID: ${this._properties.id}`,
         'Node.base.ts',
         'set width',
@@ -152,7 +152,7 @@ export class Node {
       this.updateTextPosition();
     } else {
       throw new PaperError(
-        'E_NO_EL',
+        'E_NO_ELEM',
         `No shape exists for Node ID: ${this._properties.id}`,
         'Node.base.ts',
         'set height',

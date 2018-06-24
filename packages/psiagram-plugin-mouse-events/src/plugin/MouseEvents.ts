@@ -152,7 +152,7 @@ export class MouseEvents implements PsiagramPlugin {
       this._paperInstance.moveNode(id, { x: blockX, y: blockY });
     } else {
       throw new PaperError(
-        'E_NO_MOVE',
+        'E_INV_ACT',
         `No current moving node. Active item: ${JSON.stringify(activeItem)}`,
         'MouseEvents.ts',
         '_handleNodeMouseMove',
@@ -178,7 +178,7 @@ export class MouseEvents implements PsiagramPlugin {
       });
     } else {
       throw new PaperError(
-        'E_NO_MOVE',
+        'E_INV_ACT',
         `No current moving node. Active item: ${JSON.stringify(activeItem)}`,
         'MouseEvents.ts',
         '_handleNodeMouseUp',

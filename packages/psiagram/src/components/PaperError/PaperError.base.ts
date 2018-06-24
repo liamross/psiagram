@@ -20,9 +20,9 @@ export class PaperError extends Error {
    * Initialize the error with an error code and optional properties.
    *
    * @param code Standardized code representing the error.
-   * @param [message] Optional human-readable description of the error.
-   * @param [fileName] Optional name of file error originated in.
-   * @param [issuingFunction] Optional name of function issuing error.
+   * @param [message] Optional. Human-readable description of the error.
+   * @param [fileName] Optional. Name of file error originated in.
+   * @param [issuingFunction] Optional. Name of function issuing error.
    */
   constructor(
     code: string,

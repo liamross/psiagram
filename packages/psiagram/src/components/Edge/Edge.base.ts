@@ -60,7 +60,7 @@ export class Edge {
       setSVGAttribute(this._path as SVGElement, 'd', dString);
     } else {
       throw new PaperError(
-        'E_NO_EL',
+        'E_NO_ELEM',
         `No path exists for Edge ID: ${this._properties.id}`,
         'Edge.base.ts',
         'updatePath',
@@ -95,7 +95,7 @@ export class Edge {
   //     this._text.textContent = title;
   //   } else {
   //     throw new PaperError(
-  //       'E_NO_EL',
+  //       'E_NO_ELEM',
   //       `No text exists for Edge ID: ${this._properties.id}`,
   //       'Node.base.ts',
   //       'set title',

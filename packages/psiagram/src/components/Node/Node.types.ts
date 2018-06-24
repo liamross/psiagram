@@ -7,8 +7,8 @@
 
 export interface INodeProperties {
   id: string;
-  width: number;
-  height: number;
   gridSize: number;
   title?: string;
+  width: number;
+  height: number;
 }

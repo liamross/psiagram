@@ -37,12 +37,10 @@ export interface IPaperProperties {
 export declare type paperEventType =
   // Node
   | 'add-node'
-  | 'update-node'
   | 'move-node'
   | 'remove-node'
   // Edge
   | 'add-edge'
-  | 'update-edge'
   | 'move-edge'
   | 'remove-edge'
   // Paper
@@ -77,7 +75,7 @@ export interface IPaperInputNode {
 }
 
 export interface IPaperNodeProperties {
-  title: string;
+  title?: string;
   width: number;
   height: number;
 }
@@ -91,9 +89,7 @@ export interface IPaperNodeUpdateProperties {
 export interface IPaperStoredNode {
   id: string;
   coords: ICoordinates;
-  params: IParameters;
   instance: Node;
-  ref: SVGElement;
 }
 
 // =============================================================================
@@ -122,5 +118,4 @@ export interface IPaperStoredEdge {
   target: { id: string };
   coords: ICoordinates[];
   instance: Edge;
-  ref: SVGElement;
 }

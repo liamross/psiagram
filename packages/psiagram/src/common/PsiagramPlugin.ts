@@ -25,7 +25,6 @@ export interface IPluginProperties {
   attributes: {
     gridSize: number;
     allowBlockOverlap: boolean;
-    gridColor: string;
     paperWrapperClass: string;
     paperClass: string;
   };
@@ -56,9 +55,9 @@ export declare class PsiagramPlugin {
    */
   public initialize?(
     paper: Paper,
+    properties: IPluginProperties,
     nodes: { [key: string]: IPaperStoredNode },
     edges: { [key: string]: IPaperStoredEdge },
-    properties: IPluginProperties,
   ): void;
   /**
    * This may be called if the paper is gracefully torn-down. Use this to clean

@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { setPaperDefs } from './helpers/svgDefinitions';
-
 import {
   Node,
   Edge,
@@ -18,8 +16,6 @@ import {
   IPaperStoredNode,
   IPaperInputEdge,
   IPaperStoredEdge,
-  IPaperNodeUpdateProperties,
-  IPaperEdgeUpdateProperties,
   paperEventType,
   listenerFunction,
   setWorkflowType,
@@ -32,6 +28,10 @@ import {
   getEdgeNodeIntersection,
   areCoordsEqual,
   generateRandomString,
+  PaperError,
+  PaperNode,
+  PaperEdge,
+  edgeEndPoint,
 } from '../../';
 
 export class Paper {
@@ -56,7 +56,6 @@ export class Paper {
     attributes = attributes || {};
     this._gridSize = attributes.gridSize || 0;
     this._allowBlockOverlap = attributes.allowBlockOverlap || false;
-    const gridColor: string = attributes.gridColor || '#EEE';
     const paperWrapperClass: string = attributes.paperWrapperClass || '';
     const paperClass: string = attributes.paperClass || '';
 
@@ -79,7 +78,6 @@ export class Paper {
       height: '100%',
       class: paperClass || null,
     });
-    setPaperDefs(this._paper, this._gridSize, gridColor);
     setWorkflowType(this._paper, WorkflowType.Paper);
 
     // Set up paper wrapper.
@@ -104,61 +102,84 @@ export class Paper {
     if (plugins) {
       plugins.forEach(plugin => {
         if (plugin.initialize) {
-          plugin.initialize(this, this._nodes, this._edges, {
-            width: this._width,
-            height: this._height,
-            plugins,
-            attributes: {
-              gridSize: this._gridSize,
-              allowBlockOverlap: this._allowBlockOverlap,
-              gridColor,
-              paperWrapperClass,
-              paperClass,
+          plugin.initialize(
+            this,
+            {
+              width: this._width,
+              height: this._height,
+              plugins,
+              attributes: {
+                gridSize: this._gridSize,
+                allowBlockOverlap: this._allowBlockOverlap,
+                paperWrapperClass,
+                paperClass,
+              },
+              initialConditions,
             },
-            initialConditions,
-          });
+            this._nodes,
+            this._edges,
+          );
         }
       });
     }
   }
 
   /**
-   * Returns the paper wrapper which contains an svg paper element, as well as
-   * any nodes or edges rendered onto the paper.
-   *
-   * @returns {HTMLElement} Returns paper wrapper, which contains SVG paper.
+   * Returns the Paper wrapper which contains an svg Paper element, as well as
+   * any nodes or edges rendered onto the Paper.
    */
   public getPaperElement(): HTMLElement {
     return this._paperWrapper;
   }
 
   /**
-   * Add a node to the paper. This node must be a complete Input Node.
+   * Add a Node to the Paper.
    *
-   * @param node The node object to add to paper.
+   * @param node The Node to add to Paper.
    */
   public addNode(node: IPaperInputNode): void {
     if (this._nodes.hasOwnProperty(node.id)) {
-      console.error(`Add node: node with id ${node.id} already exists.`);
+      throw new PaperError(
+        'E_DUP_ID',
+        `Node with id ${node.id} already exists.`,
+        'Paper.base.ts',
+        'addNode',
+      );
     } else {
       // Create instance of class at node.component.
       const instance: Node = new node.component({
         ...node.properties,
-        gridSize: this._gridSize,
         id: node.id,
+        gridSize: this._gridSize,
       });
 
-      // Get params and ref to element from instance.
-      const params = instance.getParameters();
-      const ref = instance.getNodeElement();
+      // Set proxies to allow direct get and set coordinates on each Node, while
+      // still having it trigger within the Paper (where coords are stored).
+      Object.defineProperties(instance, {
+        _getNodeCoordsProxy: {
+          value: this._getNodeCoords,
+          configurable: true,
+        },
+        _setNodeCoordsProxy: {
+          value: this._setNodeCoords,
+          configurable: true,
+        },
+        coords: {
+          get() {
+            return this._getNodeCoordsProxy(this._properties.id);
+          },
+          set(coords: ICoordinates) {
+            this._setNodeCoordsProxy(this._properties.id, coords);
+          },
+          configurable: true,
+        },
+      });
 
-      // Create new node.
-      const newNode = {
-        coords: node.coords,
+      // Create new Node.
+      const newNode: IPaperStoredNode = {
         id: node.id,
-        instance,
-        params,
-        ref,
+        coords: node.coords,
+        instance: instance as PaperNode,
       };
 
       // Round node coords to nearest grid.
@@ -170,10 +191,9 @@ export class Paper {
         target: newNode,
         data: { roundedX, roundedY },
         defaultAction: () => {
-          // Add node to nodes.
           this._nodes[node.id] = newNode;
+          const ref = this._nodes[node.id].instance.getNodeElement();
 
-          // If ref, translate to node.coords and append onto paper.
           if (ref) {
             setSVGAttribute(
               ref,
@@ -183,10 +203,11 @@ export class Paper {
 
             this._paper.appendChild(ref);
           } else {
-            console.error(
-              `Add node: invalid element returned from node class\nNode ID: ${
-                this._nodes[node.id].id
-              }`,
+            throw new PaperError(
+              'E_INV_ELEM',
+              'Invalid element returned from Node',
+              'Paper.base.ts',
+              'addNode',
             );
           }
         },
@@ -197,91 +218,27 @@ export class Paper {
   }
 
   /**
-   * Update the appearance of the node with given ID.
+   * Get a Node by ID. Use this to retrieve a Node and set any properties.
    *
-   * @param id The ID of the node you wish to update.
-   * @param properties Properties to visually change the node.
+   * @param id The ID of the Node.
    */
-  public updateNodeProperties(
-    id: string,
-    properties: IPaperNodeUpdateProperties,
-  ): void {
+  public getNode(id: string): PaperNode {
     if (this._nodes.hasOwnProperty(id)) {
-      const node = this._nodes[id];
-
-      const evt = new PaperEvent('update-node', {
-        paper: this,
-        target: node,
-        data: { properties },
-        defaultAction: () => {
-          node.instance.updateProperties({
-            ...properties,
-            gridSize: this._gridSize,
-            id,
-          });
-        },
-      });
-
-      this._fireEvent(evt);
+      return this._nodes[id].instance;
     } else {
-      console.error(
-        `Update node properties: node with id ${id} does not exist.`,
+      throw new PaperError(
+        'E_NO_ID',
+        `Node with id ${id} does not exist.`,
+        'Paper.base.ts',
+        'getNode',
       );
     }
   }
 
   /**
-   * Update a nodes coordinates. This does NOT append the node onto paper.
+   * Removes a Node from the paper by Node ID.
    *
-   * Order of operations:
-   * 1. Updates the stored node coordinates.
-   * 2. Updates a node position on the paper to provided coordinates.
-   * 3. Update edge position on every edge that connects to the node.
-   *
-   * @param id The ID of the node to update coordinates.
-   * @param newCoords The new coordinates of the node.
-   */
-  public moveNode(id: string, newCoords: ICoordinates): void {
-    if (this._nodes.hasOwnProperty(id)) {
-      const node = this._nodes[id];
-
-      // Only update node position if coordinates have changed.
-      if (!areCoordsEqual(node.coords, newCoords)) {
-        const oldCoords = { ...node.coords };
-
-        const evt = new PaperEvent('move-node', {
-          paper: this,
-          target: node,
-          data: { newCoords, oldCoords },
-          defaultAction: () => {
-            node.coords = newCoords;
-
-            setSVGAttribute(
-              node.ref,
-              'transform',
-              `translate(${node.coords.x} ${node.coords.y})`,
-            );
-
-            Object.keys(this._edges).forEach(edgeId => {
-              const edge = this._edges[edgeId];
-              if (edge.source.id === id || edge.target.id === id) {
-                this.updateEdgeRoute(edgeId);
-              }
-            });
-          },
-        });
-
-        this._fireEvent(evt);
-      }
-    } else {
-      console.error(`Update node position: node with id ${id} does not exist.`);
-    }
-  }
-
-  /**
-   * Removes a node from the paper by node ID.
-   *
-   * @param id The ID of the node you wish to remove.
+   * @param id The ID of the Node.
    */
   public removeNode(id: string): void {
     if (this._nodes.hasOwnProperty(id)) {
@@ -292,31 +249,46 @@ export class Paper {
           // Remove all edges that use node as end point.
           Object.keys(this._edges).forEach(edgeId => {
             const edge = this._edges[edgeId];
-            if (edge.source.id === id || edge.target.id === id) {
+            if (
+              (edge.source.hasOwnProperty('id') &&
+                (edge.source as { id: string }).id === id) ||
+              (edge.target.hasOwnProperty('id') &&
+                (edge.target as { id: string }).id === id)
+            ) {
               this.removeEdge(edgeId);
             }
           });
 
           // Remove node.
-          this._nodes[id].ref.remove();
+          this._nodes[id].instance.getNodeElement().remove();
           delete this._nodes[id];
         },
       });
 
       this._fireEvent(evt);
     } else {
-      console.error(`Delete node: node with id ${id} does not exist.`);
+      throw new PaperError(
+        'E_NO_ID',
+        `Node with id ${id} does not exist.`,
+        'Paper.base.ts',
+        'removeNode',
+      );
     }
   }
 
   /**
-   * Add an edge to the paper. This edge must be a complete Input Edge.
+   * Add an Edge to the Paper.
    *
-   * @param edge The edge object to add to paper.
+   * @param edge The Edge to add to Paper.
    */
   public addEdge(edge: IPaperInputEdge): void {
     if (this._edges.hasOwnProperty(edge.id)) {
-      console.error(`Add edge: edge with id ${edge.id} already exists.`);
+      throw new PaperError(
+        'E_DUP_ID',
+        `Edge with id ${edge.id} already exists.`,
+        'Paper.base.ts',
+        'addEdge',
+      );
     } else {
       // Create instance of class at edge.component.
       const instance: Edge = new edge.component({
@@ -324,163 +296,122 @@ export class Paper {
         id: edge.id,
       });
 
+      // Set proxies to allow direct get and set for source, target, and
+      // coordinates on each Edge, while still having it trigger within the
+      // Paper (where source, target and coords are stored).
+      Object.defineProperties(instance, {
+        _getEdgeSourceProxy: {
+          value: this._getEdgeSource,
+          configurable: true,
+        },
+        _setEdgeSourceProxy: {
+          value: this._setEdgeSource,
+          configurable: true,
+        },
+        _getEdgeTargetProxy: {
+          value: this._getEdgeTarget,
+          configurable: true,
+        },
+        _setEdgeTargetProxy: {
+          value: this._setEdgeTarget,
+          configurable: true,
+        },
+        _getEdgeCoordsProxy: {
+          value: this._getEdgeCoords,
+          configurable: true,
+        },
+        _setEdgeCoordsProxy: {
+          value: this._setEdgeCoords,
+          configurable: true,
+        },
+        source: {
+          get() {
+            return this._getEdgeSourceProxy(this._properties.id);
+          },
+          set(source: edgeEndPoint) {
+            this._setEdgeSourceProxy(this._properties.id, source);
+          },
+          configurable: true,
+        },
+        target: {
+          get() {
+            return this._getEdgeTargetProxy(this._properties.id);
+          },
+          set(target: edgeEndPoint) {
+            this._setEdgeTargetProxy(this._properties.id, target);
+          },
+          configurable: true,
+        },
+        coords: {
+          get() {
+            return this._getEdgeCoordsProxy(this._properties.id);
+          },
+          set(coords: ICoordinates[]) {
+            this._setEdgeCoordsProxy(this._properties.id, coords);
+          },
+          configurable: true,
+        },
+      });
+
       // Get ref to element from instance.
       const ref = instance.getEdgeElement();
 
       // Get actual nodes to ensure they exist.
-      const sourceNode = this._nodes[edge.source.id];
-      const targetNode = this._nodes[edge.target.id];
+      const hasSource = edge.source.hasOwnProperty('id')
+        ? this._nodes[(edge.source as { id: string }).id]
+        : edge.source.hasOwnProperty('x');
+      const hasTarget = edge.target.hasOwnProperty('id')
+        ? this._nodes[(edge.target as { id: string }).id]
+        : edge.target.hasOwnProperty('x');
 
-      // Add edge to edges.
-      const newEdge = {
+      const newEdge: IPaperStoredEdge = {
         id: edge.id,
         source: edge.source,
         target: edge.target,
         coords: edge.coords,
-        instance,
-        ref,
+        instance: instance as PaperEdge,
       };
 
       // If ref, update edge position and append onto paper.
-      if (ref && sourceNode && targetNode) {
+      if (ref && hasSource && hasTarget) {
         const evt = new PaperEvent('add-edge', {
           paper: this,
           target: newEdge,
-          data: { sourceNode, targetNode },
           defaultAction: () => {
             this._edges[edge.id] = newEdge;
 
-            this.updateEdgeRoute(edge.id);
-            this._paper.appendChild(ref);
+            this._updateEdgeRoute(edge.id);
+            this._paper.insertBefore(ref, this._paper.firstChild);
           },
         });
 
         this._fireEvent(evt);
       } else {
-        console.error(
-          `Add edge: invalid element returned from edge class\nEdge ID: ${
-            edge.id
-          }`,
+        throw new PaperError(
+          'E_INV_ELEM',
+          'Invalid element returned from edge',
+          'Paper.base.ts',
+          'addEdge',
         );
       }
     }
   }
 
   /**
-   * Update the appearance of the edge with given ID.
+   * Get an Edge by ID. Use this to retrieve an Edge and set any properties.
    *
-   * @param id The ID of the edge you wish to update.
-   * @param properties Properties to visually change the edge.
+   * @param id The ID of the Edge.
    */
-  public updateEdgeProperties(
-    id: string,
-    properties: IPaperEdgeUpdateProperties,
-  ): void {
+  public getEdge(id: string): PaperEdge {
     if (this._edges.hasOwnProperty(id)) {
-      const edge = this._edges[id];
-
-      const evt = new PaperEvent('update-edge', {
-        paper: this,
-        target: edge,
-        data: { properties },
-        defaultAction: () => {
-          edge.instance.updateProperties({
-            ...properties,
-            id,
-          });
-        },
-      });
-
-      this._fireEvent(evt);
+      return this._edges[id].instance;
     } else {
-      console.error(`Update edge: edge with id ${id} does not exist.`);
-    }
-  }
-
-  /**
-   * Update an edge's end nodes and coordinates. This does NOT append the edge
-   * onto paper.
-   *
-   * Order of operations:
-   * 1. If newNodes is given, update any provided edge endpoint nodes.
-   * 2. If coords is given, update edge coords array.
-   * 3. Get source and target nodes and find their midpoints.
-   * 4. Use the node intersection formula to find the actual start & end points.
-   * 5. Call updatePath on the edge instance with the new points.
-   *
-   * @param id The ID of the node to update coordinates.
-   * @param [coords] A new array of coordinates for the edge.
-   * @param [newNodes] The new coordinates of the node.
-   * @param [newNodes.source] A new source node for the edge.
-   * @param [newNodes.target] A new target node for the edge.
-   */
-  public updateEdgeRoute(
-    id: string,
-    coords?: ICoordinates[],
-    newNodes?: { source?: { id: string }; target?: { id: string } },
-  ) {
-    if (this._edges.hasOwnProperty(id)) {
-      const edge = this._edges[id];
-
-      if (coords) {
-        edge.coords = coords;
-      }
-
-      if (newNodes) {
-        edge.source.id = newNodes.source ? newNodes.source.id : edge.source.id;
-        edge.target.id = newNodes.target ? newNodes.target.id : edge.target.id;
-      }
-
-      // TODO: case when source or target IDs do not point to anything. Maybe
-      // check in add node and here? To prevent drawing onto paper.
-
-      const sourceNode = this._nodes[edge.source.id];
-      const targetNode = this._nodes[edge.target.id];
-
-      if (sourceNode && targetNode) {
-        const sourceMidPoint = getNodeMidpoint(sourceNode, this._gridSize);
-        const targetMidPoint = getNodeMidpoint(targetNode, this._gridSize);
-
-        // Get sourceNode intersection.
-        const sourceIntersect = getEdgeNodeIntersection(
-          sourceNode,
-          edge.coords[0] || targetMidPoint,
-          this._gridSize,
-        );
-
-        // Get targetNode intersection.
-        const targetIntersect = getEdgeNodeIntersection(
-          targetNode,
-          edge.coords[edge.coords.length - 1] || sourceMidPoint,
-          this._gridSize,
-          4,
-        );
-
-        const evt = new PaperEvent('move-edge', {
-          paper: this,
-          target: edge,
-          data: {
-            nodes: { sourceNode, targetNode },
-            midpoints: { sourceMidPoint, targetMidPoint },
-            intersects: { sourceIntersect, targetIntersect },
-          },
-          defaultAction: () => {
-            edge.instance.updatePath(
-              sourceIntersect,
-              targetIntersect,
-              edge.coords,
-            );
-          },
-        });
-
-        this._fireEvent(evt);
-      } else {
-        console.error(
-          `Update edge position: edge source or target id is not valid.`,
-        );
-      }
-    } else {
-      console.error(`Update edge position: edge with id ${id} does not exist.`);
+      throw new PaperError(
+        'E_NO_ID',
+        `Edge with id ${id} does not exist.`,
+        'Paper.base.ts',
+        'getEdge',
+      );
     }
   }
 
@@ -495,14 +426,19 @@ export class Paper {
         paper: this,
         target: this._edges[id],
         defaultAction: () => {
-          this._edges[id].ref.remove();
+          this._edges[id].instance.getEdgeElement().remove();
           delete this._edges[id];
         },
       });
 
       this._fireEvent(evt);
     } else {
-      console.error(`Delete edge: edge with id ${id} does not exist.`);
+      throw new PaperError(
+        'E_NO_ID',
+        `Edge with id ${id} does not exist.`,
+        'Paper.base.ts',
+        'removeEdge',
+      );
     }
   }
 
@@ -519,7 +455,7 @@ export class Paper {
    * object with the workflow item type, id of the item, and the state you wish
    * to move the item to.
    *
-   * @param [activeItem] Optional active item object.
+   * @param [activeItem] Optional. Active item object.
    */
   public updateActiveItem(activeItem?: IActiveItem): void {
     const oldActiveItem = this._activeItem;
@@ -574,10 +510,6 @@ export class Paper {
 
     if (this._listeners[type].every(currentLis => currentLis !== listener)) {
       this._listeners[type].push(listener);
-    } else {
-      console.error(
-        `Add listener: identical listener already exists for "${type}".`,
-      );
     }
   }
 
@@ -617,7 +549,7 @@ export class Paper {
   public _fireEvent(evt: PaperEvent): void {
     const type = evt.eventType;
 
-    if (this._listeners[type] !== undefined && this._listeners[type].length) {
+    if (Array.isArray(this._listeners[type]) && this._listeners[type].length) {
       this._listeners[type].forEach(listener => {
         if (evt.canPropagate) {
           listener(evt);
@@ -636,10 +568,302 @@ export class Paper {
    * probably want to use getPaperElement().
    *
    * Returns the SVG element contained within the paper wrapper.
-   *
-   * @returns {SVGElement} Returns the SVG Paper element.
    */
   public _getDrawSurface(): SVGElement {
     return this._paper;
   }
+
+  /**
+   * Update the path of an Edge.
+   *
+   * @param id The ID of the Edge.
+   * @private
+   */
+  private _updateEdgeRoute(id: string) {
+    if (this._edges.hasOwnProperty(id)) {
+      const edge = this._edges[id];
+      let sourcePoint: ICoordinates | null = null;
+      let targetPoint: ICoordinates | null = null;
+
+      let sourceNode: IPaperStoredNode | null = null;
+      let targetNode: IPaperStoredNode | null = null;
+
+      if (edge.source.hasOwnProperty('id')) {
+        const source = edge.source as { id: string };
+        sourceNode = this._nodes[source.id];
+      } else {
+        const source = edge.source as ICoordinates;
+        sourcePoint = {
+          x: roundToNearest(source.x, this._gridSize),
+          y: roundToNearest(source.y, this._gridSize),
+        };
+      }
+
+      if (edge.target.hasOwnProperty('id')) {
+        const target = edge.target as { id: string };
+        targetNode = this._nodes[target.id];
+      } else {
+        const target = edge.target as ICoordinates;
+        targetPoint = {
+          x: roundToNearest(target.x, this._gridSize),
+          y: roundToNearest(target.y, this._gridSize),
+        };
+      }
+
+      if ((sourcePoint || sourceNode) && (targetPoint || targetNode)) {
+        if (sourceNode) {
+          sourcePoint = getNodeMidpoint(sourceNode, this._gridSize);
+        }
+        if (targetNode) {
+          targetPoint = getNodeMidpoint(targetNode, this._gridSize);
+        }
+
+        if (sourceNode) {
+          sourcePoint = getEdgeNodeIntersection(
+            sourceNode,
+            edge.coords[0] || targetPoint,
+            this._gridSize,
+          );
+        }
+        if (targetNode) {
+          targetPoint = getEdgeNodeIntersection(
+            targetNode,
+            edge.coords[edge.coords.length - 1] || sourcePoint,
+            this._gridSize,
+            4,
+          );
+        }
+
+        const evt = new PaperEvent('move-edge', {
+          paper: this,
+          target: edge,
+          data: {
+            nodes: { sourceNode, targetNode },
+            points: { sourcePoint, targetPoint },
+          },
+          defaultAction: () => {
+            edge.instance.updatePath(
+              sourcePoint as ICoordinates,
+              targetPoint as ICoordinates,
+              edge.coords,
+            );
+          },
+        });
+
+        this._fireEvent(evt);
+      } else {
+        throw new PaperError(
+          'E_NO_ID',
+          'Node with Edge source or target Node ID does not exist.',
+          'Paper.base.ts',
+          'updateEdgeRoute',
+        );
+      }
+    } else {
+      throw new PaperError(
+        'E_NO_ID',
+        `Edge with id ${id} does not exist.`,
+        'Paper.base.ts',
+        'updateEdgeRoute',
+      );
+    }
+  }
+
+  /**
+   * Returns the coordinates of a Node.
+   *
+   * @param id The ID of the Node.
+   * @private
+   */
+  private _getNodeCoords = (id: string): ICoordinates => {
+    if (this._nodes.hasOwnProperty(id)) {
+      return this._nodes[id].coords;
+    } else {
+      throw new PaperError(
+        'E_NO_ID',
+        `Node with id ${id} does not exist.`,
+        'Paper.base.ts',
+        '_getNodeCoords',
+      );
+    }
+  };
+
+  /**
+   * Update coordinates of a Node. This does NOT append the Node onto paper.
+   *
+   * Order of operations:
+   * 1. Updates the stored node coordinates.
+   * 2. Updates a node position on the paper to provided coordinates.
+   * 3. Update edge position on every edge that connects to the node.
+   *
+   * @param id The ID of the node.
+   * @param newCoords The new coordinates of the node.
+   * @private
+   */
+  private _setNodeCoords = (id: string, newCoords: ICoordinates): void => {
+    if (this._nodes.hasOwnProperty(id)) {
+      const node = this._nodes[id];
+
+      // Only update node position if coordinates have changed.
+      if (!areCoordsEqual(node.coords, newCoords)) {
+        const oldCoords = { ...node.coords };
+
+        const evt = new PaperEvent('move-node', {
+          paper: this,
+          target: node,
+          data: { newCoords, oldCoords },
+          defaultAction: () => {
+            node.coords = newCoords;
+
+            setSVGAttribute(
+              node.instance.getNodeElement(),
+              'transform',
+              `translate(${node.coords.x} ${node.coords.y})`,
+            );
+
+            Object.keys(this._edges).forEach(edgeId => {
+              const edge = this._edges[edgeId];
+              if (
+                (edge.source.hasOwnProperty('id') &&
+                  (edge.source as { id: string }).id === id) ||
+                (edge.target.hasOwnProperty('id') &&
+                  (edge.target as { id: string }).id === id)
+              ) {
+                this._updateEdgeRoute(edgeId);
+              }
+            });
+          },
+        });
+
+        this._fireEvent(evt);
+      }
+    } else {
+      throw new PaperError(
+        'E_NO_ID',
+        `Node with id ${id} does not exist.`,
+        'Paper.base.ts',
+        '_setNodeCoords',
+      );
+    }
+  };
+
+  /**
+   * Returns the source of an Edge.
+   *
+   * @param id The ID of the Edge.
+   * @private
+   */
+  private _getEdgeSource = (id: string): edgeEndPoint => {
+    if (this._edges.hasOwnProperty(id)) {
+      return this._edges[id].source;
+    } else {
+      throw new PaperError(
+        'E_NO_ID',
+        `Edge with id ${id} does not exist.`,
+        'Paper.base.ts',
+        '_getEdgeSource',
+      );
+    }
+  };
+
+  /**
+   * Sets the source of an Edge, and makes update call to Edge.
+   *
+   * @param id The ID of the Edge.
+   * @param newSource The new source of the Edge.
+   * @private
+   */
+  private _setEdgeSource = (id: string, newSource: edgeEndPoint): void => {
+    if (this._edges.hasOwnProperty(id)) {
+      this._edges[id].source = newSource;
+      this._updateEdgeRoute(id);
+    } else {
+      throw new PaperError(
+        'E_NO_ID',
+        `Edge with id ${id} does not exist.`,
+        'Paper.base.ts',
+        '_setEdgeSource',
+      );
+    }
+  };
+
+  /**
+   * Returns the target of an Edge.
+   *
+   * @param id The ID of the Edge.
+   * @private
+   */
+  private _getEdgeTarget = (id: string): edgeEndPoint => {
+    if (this._edges.hasOwnProperty(id)) {
+      return this._edges[id].target;
+    } else {
+      throw new PaperError(
+        'E_NO_ID',
+        `Edge with id ${id} does not exist.`,
+        'Paper.base.ts',
+        '_getEdgeTarget',
+      );
+    }
+  };
+
+  /**
+   * Sets the target of an Edge, and makes update call to Edge.
+   *
+   * @param id The ID of the Edge.
+   * @param newTarget The new target of the Edge.
+   * @private
+   */
+  private _setEdgeTarget = (id: string, newTarget: edgeEndPoint): void => {
+    if (this._edges.hasOwnProperty(id)) {
+      this._edges[id].target = newTarget;
+      this._updateEdgeRoute(id);
+    } else {
+      throw new PaperError(
+        'E_NO_ID',
+        `Edge with id ${id} does not exist.`,
+        'Paper.base.ts',
+        '_setEdgeTarget',
+      );
+    }
+  };
+
+  /**
+   * Returns the coords of an Edge.
+   *
+   * @param id The ID of the Edge.
+   * @private
+   */
+  private _getEdgeCoords = (id: string): ICoordinates[] => {
+    if (this._edges.hasOwnProperty(id)) {
+      return this._edges[id].coords;
+    } else {
+      throw new PaperError(
+        'E_NO_ID',
+        `Edge with id ${id} does not exist.`,
+        'Paper.base.ts',
+        '_getEdgeCoords',
+      );
+    }
+  };
+
+  /**
+   * Sets the coords of an Edge, and makes update call to Edge.
+   *
+   * @param id The ID of the Edge.
+   * @param newCoords The new coords of the Edge.
+   * @private
+   */
+  private _setEdgeCoords = (id: string, newCoords: ICoordinates[]): void => {
+    if (this._edges.hasOwnProperty(id)) {
+      this._edges[id].coords = newCoords;
+      this._updateEdgeRoute(id);
+    } else {
+      throw new PaperError(
+        'E_NO_ID',
+        `Edge with id ${id} does not exist.`,
+        'Paper.base.ts',
+        '_setEdgeCoords',
+      );
+    }
+  };
 }

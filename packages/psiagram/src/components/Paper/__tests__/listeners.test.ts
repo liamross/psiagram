@@ -10,16 +10,13 @@ import {
   IPaperProperties,
   Edge,
   Node,
-  listenerFunction,
   PaperEvent,
   PaperItemState,
+  WorkflowType,
 } from '../../..';
-import { WorkflowType } from '../../../utilities/dataUtils';
 
 let paperProperties: IPaperProperties = null;
 let myPaper: Paper = null;
-
-declare var global: any;
 
 const addNode = () => {
   if (myPaper) {
@@ -90,16 +87,11 @@ describe('Listeners', () => {
   });
 
   describe('all types', () => {
-    it('prohibits adding duplicate listeners to a type', () => {
+    it('only adds equal listener callback once to same event type', () => {
       const testFunc = jest.fn();
 
-      // TODO: Update once console errors are callback error codes.
-      const spy = jest.spyOn(global.console, 'error');
-
       myPaper.addListener('add-node', testFunc);
-      expect(spy).toHaveBeenCalledTimes(0);
       myPaper.addListener('add-node', testFunc);
-      expect(spy).toHaveBeenCalledTimes(1);
 
       addNode();
 
@@ -141,33 +133,6 @@ describe('Listeners', () => {
     });
   });
 
-  describe('update node properties', () => {
-    it('can add valid listeners', () => {
-      const testFunc = jest.fn();
-
-      myPaper.addListener('update-node', testFunc);
-
-      addNode();
-
-      myPaper.updateNodeProperties('node-test', { title: 'new-title' });
-
-      expect(testFunc.mock.calls.length).toBe(1);
-    });
-
-    it('can remove listeners', () => {
-      const testFunc = jest.fn();
-
-      myPaper.addListener('update-node', testFunc);
-      myPaper.removeListener('update-node', testFunc);
-
-      addNode();
-
-      myPaper.updateNodeProperties('node-test', { title: 'new-title' });
-
-      expect(testFunc.mock.calls.length).toBe(0);
-    });
-  });
-
   describe('move node', () => {
     it('can add valid listeners', () => {
       const testFunc = jest.fn();
@@ -176,7 +141,8 @@ describe('Listeners', () => {
 
       addNode();
 
-      myPaper.moveNode('node-test', { x: 0, y: 0 });
+      const node = myPaper.getNode('node-test');
+      node.coords = { x: 0, y: 0 };
 
       expect(testFunc.mock.calls.length).toBe(1);
     });
@@ -188,7 +154,8 @@ describe('Listeners', () => {
 
       addNode();
 
-      myPaper.moveNode('node-test', { x: 901, y: 901 });
+      const node = myPaper.getNode('node-test');
+      node.coords = { x: 901, y: 901 };
 
       expect(testFunc.mock.calls.length).toBe(1);
     });
@@ -201,7 +168,8 @@ describe('Listeners', () => {
 
       addNode();
 
-      myPaper.moveNode('node-test', { x: 0, y: 0 });
+      const node = myPaper.getNode('node-test');
+      node.coords = { x: 0, y: 0 };
 
       expect(testFunc.mock.calls.length).toBe(0);
     });
@@ -257,33 +225,6 @@ describe('Listeners', () => {
     });
   });
 
-  describe('update edge properties', () => {
-    it('can add valid listeners', () => {
-      const testFunc = jest.fn();
-
-      myPaper.addListener('update-edge', testFunc);
-
-      addEdge();
-
-      myPaper.updateEdgeProperties('edge-test', { title: 'new-title' });
-
-      expect(testFunc.mock.calls.length).toBe(1);
-    });
-
-    it('can remove listeners', () => {
-      const testFunc = jest.fn();
-
-      myPaper.addListener('update-edge', testFunc);
-      myPaper.removeListener('update-edge', testFunc);
-
-      addEdge();
-
-      myPaper.updateEdgeProperties('edge-test', { title: 'new-title' });
-
-      expect(testFunc.mock.calls.length).toBe(0);
-    });
-  });
-
   describe('update edge position', () => {
     it('can add valid listeners', () => {
       const testFunc = jest.fn();
@@ -292,7 +233,8 @@ describe('Listeners', () => {
 
       addEdge();
 
-      myPaper.updateEdgeRoute('edge-test');
+      const edge = myPaper.getEdge('edge-test');
+      edge.coords = [{ x: 0, y: 0 }];
 
       expect(testFunc.mock.calls.length).toBe(2);
     });
@@ -305,7 +247,8 @@ describe('Listeners', () => {
 
       addEdge();
 
-      myPaper.updateEdgeRoute('edge-test');
+      const edge = myPaper.getEdge('edge-test');
+      edge.coords = [{ x: 0, y: 0 }];
 
       expect(testFunc.mock.calls.length).toBe(0);
     });

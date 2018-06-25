@@ -58,9 +58,18 @@ $ npm run lint --fix
 $ yarn start
 $ npm start
 
-# builds the lerna npm packages, then starts development server
-$ yarn buildstart
-$ npm run buildstart
+# cleans the dist and cache folders, then starts development server
+$ yarn start-clean
+$ npm run start-clean
+
+# builds the files, then starts development server
+$ yarn start-build
+$ npm run start-build
+
+# builds the files, cleans the dist and cache folders, then starts development
+# server
+$ yarn start-build-clean
+$ npm run start-build-clean
 ```
 
 ### Build
@@ -76,9 +85,9 @@ $ npm run build
 ### Clean
 
 ```sh
-# delete coverage and .cache folders
-$ yarn clean-cache
-$ npm run clean-cache
+# delete dist and .cache folders (cleans before development server)
+$ yarn clean-dev
+$ npm run clean-dev
 
 # delete all build folders (run automatically by build command)
 $ yarn clean-build

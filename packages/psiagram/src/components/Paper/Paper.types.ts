@@ -25,7 +25,6 @@ export interface IPaperProperties {
   attributes?: {
     gridSize?: number;
     allowBlockOverlap?: boolean;
-    gridColor?: string;
     paperWrapperClass?: string;
     paperClass?: string;
   };
@@ -38,12 +37,10 @@ export interface IPaperProperties {
 export declare type paperEventType =
   // Node
   | 'add-node'
-  | 'update-node'
   | 'move-node'
   | 'remove-node'
   // Edge
   | 'add-edge'
-  | 'update-edge'
   | 'move-edge'
   | 'remove-edge'
   // Paper
@@ -73,28 +70,22 @@ export enum PaperItemState {
 export interface IPaperInputNode {
   id: string;
   component: typeof Node;
-  properties: IPaperNodeProperties;
   coords: ICoordinates;
-}
-
-export interface IPaperNodeProperties {
-  title: string;
-  width: number;
-  height: number;
-}
-
-export interface IPaperNodeUpdateProperties {
-  title?: string;
-  width?: number;
-  height?: number;
+  properties: {
+    width: number;
+    height: number;
+    title?: string;
+  };
 }
 
 export interface IPaperStoredNode {
   id: string;
   coords: ICoordinates;
-  params: IParameters;
-  instance: Node;
-  ref: SVGElement;
+  instance: PaperNode;
+}
+
+export declare class PaperNode extends Node {
+  public coords: ICoordinates;
 }
 
 // =============================================================================
@@ -103,25 +94,26 @@ export interface IPaperStoredNode {
 export interface IPaperInputEdge {
   id: string;
   component: typeof Edge;
-  source: { id: string };
-  target: { id: string };
-  properties?: IPaperEdgeProperties;
+  source: edgeEndPoint;
+  target: edgeEndPoint;
   coords: ICoordinates[];
-}
-
-export interface IPaperEdgeProperties {
-  title?: string;
-}
-
-export interface IPaperEdgeUpdateProperties {
-  title?: string;
+  properties?: {
+    title?: string;
+  };
 }
 
 export interface IPaperStoredEdge {
   id: string;
-  source: { id: string };
-  target: { id: string };
+  source: edgeEndPoint;
+  target: edgeEndPoint;
   coords: ICoordinates[];
-  instance: Edge;
-  ref: SVGElement;
+  instance: PaperEdge;
 }
+
+export declare class PaperEdge extends Edge {
+  public source: edgeEndPoint;
+  public target: edgeEndPoint;
+  public coords: ICoordinates[];
+}
+
+export declare type edgeEndPoint = { id: string } | ICoordinates;

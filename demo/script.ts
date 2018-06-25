@@ -1,35 +1,35 @@
 // tslint:disable:no-console
-
-/**
- * Import: psiagram
- */
-// @ts-ignore
-import { Paper, IPaperProperties, IPaperInputNode, Node, Edge } from 'psiagram';
-// @ts-ignore
+import {
+  Paper,
+  IPaperProperties,
+  IPaperInputNode,
+  Node,
+  Edge,
+  PaperError,
+} from 'psiagram';
+import { Grid } from 'psiagram-plugin-grid';
 import { MouseEvents } from 'psiagram-plugin-mouse-events';
 
 let myPaper: Paper | null = null;
-
-const initializedMouseEventPlugin = new MouseEvents();
 
 function loadPaper() {
   const paperProperties: IPaperProperties = {
     attributes: { gridSize: 20 },
     height: 900,
     width: 1300,
-    plugins: [initializedMouseEventPlugin],
+    plugins: [new Grid(), new MouseEvents()],
     initialConditions: {
       nodes: [
         {
           id: 'node1',
           component: Node,
-          coords: { x: 80, y: 80 },
+          coords: { x: 60, y: 220 },
           properties: { width: 112, height: 85, title: 'node 1' },
         },
         {
           id: 'node2',
           component: Node,
-          coords: { x: 240, y: 70 },
+          coords: { x: 400, y: 220 },
           properties: { width: 130, height: 75, title: 'node 2' },
         },
       ],
@@ -37,10 +37,24 @@ function loadPaper() {
         {
           id: 'edge1',
           component: Edge,
+          source: { x: 120, y: 120 },
+          target: { id: 'node1' },
+          coords: [],
+        },
+        {
+          id: 'edge2',
+          component: Edge,
           source: { id: 'node1' },
           target: { id: 'node2' },
           coords: [],
-          properties: { title: 'edge 1' },
+          properties: { title: 'edge 2' },
+        },
+        {
+          id: 'edge3',
+          component: Edge,
+          source: { id: 'node2' },
+          target: { x: 600, y: 460 },
+          coords: [{ x: 460, y: 460 }],
         },
       ],
     },
@@ -64,13 +78,11 @@ function loadPaper() {
 
   // Node listeners
   // myPaper.addListener('add-node', eventListener);
-  // myPaper.addListener('update-node', eventListener);
-  // myPaper.addListener('move-node', eventListener);
+  myPaper.addListener('move-node', eventListener);
   // myPaper.addListener('remove-node', eventListener);
 
   // Edge listeners
   // myPaper.addListener('add-edge', eventListener);
-  // myPaper.addListener('update-edge', eventListener);
   // myPaper.addListener('move-edge', eventListener);
   // myPaper.addListener('remove-edge', eventListener);
 
@@ -97,14 +109,23 @@ function addNode() {
         width: 160,
       },
     };
-    myPaper.addNode(node);
+
+    // myPaper.addNode(node);
+
+    try {
+      myPaper.addNode(node);
+    } catch (err) {
+      const error = err as PaperError;
+      console.error(error.toString());
+    }
   }
 }
 
 function moveNode() {
   const node = document.getElementById('new_node_test');
   if (myPaper && node) {
-    myPaper.moveNode('new_node_test', { x: 0, y: 0 });
+    const nodeInstance = myPaper.getNode('new_node_test');
+    nodeInstance.coords = { x: 0, y: 0 };
   }
 }
 

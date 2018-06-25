@@ -5,9 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export * from './components/Paper';
-export * from './components/Node';
 export * from './components/Edge';
+export * from './components/Node';
+export * from './components/Paper';
 export * from './components/PaperEvent';
+export * from './components/PaperError';
 export * from './common';
 export * from './utilities';

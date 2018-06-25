@@ -83,7 +83,7 @@ Here's what that gives you:
 
 1.  An instance of Paper that is 1300px by 900px
 1.  A 20px grid for elements inside of Paper to snap to
-1.  Selection and drag-and-drop capabilities thanks to the MouseEvents plugin
+1.  Selection and drag-n-drop capabilities thanks to the MouseEvents plugin
 1.  Two initial Nodes mounted on to the paper
 1.  An initial Edge mounted on to the paper
 1.  The Paper element which is linked to myPaper mounted in the DOM
@@ -212,16 +212,24 @@ When an event occurs, this is what happens:
     - The paper event type (a string representing the event)
     - A reference to the Paper instance that created the event
     - The target of the event (ex: the Node that is being created)
-    - Any additional helpful data (ex: the Node coordinates rounded to nearest grid)
-    - A boolean representing whether the event will continue to propagate to other listeners
-    - A default action to be carried out once after all listeners have been called
-1.  All listeners for that specific paper event type are called with the Paper Event. They can:
+    - Any additional helpful data (ex: the Node coordinates rounded to nearest
+      grid)
+    - A boolean representing whether the event will continue to propagate to
+      other listeners
+    - A default action to be carried out once after all listeners have been
+      called
+1.  All listeners for that specific paper event type are called with the Paper
+    Event. They can:
     - Access the API of the issuing Paper instance to do any method calls
     - Do any sort of validation given the target and data of the event
-    - Transform any properties of the target (ex: change an added Node's coordinates)
-    - Call the stopPropagation method to prevent any other listeners from getting called
-    - Call the preventDefault method to prevent the Paper Event's default action from being completed
-1.  The default action is completed if preventDefault was not called by any listener
+    - Transform any properties of the target (ex: change an added Node's
+      coordinates)
+    - Call the stopPropagation method to prevent any other listeners from
+      getting called
+    - Call the preventDefault method to prevent the Paper Event's default action
+      from being completed
+1.  The default action is completed if preventDefault was not called by any
+    listener
 
 This lifecycle provides multiple utilities to allow you to build complex
 functionality. That will be touched on in the (upcoming) Advanced

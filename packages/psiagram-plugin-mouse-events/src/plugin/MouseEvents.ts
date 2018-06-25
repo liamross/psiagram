@@ -16,6 +16,7 @@ import {
   IPaperStoredNode,
   IPaperStoredEdge,
   IPluginProperties,
+  PaperError,
 } from 'psiagram';
 
 export class MouseEvents implements PsiagramPlugin {
@@ -41,9 +42,9 @@ export class MouseEvents implements PsiagramPlugin {
 
   public initialize(
     paper: Paper,
+    properties: IPluginProperties,
     nodes: { [key: string]: IPaperStoredNode },
     edges: { [key: string]: IPaperStoredEdge },
-    properties: IPluginProperties,
   ): void {
     this._paperInstance = paper;
     this._paperWrapper = this._paperInstance.getPaperElement();
@@ -55,7 +56,9 @@ export class MouseEvents implements PsiagramPlugin {
     this._initialPaperCoords = null;
     this._gridSize = properties.attributes.gridSize;
 
-    this._paperWrapper.addEventListener('mousedown', this._handleMouseDown);
+    if (this._paperWrapper) {
+      this._paperWrapper.addEventListener('mousedown', this._handleMouseDown);
+    }
   }
 
   public teardown(): void {
@@ -99,8 +102,8 @@ export class MouseEvents implements PsiagramPlugin {
       });
       // Store initial mouse coordinates.
       this._initialMouseCoords = {
-        x: evt.clientX,
-        y: evt.clientY,
+        x: evt.pageX,
+        y: evt.pageY,
       };
       // Store original coordinates in paper (to nearest grid).
       this._initialPaperCoords = {
@@ -108,13 +111,16 @@ export class MouseEvents implements PsiagramPlugin {
         y: roundToNearest(node.coords.y, this._gridSize),
       };
       // Move node to top within paper.
-      this._paper.appendChild(node.ref);
+      this._paper.appendChild(node.instance.getNodeElement());
       // Initialize mouse movement and release listeners.
       document.addEventListener('mousemove', this._handleNodeMouseMove);
       document.addEventListener('mouseup', this._handleNodeMouseUp);
     } else {
-      console.error(
-        `Handle node mousedown: node with id ${id} does not exist.`,
+      throw new PaperError(
+        'E_NO_ID',
+        `Node with id ${id} does not exist.`,
+        'MouseEvents.ts',
+        '_handleNodeMouseDown',
       );
     }
   }
@@ -134,20 +140,22 @@ export class MouseEvents implements PsiagramPlugin {
     ) {
       const id = activeItem.id;
       // Find mouse deltas vs original coordinates.
-      const mouseDeltaX = this._initialMouseCoords.x - evt.clientX;
-      const mouseDeltaY = this._initialMouseCoords.y - evt.clientY;
+      const mouseDeltaX = this._initialMouseCoords.x - evt.pageX;
+      const mouseDeltaY = this._initialMouseCoords.y - evt.pageY;
       // Round mouse deltas to nearest grid.
       const roundedMouseDeltaX = roundToNearest(mouseDeltaX, this._gridSize);
       const roundedMouseDeltaY = roundToNearest(mouseDeltaY, this._gridSize);
       // Find new block coordinates.
       const blockX = this._initialPaperCoords.x - roundedMouseDeltaX;
       const blockY = this._initialPaperCoords.y - roundedMouseDeltaY;
-      // TODO: Check if dragged block is overlapping.
-      this._paperInstance.moveNode(id, { x: blockX, y: blockY });
+      const node = this._paperInstance.getNode(id);
+      node.coords = { x: blockX, y: blockY };
     } else {
-      console.error(
-        `Handle node mousemove: no current moving node. Active item: `,
-        activeItem,
+      throw new PaperError(
+        'E_INV_ACT',
+        `No current moving node. Active item: ${JSON.stringify(activeItem)}`,
+        'MouseEvents.ts',
+        '_handleNodeMouseMove',
       );
     }
   };
@@ -169,9 +177,11 @@ export class MouseEvents implements PsiagramPlugin {
         paperItemState: PaperItemState.Selected,
       });
     } else {
-      console.error(
-        `Handle node mouseup: no current moving node. Active item: `,
-        activeItem,
+      throw new PaperError(
+        'E_INV_ACT',
+        `No current moving node. Active item: ${JSON.stringify(activeItem)}`,
+        'MouseEvents.ts',
+        '_handleNodeMouseUp',
       );
     }
     // Remove listeners and reset coordinates.

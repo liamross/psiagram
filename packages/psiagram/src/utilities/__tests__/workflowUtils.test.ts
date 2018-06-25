@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { IPaperStoredNode } from '../../components/Paper';
 import {
   isNodeColliding,
   roundToNearest,
@@ -13,9 +12,10 @@ import {
   getEdgeNodeIntersection,
   areCoordsEqual,
   generateRandomString,
-} from '../workflowUtils';
-import { Node } from '../..';
-
+  IPaperStoredNode,
+  PaperNode,
+  Node,
+} from '../..';
 /** Helpers */
 
 const generateNode = (
@@ -26,15 +26,22 @@ const generateNode = (
   height = 80,
   gridSize = 0,
 ): IPaperStoredNode => {
-  const xmlns = 'http://www.w3.org/2000/svg';
-  const ns = document.createElementNS(xmlns, 'g');
-  return {
+  const newNode = new Node({
+    id,
+    gridSize,
+    title: '',
+    width,
+    height,
+  });
+  Object.defineProperty(newNode, 'coords', {
+    value: { x, y },
+  });
+  const storedNode: IPaperStoredNode = {
     id,
     coords: { x, y },
-    params: { width, height },
-    instance: new Node({ id, title: '', width, height, gridSize }),
-    ref: ns,
+    instance: newNode as PaperNode,
   };
+  return storedNode;
 };
 
 /** Tests */
@@ -211,19 +218,15 @@ describe('Workflow Utilities', () => {
       expect(generateRandomString(10, 8).length).toBe(8);
     });
 
-    it('returns empty string if base is incorrect', () => {
-      // @ts-ignore
-      expect(generateRandomString('', 4)).toBe('');
-      expect(generateRandomString(NaN, 4)).toBe('');
-      expect(generateRandomString(1, 5)).toBe('');
-      expect(generateRandomString(37, 8)).toBe('');
+    it('throws PaperError if base is incorrect', () => {
+      expect(() => generateRandomString(NaN, 4)).toThrow();
+      expect(() => generateRandomString(1, 5)).toThrow();
+      expect(() => generateRandomString(37, 8)).toThrow();
     });
 
-    it('returns empty string if length is incorrect', () => {
-      // @ts-ignore
-      expect(generateRandomString(36, '')).toBe('');
-      expect(generateRandomString(36, NaN)).toBe('');
-      expect(generateRandomString(14, 0)).toBe('');
+    it('throws PaperError if length is incorrect', () => {
+      expect(() => generateRandomString(36, NaN)).toThrow();
+      expect(() => generateRandomString(14, 0)).toThrow();
     });
   });
 });

@@ -204,12 +204,6 @@ describe('Workflow Utilities', () => {
       const coordsB = { x: 150, y: 250, z: 40 };
       expect(areCoordsEqual(coordsA, coordsB)).toBeTruthy();
     });
-
-    it('returns false if coords z value is not equal', () => {
-      const coordsA = { x: 150, y: 250, z: 40 };
-      const coordsB = { x: 150, y: 250, z: 50 };
-      expect(areCoordsEqual(coordsA, coordsB)).toBeFalsy();
-    });
   });
 
   describe('generateRandomString', () => {

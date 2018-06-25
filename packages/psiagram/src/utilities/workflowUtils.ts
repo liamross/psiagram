@@ -191,14 +191,7 @@ export function lineIntersect(
 export const areCoordsEqual = (
   coordsA: ICoordinates,
   coordsB: ICoordinates,
-): boolean => {
-  return !!(
-    coordsA.x === coordsB.x &&
-    coordsA.y === coordsB.y &&
-    ((coordsA.z === undefined && coordsB.z === undefined) ||
-      coordsA.z === coordsB.z)
-  );
-};
+): boolean => coordsA.x === coordsB.x && coordsA.y === coordsB.y;
 
 /**
  * Generates a random number in a given base, and back-fills any remaining space

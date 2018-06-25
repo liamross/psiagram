@@ -17,7 +17,6 @@ import {
   IPaperInputEdge,
   IPaperStoredEdge,
   paperEventType,
-  listenerFunction,
   setWorkflowType,
   WorkflowType,
   createElementWithAttributes,
@@ -40,7 +39,7 @@ export class Paper {
   private _nodes: { [key: string]: IPaperStoredNode };
   private _edges: { [key: string]: IPaperStoredEdge };
   private _activeItem: IActiveItem | null;
-  private _listeners: { [key: string]: listenerFunction[] };
+  private _listeners: { [key: string]: Array<(evt: PaperEvent) => void> };
   private _gridSize: number;
   private _allowBlockOverlap: boolean;
   private _paper: SVGElement;
@@ -503,7 +502,10 @@ export class Paper {
    * @param type The type of listener to add.
    * @param listener The listener function triggered when type of event happens.
    */
-  public addListener(type: paperEventType, listener: listenerFunction): void {
+  public addListener(
+    type: paperEventType,
+    listener: (evt: PaperEvent) => void,
+  ): void {
     if (this._listeners[type] === undefined) {
       this._listeners[type] = [];
     }
@@ -522,7 +524,7 @@ export class Paper {
    */
   public removeListener(
     type: paperEventType,
-    listener: listenerFunction,
+    listener: (evt: PaperEvent) => void,
   ): void {
     if (this._listeners[type] !== undefined && this._listeners[type].length) {
       const listenerIndex = this._listeners[type].findIndex(

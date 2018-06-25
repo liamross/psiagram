@@ -78,7 +78,7 @@ function loadPaper() {
 
   // Node listeners
   // myPaper.addListener('add-node', eventListener);
-  myPaper.addListener('move-node', eventListener);
+  // myPaper.addListener('move-node', eventListener);
   // myPaper.addListener('remove-node', eventListener);
 
   // Edge listeners

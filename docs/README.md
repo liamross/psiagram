@@ -1,37 +1,32 @@
-> Before we start: This project is brand new and a work in progress.
-> Documentation is highly variable, but I am starting it now because Psiagram is
-> beginning to settle into some patterns and it's worth documenting. Once
-> everything is set there will be an official release and one major push to
-> polish up the documentation. For now, just know you will find many areas of
-> documentation TODOs and just plain missing information. Thank you for your
-> patience.
+![Psiagram](https://raw.githubusercontent.com/liamross/psiagram/master/logo/logo-title.png
+=700x)
 
-Psiagram is a framework that enables anyone to build complex and interactive
-diagrams and workflows easily, in any project, and without the need for external
-dependencies.
+---
 
-## Flexible
-
-The entire framework and all supported plugins are built without any external
-dependencies. This saves you from installing massive packages solely to support
-your diagramming framework, as well as ensuring easy integration into any front
-end.
-
-For an introduction to the framework, see the
-[introduction section](./introduction/README.md).
+Psiagram (/ˈ(p)sīəˌɡram/) - a simple, feature-rich, and extensible diagram
+framework for JavaScript.
 
 ## Simple
 
-Psiagram takes much of the complexity out of generating workflows and diagrams
-by taking basic initial conditions and exposing a simple API. Most of the heavy
-lifting is done within the framework, and within logical plugins.
+**Psiagram is a dependency-free framework**, allowing easy integration in any
+front end, regardless of the technology stack. It wraps all complex DOM
+manipulation, which makes manipulating your diagrams as easy as setting new
+properties.
 
 To start creating using Psiagram, see the [basics section](./basics/README.md).
 
+## Feature-rich
+
+Psiagram provides robust events for every action which allow total control over
+the framework, high-performance SVG Node and Edge components for rendering
+diagrams, and an extensive but simple API to interact with the diagram.
+
+For an in-depth look into some features, see the
+[in-depth section](./in-depth/README.md).
+
 ## Extensible
 
-Psiagram exposes a robust API to allow listeners and plugins to enhance and
-augment any part of a diagram.
+Psiagram is set up to allow easy extensibility through plugins.
 
 Check out some of the official plugins in the
 [plugins section](./plugins/README.md).

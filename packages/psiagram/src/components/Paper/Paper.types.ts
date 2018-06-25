@@ -46,8 +46,6 @@ export declare type paperEventType =
   // Paper
   | 'update-active-item';
 
-export declare type listenerFunction = (evt: PaperEvent) => any;
-
 // =============================================================================
 // Active Item
 

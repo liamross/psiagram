@@ -13,40 +13,93 @@ You can control the Paper using the following:
 This documentation will take a look into some of the basics of setting up and
 using Paper.
 
-## Initialization
+## Paper Set-Up
 
-In order to use Paper, you need to initialize it. Initializing Paper has some
-required properties, as well as many optional ones. If you wanted to initialize
-Paper with only required properties, it would look like this:
+In order to use Paper, you need to initialize it. To do this, you will create a
+new instance of Paper and give it a Paper Properties object. This contains some
+mandatory properties, as well as many optional ones that allow elements and
+settings to be added to the Paper during initialization.
 
-```js
-import { Paper } from 'psiagram';
+### Paper Properties
 
-const myPaper = new Paper({ height: 900, width: 1300 });
+Here is the Paper Properties interface defined in TypeScript:
+
+```ts
+interface IPaperProperties {
+  width: number;
+  height: number;
+  plugins?: PsiagramPlugin[];
+  attributes?: {
+    gridSize?: number;
+    paperWrapperClass?: string;
+    paperClass?: string;
+  };
+  initialConditions?: {
+    nodes?: IPaperInputNode[];
+    edges?: IPaperInputEdge[];
+  };
+}
 ```
 
-This is technically all you need in order to initialize Paper! This will create
-an instance of Paper that is 1300px by 900px.
+This defines the shape of the object that must be given to initialize Paper.
+Let's take a look into what each of those potential properties mean.
 
-However, for this example, let's include more things and mount it in the DOM:
+#### width - `number`
+
+This is the physical width of the Paper surface in pixels. It is one of the two
+required properties to initialize Paper.
+
+#### height - `number`
+
+This is the physical height of the Paper surface in pixels. Like width, it is
+required to initialize Paper.
+
+#### plugins (optional) - `PsiagramPlugin[]`
+
+An optional array of any initialized plugins you wish to pass into Paper.
+Plugins add functionality to Paper. This will be detailed further in the
+[plugins section](../plugins/README.md).
+
+#### attributes (optional) - `Object`
+
+An optional object where you can define attributes of the Paper. These are all
+**optional**, and are the following:
+
+- gridSize - `number`: Grid size in px. If given, elements will snap to a grid.
+- paperWrapperClass - `string`: Class for div that encompasses Paper.
+- paperClass - `string`: Class for Paper SVG component.
+
+#### initialConditions (optional) - `Object`
+
+An optional object where you can define any initial Nodes or Edges to render
+onto Paper when it's initialized. In order to input these, object has the
+following **optional** properties:
+
+- nodes - `IPaperInputNode[]`: Initial Nodes.
+- edges - `IPaperInputEdge[]`: Initial Edges.
+
+More details on input Nodes can be found in the [node section](node.md), and
+information on input Edges can be found in the [edge section](edge.md).
+
+### Initialization
+
+Now that you have an idea of building a Paper Properties object, let's look at
+initializing a Paper instance.
 
 ```js
 import { Paper, Node, Edge } from 'psiagram';
+import { Grid } from 'psiagram-plugin-grid';
 import { MouseEvents } from 'psiagram-plugin-mouse-events';
-
-const initializedMouseEvents = new MouseEvents();
 
 const myPaper = new Paper({
   height: 900,
   width: 1300,
-  // Attributes is an optional object that allows you to pass some additional
-  // attributes to the Paper.
-  attributes: { gridSize: 20, paperClass: 'myPaper' },
-  // Plugins is an optional array of plugins. These add functionality to the
-  // instance of Paper.
-  plugins: [initializedMouseEvents],
-  // Initial Conditions is an optional object that can contain any Nodes or
-  // Edges to draw on the Paper when it is mounted.
+  attributes: {
+    gridSize: 20,
+    paperWrapperClass: 'myPaperWrapper',
+    paperClass: 'myPaper',
+  },
+  plugins: [new Grid(), new MouseEvents()],
   initialConditions: {
     nodes: [
       {
@@ -55,200 +108,146 @@ const myPaper = new Paper({
         coords: { x: 80, y: 80 },
         properties: { title: 'Node 1', width: 120, height: 80 },
       },
-      {
-        id: 'node-2-id',
-        component: Node,
-        coords: { x: 240, y: 80 },
-        properties: { title: 'Node 2', width: 120, height: 80 },
-      },
     ],
     edges: [
       {
         id: 'edge-1-id',
         component: Edge,
         source: { id: 'node-1-id' },
-        target: { id: 'node-2-id' },
+        target: { x: 120, y: 240 },
         coords: [],
         properties: { title: 'Edge 1' },
       },
     ],
   },
 });
+```
 
+Congratulations! You now have a fully functional Paper component initialized to
+myPaper. While you are able to call methods and make updates to this component,
+the actual paper element has not yet been rendered into the DOM, so those
+changes won't be reflected anywhere. In order to render the Paper, you may
+choose to do something like this:
+
+```ts
 const paperElement = myPaper.getPaperElement();
 document.getElementById('_target').appendChild(paperElement);
 ```
 
-Here's what that gives you:
+In the next section we will discuss manipulating the Paper using its methods.
 
-1.  An instance of Paper that is 1300px by 900px
-1.  A 20px grid for elements inside of Paper to snap to
-1.  Selection and drag-n-drop capabilities thanks to the MouseEvents plugin
-1.  Two initial Nodes mounted on to the paper
-1.  An initial Edge mounted on to the paper
-1.  The Paper element which is linked to myPaper mounted in the DOM
+## Paper Methods
 
-> 🚧 Full API and Plugin documentation is coming! 🚧
->
-> This will include the specification of IPaperProperties for a more complete
-> list of properties you can initialize Paper with, as well as a link to
-> MouseEvents plugin for more details on what it can do.
+Now that you have your Paper mounted in the DOM, you can manipulate it. While
+Psiagram would work just fine as a static diagram, it really shines in the many
+ways you can move or alter the elements drawn in Paper.
 
-<!-- TODO: Add link to IPaperProperties and MouseEvents -->
+Let's examine some of the methods that you can call on your Paper instance.
 
-In the next section we will discuss manipulating the Paper, as well as touching
-on the Nodes and Edges we introduced in the example above.
+### getPaperElement
 
-## Manipulation
-
-Now that you have your Paper mounted in the DOM, it's time to manipulate it.
-While Psiagram would work just fine as a static diagram, it really shines in the
-many ways you can move or alter the elements drawn in Paper.
-
-### Nodes
-
-Nodes are blocks that can be placed on the Paper. At their most basic, Nodes are
-rectangles that have some properties and a position.
-
-Let's try adding a Node using the API:
-
-```js
-myPaper.addNode({
-  id: 'example-node-id',
-  component: Node,
-  coords: { x: 320, y: 160 },
-  properties: { title: 'Example Node', height: 80, width: 160 },
-});
+```ts
+getPaperElement(): HTMLElement;
 ```
 
-You now have a Node placed onto the Paper at coordinates `{ x: 320, y: 160 }`.
+Returns the Paper wrapper, which contains the Paper SVG element, as well as all
+rendered components. This is the method you would call to retrieve the wrapper
+to render into your DOM.
 
-That was pretty straightforward! Now what about if you want to move that Node to
-a new position? Since you added MouseEvents before, you could just click and
-drag the Node in your DOM to move it to a new position on the Paper. However,
-let's say you wanted to do it automatically because you're running a script to
-organize the Nodes on the Paper.
+### addNode
 
-To move a Node using the API:
-
-```js
-myPaper.moveNode('example-node', { x: 120, y: 160 });
+```ts
+addNode(node: IPaperInputNode): void;
 ```
 
-You've now changed the position of the Node on Paper by changing the
-x-coordinate from 320 to 120.
+Add a Node to the Paper. While we touched on adding Nodes through Paper
+Properties when the Paper is initialized, you can also do it at any point using
+this method. for more details on input Nodes, see the [node section](node.md).
 
-In addition to these things, you can also update the appearance of the Node or
-delete the Node. For more details, visit the [Node documentation](node.md).
+### getNode
 
-### Edges
-
-Edges are lines rendered on to the paper. They can serve to connect Nodes, or
-they can be placed independently.
-
-Let's place an Edge:
-
-```js
-// This assumes you have two Nodes on the paper with the following IDs:
-//  - 'example-node-1'
-//  - 'example-node-2'
-
-myPaper.addEdge({
-  id: 'example-edge',
-  component: Edge,
-  source: { id: 'example-node-1' },
-  target: { id: 'example-node-2' },
-  coords: [],
-});
+```ts
+getNode(id: string): PaperNode;
 ```
 
-Now you have an Edge that connects the two Nodes! Psiagram does all the hard
-work of calculating how to connect them, you just give it the IDs.
+Returns the Node instance that matches the given id. The PaperNode that is
+returned exposes multiple properties that you can set to manipulate the Node's
+position, appearance, title, and more. These are detailed in the
+[node section](node.md).
 
-You can also update the Edge's appearance, update the route to allow for custom
-routing, and delete the Edge. For more information, check out the
-[Edge documentation](edge.md).
+### removeNode
 
-### Active Item
-
-Psiagram has a concept of an active item. This is the current item of focus,
-such as a recently-clicked Node. How you choose to represent the active item is
-your choice. Psiagram provides an API to get the current active item, or to set
-the active item yourself.
-
-Lets check if there is an active item, and if not, set a Node to 'selected':
-
-```js
-// This assumes you have a Node on the paper with the following ID:
-//  - 'example-node'
-
-function setActiveItemToExampleNode() {
-  const activeItem = myPaper.getActiveItem();
-
-  if (activeItem === null) {
-    myPaper.updateActiveItem({
-      workflowType: 'node',
-      id: 'example-node',
-      paperItemState: 'selected',
-    });
-  } else {
-    console.log('Another item is already active. Try again later.');
-  }
-}
+```ts
+removeNode(id: string): void;
 ```
 
-This sets the Node with id='example-node' as an active item with selected state
-if no other components of Paper are currently the active item.
+Remove a Node from the Paper that matches the given id.
 
-### Listeners and Events
+### addEdge
 
-Listeners provide high levels of control over the lifecycle and rendering of the
-Paper. These will be discussed more in depth in the (upcoming) Advanced
-documentation. For now, here is the basics.
-
-When an event occurs, this is what happens:
-
-1.  A Paper Event is created for the specific paper event type. It contains:
-    - The paper event type (a string representing the event)
-    - A reference to the Paper instance that created the event
-    - The target of the event (ex: the Node that is being created)
-    - Any additional helpful data (ex: the Node coordinates rounded to nearest
-      grid)
-    - A boolean representing whether the event will continue to propagate to
-      other listeners
-    - A default action to be carried out once after all listeners have been
-      called
-1.  All listeners for that specific paper event type are called with the Paper
-    Event. They can:
-    - Access the API of the issuing Paper instance to do any method calls
-    - Do any sort of validation given the target and data of the event
-    - Transform any properties of the target (ex: change an added Node's
-      coordinates)
-    - Call the stopPropagation method to prevent any other listeners from
-      getting called
-    - Call the preventDefault method to prevent the Paper Event's default action
-      from being completed
-1.  The default action is completed if preventDefault was not called by any
-    listener
-
-This lifecycle provides multiple utilities to allow you to build complex
-functionality. That will be touched on in the (upcoming) Advanced
-documentation - for now, let's do some easy stuff.
-
-```js
-// To add a listener:
-myPaper.addListener('add-node', myListenerCallback);
-
-// To remove that listener:
-myPaper.removeListener('add-node', myListenerCallback);
+```ts
+addEdge(edge: IPaperInputEdge): void;
 ```
 
----
+Add an Edge to the Paper. Similarly to addNode, this allows you to add Edges
+after Paper has been initialized. For more information on input Edges, see the
+[edge section](edge.md).
 
-It's as easy as that! You've now seen the basics of Paper.
+### getEdge
 
-> 🚧 Full API and Advanced Section are coming! 🚧
->
-> This will include complete specifications of the Paper API, as well as
-> advanced use cases for active items and anything else you see in this
-> documentation.
+```ts
+getEdge(id: string): PaperEdge;
+```
+
+Returns the Edge instance that matches the given id. The PaperEdge that is
+returned exposes multiple properties that you can set to manipulate the Edge's
+position, appearance, title, and more. These are detailed in the
+[edge section](edge.md).
+
+### removeEdge
+
+```ts
+removeEdge(id: string): void;
+```
+
+Remove a Edge from the Paper that matches the given id.
+
+### getActiveItem
+
+```ts
+getActiveItem(): IActiveItem | null;
+```
+
+Returns the current active item object, or null if there is no current active
+item. Active items allow specifying which component is currently moving or
+selected. For more information, see the
+[active item section](../in-depth/active-item.md).
+
+### updateActiveItem
+
+```ts
+updateActiveItem(activeItem?: IActiveItem): void;
+```
+
+Update the current active item, or remove it by calling the method without an
+argument. For more information, see the
+[active item section](../in-depth/active-item.md).
+
+### addListener
+
+```ts
+addListener(type: paperEventType, listener: (evt: PaperEvent) => void): void;
+```
+
+Add a listener for a specific event type. This listener will be called when the
+event is triggered within the paper. For more details on types of events, or the
+PaperEvent object, visit the [events section](../in-depth/events.md).
+
+### removeListener
+
+```ts
+removeListener(type: paperEventType, listener: (evt: PaperEvent) => void): void;
+```
+
+Remove a previously added listener. For more details on types of events, or the
+PaperEvent object, visit the [events section](../in-depth/events.md).

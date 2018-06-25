@@ -16,16 +16,18 @@ To start creating using Psiagram, see the [basics section](./basics/README.md).
 
 ## Feature-rich
 
-Psiagram provides robust events for every action which allow total control over
-the framework, high-performance SVG Node and Edge components for rendering
-diagrams, and an extensive but simple API to interact with the diagram.
+Psiagram provides robust events for every action to allow total control over the
+framework, high-performance DOM manipulation of SVG diagram components, and an
+extensive but simple API to interact with the diagram.
 
 For an in-depth look into some features, see the
 [in-depth section](./in-depth/README.md).
 
 ## Extensible
 
-Psiagram is set up to allow easy extensibility through plugins.
+Psiagram is set up to allow easy extensibility through plugins. These vary from
+providing a grid pattern background, to providing complex drag-and-drop
+functionality and event firing.
 
 Check out some of the official plugins in the
 [plugins section](./plugins/README.md).

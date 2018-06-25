@@ -18,8 +18,6 @@ import {
 let paperProperties: IPaperProperties = null;
 let myPaper: Paper = null;
 
-declare var global: any;
-
 const addNode = () => {
   if (myPaper) {
     myPaper.addNode({

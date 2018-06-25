@@ -72,13 +72,6 @@ This is the target from which the Edge points to. This has the type
 set of coordinates. If `id` is given, the Edge will point to the Node with that
 ID. If no Node matches the given ID, the Edge will not be added.
 
-```ts
-interface ICoordinates {
-  x: number;
-  y: number;
-}
-```
-
 #### coords - `ICoordinates[]`
 
 An array of coordinates that the Edge path should pass through in order. These

@@ -102,8 +102,8 @@ export class MouseEvents implements PsiagramPlugin {
       });
       // Store initial mouse coordinates.
       this._initialMouseCoords = {
-        x: evt.clientX,
-        y: evt.clientY,
+        x: evt.pageX,
+        y: evt.pageY,
       };
       // Store original coordinates in paper (to nearest grid).
       this._initialPaperCoords = {
@@ -140,8 +140,8 @@ export class MouseEvents implements PsiagramPlugin {
     ) {
       const id = activeItem.id;
       // Find mouse deltas vs original coordinates.
-      const mouseDeltaX = this._initialMouseCoords.x - evt.clientX;
-      const mouseDeltaY = this._initialMouseCoords.y - evt.clientY;
+      const mouseDeltaX = this._initialMouseCoords.x - evt.pageX;
+      const mouseDeltaY = this._initialMouseCoords.y - evt.pageY;
       // Round mouse deltas to nearest grid.
       const roundedMouseDeltaX = roundToNearest(mouseDeltaX, this._gridSize);
       const roundedMouseDeltaY = roundToNearest(mouseDeltaY, this._gridSize);

@@ -17,9 +17,9 @@ To start creating using Psiagram, see the [basics section](./basics/README.md).
 ## Feature-rich
 
 Psiagram provides robust events for every action to allow total control over the
-framework, allowing you to intercept and alter any updates to the Paper. At its
-core, it provides **high-performance DOM manipulation** of SVG diagram
-components, and an extensive but simple API to interact with the diagram.
+framework, enabling you to intercept and alter any updates to the Paper. At its
+core, it provides **high-performance rendering** of SVG diagram components, and
+an extensive but simple API to interact with the diagram.
 
 For an in-depth look into some features, see the
 [in-depth section](./in-depth/README.md).

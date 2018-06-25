@@ -1,11 +1,11 @@
 <p align="center">
-  <a href="https://github.com/liamross/psiagram">
+  <a href="https://www.psiagram.org/">
     <img alt="Psiagram" src="https://raw.githubusercontent.com/liamross/psiagram/master/logo/logo-title.png" width="700" >
   </a>
 </p>
 
 <p align="center">
-  Ψ JavaScript diagramming framework with no dependencies.
+  Psiagram (/ˈ(p)sīəˌɡram/) - a simple, feature-rich, and extensible diagram framework for JavaScript.
 </p>
 
 <p align="center">
@@ -51,58 +51,8 @@ and allows for consistent versioning between psiagram and its plugins.
 
 ## Packages
 
-- [Psiagram](#psiagram)
-- [Psiagram Plugin Mouse Events](#psiagram-plugin-mouse-events)
-
-### Psiagram
-
-[![NPM Version](https://badge.fury.io/js/psiagram.svg)](https://www.npmjs.com/package/psiagram)
-
-Psiagram is the core package, and contains all of the framework functionality.
-
-To install:
-
-```sh
-# If you use Yarn:
-yarn add psiagram
-
-# If you use npm:
-npm i psiagram
-```
-
-To use:
-
-```js
-// ES5
-var { Paper, Node, Edge } = require('psiagram');
-
-// ES6
-import { Paper, Node, Edge } from 'psiagram';
-```
-
-### Psiagram Plugin Mouse Events
-
-[![NPM Version](https://badge.fury.io/js/psiagram-plugin-mouse-events.svg)](https://www.npmjs.com/package/psiagram-plugin-mouse-events)
-
-Psiagram's official mouse event plugin provides mouse event capabilities such as
-selection and drag-n-drop for nodes and edges.
-
-To install:
-
-```sh
-# If you use Yarn:
-yarn add psiagram-plugin-mouse-events
-
-# If you use npm:
-npm i psiagram-plugin-mouse-events
-```
-
-To use:
-
-```js
-// ES5
-var { MouseEvents } = require('psiagram-plugin-mouse-events');
-
-// ES6
-import { MouseEvents } from 'psiagram-plugin-mouse-events';
-```
+| Package                                                                                                                | Status                                                                                                                                  | Description            |
+| ---------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| [psiagram](https://github.com/liamross/psiagram/tree/master/packages/psiagram)                                         | [![NPM Version](https://badge.fury.io/js/psiagram.svg)](https://www.npmjs.com/package/psiagram)                                         | Psiagram core package. |
+| [psiagram-plugin-grid](https://github.com/liamross/psiagram/tree/master/packages/psiagram-plugin-grid)                 | [![NPM Version](https://badge.fury.io/js/psiagram-plugin-grid.svg)](https://www.npmjs.com/package/psiagram-plugin-grid)                 | Grid rendering plugin. |
+| [psiagram-plugin-mouse-events](https://github.com/liamross/psiagram/tree/master/packages/psiagram-plugin-mouse-events) | [![NPM Version](https://badge.fury.io/js/psiagram-plugin-mouse-events.svg)](https://www.npmjs.com/package/psiagram-plugin-mouse-events) | Mouse events plugin.   |

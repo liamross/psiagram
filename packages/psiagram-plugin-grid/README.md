@@ -1,6 +1,6 @@
-# Psiagram Plugin Mouse Handler
+# Psiagram Plugin Grid
 
-An npm package to create a visual grid layer for Psiagram.
+A plugin to create a visual grid layer for a Psiagram SVG diagram.
 
 For documentation, see the [Documentation Site](https://www.psiagram.org/).
 

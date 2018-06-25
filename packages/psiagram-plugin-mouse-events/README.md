@@ -1,6 +1,6 @@
 # Psiagram Plugin Mouse Handler
 
-An npm package to allow selection and drag-n-drop functionality in the Psiagram
+A plugin allow selection and drag-n-drop functionality in the Psiagram
 diagramming framework.
 
 For documentation, see the [Documentation Site](https://www.psiagram.org/).

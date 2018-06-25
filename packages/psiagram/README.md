@@ -1,6 +1,6 @@
 # Psiagram
 
-An npm package to access the Psiagram diagramming framework.
+A simple, feature-rich, and extensible diagram framework for JavaScript.
 
 For documentation, see the [Documentation Site](https://www.psiagram.org/).
 
@@ -10,9 +10,5 @@ For the code base, and to see other packages, see
 ## To Use
 
 ```js
-// ES5
-var { Paper, Node, Edge } = require('psiagram');
-
-// ES6
 import { Paper, Node, Edge } from 'psiagram';
 ```

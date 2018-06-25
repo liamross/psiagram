@@ -1,6 +1,6 @@
 {
   "name": "psiagram-plugin-grid",
-  "description": "A plugin that provides a visual grid for the Psiagram framework.",
+  "description": "A plugin to create a visual grid layer for a Psiagram SVG diagram.",
   "keywords": [
     "psiagram",
     "psiagram-plugin",

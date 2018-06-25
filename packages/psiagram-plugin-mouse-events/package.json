@@ -1,11 +1,12 @@
 {
   "name": "psiagram-plugin-mouse-events",
-  "description": "A plugin that provides mouse events to the Psiagram framework.",
+  "description": "A plugin allow selection and drag-n-drop functionality in the Psiagram diagramming framework.",
   "keywords": [
     "psiagram",
     "psiagram-plugin",
     "mouse",
-    "event"
+    "event",
+    "drag-n-drop"
   ],
   "files": [
     "README.md",

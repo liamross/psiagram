@@ -1,5 +1,4 @@
-![Psiagram](https://raw.githubusercontent.com/liamross/psiagram/master/logo/logo-title.png
-=700x)
+![Psiagram](https://raw.githubusercontent.com/liamross/psiagram/master/logo/logo-title.png)
 
 ---
 

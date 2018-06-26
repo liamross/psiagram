@@ -1,6 +1,6 @@
 # Table of contents
 
-- [What is it?](README.md)
+- [Introduction](README.md)
 - [Basics](basics/README.md)
   - [Paper](basics/paper.md)
   - [Node](basics/node.md)

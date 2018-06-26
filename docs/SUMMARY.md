@@ -1,6 +1,6 @@
 # Table of contents
 
-- [What is Psiagram?](README.md)
+- [What is it?](README.md)
 - [Basics](basics/README.md)
   - [Paper](basics/paper.md)
   - [Node](basics/node.md)

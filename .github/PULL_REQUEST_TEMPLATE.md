@@ -16,5 +16,5 @@
 | Breaking change (fix or feature that would cause existing functionality to change)   |          |
 | Documentation update (non-breaking change involving documentation)                   |          |
 | Infrastructure (non-breaking change involving non-project code ex: clean scripts)    |          |
-| Added tests (non-breaking change which does not add functionality ex: documentation) |          |
+| Added tests (non-breaking change involving writing tests)                            |          |
 

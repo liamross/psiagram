@@ -14,6 +14,8 @@ in the `nodes` array in the `initialConditions` object when initializing Paper,
 or in the `addNode` method call. See the [paper section](paper.md) for more on
 the initialization details or method definitions.
 
+### IPaperInputNode Specification
+
 Here is the Paper Input Node interface defined in TypeScript:
 
 ```ts
@@ -72,6 +74,24 @@ By default, the base class Node will round width and height to `2 * gridSize`.
 This is so that any Edges connected to the Node will be centered on the Node, as
 they must have an endpoint on a grid intersect. If a title is given, it will be
 centered on the Node element.
+
+### Example
+
+Here's an example of how to add a Node to the Paper using the Paper Input Node
+object:
+
+```ts
+function addNode() {
+  const node: IPaperInputNode = {
+    id: 'new_node_test',
+    component: Node,
+    coords: { x: 320, y: 160 },
+    properties: { title: 'New Node', height: 80, width: 160 },
+  };
+
+  myPaper.addNode(node);
+}
+```
 
 ## Node Class
 

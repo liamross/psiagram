@@ -12,6 +12,8 @@ in the `edges` array in the `initialConditions` object when initializing Paper,
 or in the `addEdge` method call. See the [paper section](paper.md) for more on
 the initialization details or method definitions.
 
+### IPaperInputEdge Specification
+
 Here is the Paper Input Edge interface defined in TypeScript:
 
 ```ts
@@ -91,6 +93,26 @@ The title is rendered into a rectangle at the calculated midpoint of the Edge.
 
 > NOTE: Title rendering is currently being developed and will be present in the
 > first release.
+
+### Example
+
+Here's an example of how to add an Edge to the Paper using the Paper Input Edge
+object:
+
+```ts
+function addEdge() {
+  const edge: IPaperInputEdge = {
+    id: 'new_edge_test',
+    component: Edge,
+    source: { id: 'new_node_test' },
+    target: { x: 240, y: 120 },
+    coords: [{ x: 140, y: 160 }],
+    properties: { title: 'New Edge' },
+  };
+
+  myPaper.addEdge(edge);
+}
+```
 
 ## Edge Class
 

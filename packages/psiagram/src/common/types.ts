@@ -13,5 +13,4 @@ export interface ICoordinates {
 export interface IParameters {
   width: number;
   height: number;
-  depth?: number;
 }

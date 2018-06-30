@@ -57,6 +57,7 @@ export class Paper {
     this._allowBlockOverlap = attributes.allowBlockOverlap || false;
     const paperWrapperClass: string = attributes.paperWrapperClass || '';
     const paperClass: string = attributes.paperClass || '';
+    let uniqueId: string = attributes.uniqueId || '';
 
     this._width = roundToNearest(width, this._gridSize, this._gridSize);
     this._height = roundToNearest(height, this._gridSize, this._gridSize);
@@ -65,10 +66,9 @@ export class Paper {
     this._activeItem = null;
     this._listeners = {};
 
-    // Generate base36 IDs that are 4 characters long.
-    const randomId = generateRandomString(36, 4);
-    const paperWrapperId = `paper-wrapper_${randomId}`;
-    const paperId = `paper_${randomId}`;
+    uniqueId = uniqueId || generateRandomString(4);
+    const paperWrapperId = `paper-wrapper_${uniqueId}`;
+    const paperId = `paper_${uniqueId}`;
 
     // Set up paper.
     this._paper = createSVGWithAttributes('svg', {
@@ -145,7 +145,6 @@ export class Paper {
         'addNode',
       );
     } else {
-      // Create instance of class at node.component.
       const instance: Node = new node.component({
         ...node.properties,
         id: node.id,
@@ -174,14 +173,12 @@ export class Paper {
         },
       });
 
-      // Create new Node.
       const newNode: IPaperStoredNode = {
         id: node.id,
         coords: node.coords,
         instance: instance as PaperNode,
       };
 
-      // Round node coords to nearest grid.
       const roundedX = roundToNearest(node.coords.x, this._gridSize);
       const roundedY = roundToNearest(node.coords.y, this._gridSize);
 
@@ -289,7 +286,6 @@ export class Paper {
         'addEdge',
       );
     } else {
-      // Create instance of class at edge.component.
       const instance: Edge = new edge.component({
         ...edge.properties,
         id: edge.id,
@@ -352,27 +348,25 @@ export class Paper {
         },
       });
 
-      // Get ref to element from instance.
       const ref = instance.getEdgeElement();
 
-      // Get actual nodes to ensure they exist.
-      const hasSource = edge.source.hasOwnProperty('id')
+      const hasValidSource = edge.source.hasOwnProperty('id')
         ? this._nodes[(edge.source as { id: string }).id]
         : edge.source.hasOwnProperty('x');
-      const hasTarget = edge.target.hasOwnProperty('id')
+
+      const hasValidTarget = edge.target.hasOwnProperty('id')
         ? this._nodes[(edge.target as { id: string }).id]
         : edge.target.hasOwnProperty('x');
 
-      const newEdge: IPaperStoredEdge = {
-        id: edge.id,
-        source: edge.source,
-        target: edge.target,
-        coords: edge.coords,
-        instance: instance as PaperEdge,
-      };
+      if (ref && hasValidSource && hasValidTarget) {
+        const newEdge: IPaperStoredEdge = {
+          id: edge.id,
+          source: edge.source,
+          target: edge.target,
+          coords: edge.coords,
+          instance: instance as PaperEdge,
+        };
 
-      // If ref, update edge position and append onto paper.
-      if (ref && hasSource && hasTarget) {
         const evt = new PaperEvent('add-edge', {
           paper: this,
           target: newEdge,
@@ -516,8 +510,7 @@ export class Paper {
   }
 
   /**
-   * Add a listener for a specific type of event. This listener will be called
-   * every time the event is triggered.
+   * Remove an added listener by type and listener function.
    *
    * @param type The type of listener to remove.
    * @param listener The listener function to remove.
@@ -535,8 +528,8 @@ export class Paper {
   }
 
   /**
-   * WARNING: The underscore "_" denotes that this should be used in plugins.
-   * Non-underscore methods should cover all other use cases.
+   * **WARNING:** The underscore "_" denotes that this method should only be
+   * used in plugins. Non-underscore methods should cover all other use cases.
    *
    * Calls all listeners of a specific paper event type.
    *
@@ -563,8 +556,8 @@ export class Paper {
   }
 
   /**
-   * WARNING: The underscore "_" denotes that this should be used in plugins.
-   * Non-underscore methods should cover all other use cases.
+   * **WARNING:** The underscore "_" denotes that this method should only be
+   * used in plugins. Non-underscore methods should cover all other use cases.
    *
    * If you are trying to get the paper to render in your application, you
    * probably want to use getPaperElement().
@@ -584,6 +577,7 @@ export class Paper {
   private _updateEdgeRoute(id: string) {
     if (this._edges.hasOwnProperty(id)) {
       const edge = this._edges[id];
+
       let sourcePoint: ICoordinates | null = null;
       let targetPoint: ICoordinates | null = null;
 

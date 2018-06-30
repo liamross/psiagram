@@ -5,8 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { Paper, paperEventType } from '../Paper';
-import { IPaperEventProperties } from './';
+import { Paper, paperEventType, IPaperEventProperties } from '../../';
 
 export class PaperEvent {
   private _eventType: paperEventType;

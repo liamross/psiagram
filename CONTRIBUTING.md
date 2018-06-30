@@ -54,22 +54,13 @@ $ npm run lint --fix
 ### Develop
 
 ```sh
-# starts development server of contents in demo folder
+# runs clean-dev and starts development server
 $ yarn start
 $ npm start
 
-# cleans the dist and cache folders, then starts development server
-$ yarn start-clean
-$ npm run start-clean
-
-# builds the files, then starts development server
+# builds the files, runs clean-dev, then starts development server
 $ yarn start-build
 $ npm run start-build
-
-# builds the files, cleans the dist and cache folders, then starts development
-# server
-$ yarn start-build-clean
-$ npm run start-build-clean
 ```
 
 ### Build

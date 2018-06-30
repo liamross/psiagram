@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { IPaperStoredNode, IParameters, ICoordinates, PaperError } from '../';
+import { IPaperStoredNode, IParameters, ICoordinates } from '../';
 
 /**
  * Returns true if nodes are overlapping in the workspace, false otherwise.
@@ -194,25 +194,26 @@ export const areCoordsEqual = (
 ): boolean => coordsA.x === coordsB.x && coordsA.y === coordsB.y;
 
 /**
- * Generates a random number in a given base, and back-fills any remaining space
- * in length with the character '0'.
+ * Generates a string of possible characters at a defined length.
  *
- * @param base The radix of the number to represent in string (2 < base <= 36).
- * @param length The length of the random number string. Must be greater than 0.
+ * @param length The total length of the string.
+ * @param useLowerCase Can include both upper and lowercase letters.
  */
-export const generateRandomString = (base: number, length: number): string => {
-  if (base > 2 && base <= 36 && length > 0) {
-    return Math.round(Math.random() * Math.pow(base, length))
-      .toString(base)
-      .concat('0'.repeat(length))
-      .substring(0, length)
-      .toUpperCase();
-  } else {
-    throw new PaperError(
-      'ERANGE',
-      'Invalid range on base or length property',
-      'workflowUtils.ts',
-      'generateRandomString',
+export const generateRandomString = (
+  length: number,
+  useLowerCase: boolean = false,
+) => {
+  let text = '';
+
+  const possibleLetters = 'bcdghjklmnpqrstvwxyz';
+  let possibleChars = possibleLetters.toUpperCase() + '0123456789';
+  if (useLowerCase) possibleChars += possibleLetters;
+
+  for (let i = 0; i < length; i++) {
+    text += possibleChars.charAt(
+      Math.floor(Math.random() * possibleChars.length),
     );
   }
+
+  return text;
 };

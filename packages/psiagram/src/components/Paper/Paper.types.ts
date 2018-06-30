@@ -5,15 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {
-  Node,
-  Edge,
-  PaperEvent,
-  ICoordinates,
-  IParameters,
-  PsiagramPlugin,
-  WorkflowType,
-} from '../../';
+import { Node, Edge, ICoordinates, PsiagramPlugin, WorkflowType } from '../../';
 
 // =============================================================================
 // Paper
@@ -27,6 +19,7 @@ export interface IPaperProperties {
     allowBlockOverlap?: boolean;
     paperWrapperClass?: string;
     paperClass?: string;
+    uniqueId?: string;
   };
   initialConditions?: {
     nodes?: IPaperInputNode[];

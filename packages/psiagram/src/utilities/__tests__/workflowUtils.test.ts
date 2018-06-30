@@ -16,6 +16,7 @@ import {
   PaperNode,
   Node,
 } from '../..';
+
 /** Helpers */
 
 const generateNode = (
@@ -208,19 +209,8 @@ describe('Workflow Utilities', () => {
 
   describe('generateRandomString', () => {
     it('generates strings of the proper length', () => {
-      expect(generateRandomString(36, 4).length).toBe(4);
-      expect(generateRandomString(10, 8).length).toBe(8);
-    });
-
-    it('throws PaperError if base is incorrect', () => {
-      expect(() => generateRandomString(NaN, 4)).toThrow();
-      expect(() => generateRandomString(1, 5)).toThrow();
-      expect(() => generateRandomString(37, 8)).toThrow();
-    });
-
-    it('throws PaperError if length is incorrect', () => {
-      expect(() => generateRandomString(36, NaN)).toThrow();
-      expect(() => generateRandomString(14, 0)).toThrow();
+      expect(generateRandomString(4).length).toBe(4);
+      expect(generateRandomString(8).length).toBe(8);
     });
   });
 });

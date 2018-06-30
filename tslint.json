@@ -1,11 +1,12 @@
 {
   "extends": ["tslint:recommended", "tslint-config-prettier"],
   "rules": {
-    "no-console": true,
-    "ordered-imports": false,
-    "object-literal-sort-keys": false,
-    "no-unused-variable": true,
+    "curly": [true, "ignore-same-line"],
     "max-classes-per-file": false,
+    "no-console": true,
+    "no-unused-variable": true,
+    "object-literal-sort-keys": false,
+    "ordered-imports": false,
     "variable-name": [
       true,
       "ban-keywords",

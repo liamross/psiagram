@@ -1,6 +1,6 @@
 # Paper
 
-**Paper** is the core of the Psiagram framework. It provides somewhere to input
+**Paper is the core of the Psiagram framework**. It provides somewhere to input
 your settings, and an API to manipulate your Paper element once it's mounted in
 the DOM.
 

@@ -7,3 +7,7 @@
   - [Edge](basics/edge.md)
 - [In Depth](in-depth/README.md)
 - [Plugins](plugins/README.md)
+  - [What Are Plugins](plugins/what-are-plugins.md)
+  - [Grid Plugin](plugins/grid.md)
+  - [Mouse Events Plugin](plugins/mouse-events.md)
+  - [Creating Plugins](plugins/creating-plugins.md)

@@ -100,6 +100,7 @@ const myPaper = new Paper({
     gridSize: 20,
     paperWrapperClass: 'myPaperWrapper',
     paperClass: 'myPaper',
+    uniqueId: 'paper_unique_id',
   },
   plugins: [new Grid(), new MouseEvents()],
   initialConditions: {

@@ -33,6 +33,7 @@ interface IPaperProperties {
     gridSize?: number;
     paperWrapperClass?: string;
     paperClass?: string;
+    uniqueId?: string;
   };
   initialConditions?: {
     nodes?: IPaperInputNode[];
@@ -68,6 +69,7 @@ An optional object where you can define attributes of the Paper. These are all
 - gridSize - `number`: Grid size in px. If given, elements will snap to a grid.
 - paperWrapperClass - `string`: Class for div that encompasses Paper.
 - paperClass - `string`: Class for Paper SVG component.
+- uniqueId - `string`: Unique ID for paper (self-generated if none given).
 
 #### initialConditions (optional) - `Object`
 

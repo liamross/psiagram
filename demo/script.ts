@@ -54,7 +54,7 @@ function loadPaper() {
           component: Edge,
           source: { id: 'node2' },
           target: { x: 600, y: 460 },
-          coords: [{ x: 460, y: 460 }],
+          coords: [{ x: 469, y: 469 }],
         },
       ],
     },

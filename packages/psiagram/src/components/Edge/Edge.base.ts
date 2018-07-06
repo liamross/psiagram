@@ -77,7 +77,7 @@ export class Edge {
       stroke: '#333',
       'stroke-linecap': 'round',
       'stroke-width': '1px',
-      'marker-end': 'url(#_arrow)',
+      'marker-end': `url(#arrow_${this._properties.paperUniqueId})`,
     });
 
     // TODO: Implement title block.

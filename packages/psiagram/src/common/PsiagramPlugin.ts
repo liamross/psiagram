@@ -24,9 +24,9 @@ export interface IPluginProperties {
    */
   attributes: {
     gridSize: number;
-    allowBlockOverlap: boolean;
     paperWrapperClass: string;
     paperClass: string;
+    uniqueId: string;
   };
   initialConditions?: {
     nodes?: IPaperInputNode[];

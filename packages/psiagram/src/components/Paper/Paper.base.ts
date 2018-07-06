@@ -41,7 +41,7 @@ export class Paper {
   private _activeItem: IActiveItem | null;
   private _listeners: { [key: string]: Array<(evt: PaperEvent) => void> };
   private _gridSize: number;
-  private _allowBlockOverlap: boolean;
+  private _uniqueId: string;
   private _paper: SVGElement;
   private _paperWrapper: HTMLElement;
 
@@ -54,10 +54,9 @@ export class Paper {
   }: IPaperProperties) {
     attributes = attributes || {};
     this._gridSize = attributes.gridSize || 0;
-    this._allowBlockOverlap = attributes.allowBlockOverlap || false;
+    this._uniqueId = attributes.uniqueId || generateRandomString(4);
     const paperWrapperClass: string = attributes.paperWrapperClass || '';
     const paperClass: string = attributes.paperClass || '';
-    let uniqueId: string = attributes.uniqueId || '';
 
     this._width = roundToNearest(width, this._gridSize, this._gridSize);
     this._height = roundToNearest(height, this._gridSize, this._gridSize);
@@ -66,9 +65,8 @@ export class Paper {
     this._activeItem = null;
     this._listeners = {};
 
-    uniqueId = uniqueId || generateRandomString(4);
-    const paperWrapperId = `paper-wrapper_${uniqueId}`;
-    const paperId = `paper_${uniqueId}`;
+    const paperWrapperId = `paper-wrapper_${this._uniqueId}`;
+    const paperId = `paper_${this._uniqueId}`;
 
     // Set up paper.
     this._paper = createSVGWithAttributes('svg', {
@@ -109,9 +107,9 @@ export class Paper {
               plugins,
               attributes: {
                 gridSize: this._gridSize,
-                allowBlockOverlap: this._allowBlockOverlap,
                 paperWrapperClass,
                 paperClass,
+                uniqueId: this._uniqueId,
               },
               initialConditions,
             },
@@ -289,6 +287,7 @@ export class Paper {
       const instance: Edge = new edge.component({
         ...edge.properties,
         id: edge.id,
+        paperUniqueId: this._uniqueId,
       });
 
       // Set proxies to allow direct get and set for source, target, and
@@ -546,9 +545,7 @@ export class Paper {
 
     if (Array.isArray(this._listeners[type]) && this._listeners[type].length) {
       this._listeners[type].forEach(listener => {
-        if (evt.canPropagate) {
-          listener(evt);
-        }
+        if (evt.canPropagate) listener(evt);
       });
     }
 
@@ -641,7 +638,10 @@ export class Paper {
             edge.instance.updatePath(
               sourcePoint as ICoordinates,
               targetPoint as ICoordinates,
-              edge.coords,
+              edge.coords.map(coordinate => ({
+                x: roundToNearest(coordinate.x, this._gridSize),
+                y: roundToNearest(coordinate.y, this._gridSize),
+              })),
             );
           },
         });

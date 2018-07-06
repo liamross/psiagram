@@ -546,9 +546,7 @@ export class Paper {
 
     if (Array.isArray(this._listeners[type]) && this._listeners[type].length) {
       this._listeners[type].forEach(listener => {
-        if (evt.canPropagate) {
-          listener(evt);
-        }
+        if (evt.canPropagate) listener(evt);
       });
     }
 

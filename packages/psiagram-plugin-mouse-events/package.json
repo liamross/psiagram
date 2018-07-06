@@ -12,7 +12,7 @@
     "README.md",
     "lib/"
   ],
-  "version": "0.0.1-beta.1",
+  "version": "0.0.1-beta.2",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "author": "Liam Ross <liamross.code@gmail.com>",
@@ -25,6 +25,6 @@
     "lint": "tslint -p . -t verbose"
   },
   "dependencies": {
-    "psiagram": "^0.0.1-beta.1"
+    "psiagram": "^0.0.1-beta.2"
   }
 }

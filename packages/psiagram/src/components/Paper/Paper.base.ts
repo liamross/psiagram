@@ -641,7 +641,10 @@ export class Paper {
             edge.instance.updatePath(
               sourcePoint as ICoordinates,
               targetPoint as ICoordinates,
-              edge.coords,
+              edge.coords.map(coordinate => ({
+                x: roundToNearest(coordinate.x, this._gridSize),
+                y: roundToNearest(coordinate.y, this._gridSize),
+              })),
             );
           },
         });

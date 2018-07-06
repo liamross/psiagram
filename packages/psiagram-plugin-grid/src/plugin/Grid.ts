@@ -10,6 +10,7 @@ import {
   PsiagramPlugin,
   IPluginProperties,
   createSVGWithAttributes,
+  setSVGAttribute,
 } from 'psiagram';
 
 export interface IGridProperties {
@@ -18,14 +19,20 @@ export interface IGridProperties {
 
 export class Grid implements PsiagramPlugin {
   private _gridColor: string;
+  private _subgridPath: SVGElement | null;
+  private _gridPath: SVGElement | null;
 
   constructor(gridProperties?: IGridProperties) {
     this._gridColor = (gridProperties && gridProperties.gridColor) || '#EEE';
+
+    this._subgridPath = null;
+    this._gridPath = null;
   }
 
   public initialize(paper: Paper, properties: IPluginProperties): void {
     const paperElement = paper._getDrawSurface();
     const gridSize = properties.attributes.gridSize;
+    const uniqueId = properties.attributes.uniqueId;
 
     const defs = createSVGWithAttributes('defs');
 
@@ -33,23 +40,23 @@ export class Grid implements PsiagramPlugin {
     if (gridSize > 0) {
       // Create subgrid.
       const subgrid = createSVGWithAttributes('pattern', {
-        id: '_subgrid',
+        id: `subgrid_${uniqueId}`,
         width: gridSize / 2,
         height: gridSize / 2,
         patternUnits: 'userSpaceOnUse',
       });
-      const subgridPath = createSVGWithAttributes('path', {
+      this._subgridPath = createSVGWithAttributes('path', {
         d: `M ${gridSize / 2} 0 L 0 0 0 ${gridSize / 2}`,
         fill: 'none',
         stroke: this._gridColor,
         'stroke-width': '0.5',
       });
-      subgrid.appendChild(subgridPath);
+      subgrid.appendChild(this._subgridPath);
       defs.appendChild(subgrid);
 
       // Create grid.
       const grid = createSVGWithAttributes('pattern', {
-        id: '_grid',
+        id: `grid_${uniqueId}`,
         width: gridSize,
         height: gridSize,
         patternUnits: 'userSpaceOnUse',
@@ -57,23 +64,23 @@ export class Grid implements PsiagramPlugin {
       const gridRect = createSVGWithAttributes('rect', {
         width: '100%',
         height: '100%',
-        fill: 'url(#_subgrid)',
+        fill: `url(#subgrid_${uniqueId})`,
       });
-      const gridPath = createSVGWithAttributes('path', {
+      this._gridPath = createSVGWithAttributes('path', {
         d: `M ${gridSize} 0 L 0 0 0 ${gridSize}`,
         fill: 'none',
         stroke: this._gridColor,
         'stroke-width': '1',
       });
       grid.appendChild(gridRect);
-      grid.appendChild(gridPath);
+      grid.appendChild(this._gridPath);
       defs.appendChild(grid);
 
       // Create grid container.
       const gridContainer = createSVGWithAttributes('rect', {
         width: '100%',
         height: '100%',
-        fill: 'url(#_grid)',
+        fill: `url(#grid_${uniqueId})`,
       });
 
       // Add grid to paper.
@@ -83,7 +90,7 @@ export class Grid implements PsiagramPlugin {
     // Add edge arrowheads to definitions.
     // TODO: eventually implement path without marker for dynamic colors.
     const arrowhead = createSVGWithAttributes('marker', {
-      id: '_arrow',
+      id: `arrow_${uniqueId}`,
       markerWidth: '10',
       markerHeight: '10',
       refX: '6',
@@ -99,5 +106,18 @@ export class Grid implements PsiagramPlugin {
     defs.appendChild(arrowhead);
 
     paperElement.insertBefore(defs, paperElement.firstChild);
+  }
+
+  get gridColor(): string {
+    return this._gridColor;
+  }
+
+  set gridColor(gridColor: string) {
+    if (this._gridPath) {
+      setSVGAttribute(this._gridPath, 'stroke', gridColor);
+    }
+    if (this._subgridPath) {
+      setSVGAttribute(this._subgridPath, 'stroke', gridColor);
+    }
   }
 }

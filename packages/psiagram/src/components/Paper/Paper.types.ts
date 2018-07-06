@@ -16,7 +16,6 @@ export interface IPaperProperties {
   plugins?: PsiagramPlugin[];
   attributes?: {
     gridSize?: number;
-    allowBlockOverlap?: boolean;
     paperWrapperClass?: string;
     paperClass?: string;
     uniqueId?: string;

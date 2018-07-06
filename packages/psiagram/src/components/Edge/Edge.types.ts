@@ -7,5 +7,6 @@
 
 export interface IEdgeProperties {
   id: string;
+  paperUniqueId: string;
   title?: string;
 }

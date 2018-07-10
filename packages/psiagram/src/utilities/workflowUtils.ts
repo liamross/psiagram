@@ -104,7 +104,12 @@ export const getEdgeNodeIntersection = (
   nodeOutline?: number,
 ): { x: number; y: number } => {
   const midPoint = getNodeMidpoint(node, gridSize);
-  const lineA = [midPoint.x, midPoint.y, nextPoint.x, nextPoint.y];
+  const lineA = [
+    midPoint.x,
+    midPoint.y,
+    roundToNearest(nextPoint.x, gridSize),
+    roundToNearest(nextPoint.y, gridSize),
+  ];
 
   let { x: nx, y: ny } = node.coords;
   let { width: nw, height: nh } = getWidthHeight(node);

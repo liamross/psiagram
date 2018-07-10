@@ -604,24 +604,29 @@ export class Paper {
       }
 
       if ((sourcePoint || sourceNode) && (targetPoint || targetNode)) {
+        let sourceMidPoint = null;
+        let targetMidPoint = null;
+
         if (sourceNode) {
-          sourcePoint = getNodeMidpoint(sourceNode, this._gridSize);
+          sourceMidPoint = getNodeMidpoint(sourceNode, this._gridSize);
         }
         if (targetNode) {
-          targetPoint = getNodeMidpoint(targetNode, this._gridSize);
+          targetMidPoint = getNodeMidpoint(targetNode, this._gridSize);
         }
 
         if (sourceNode) {
           sourcePoint = getEdgeNodeIntersection(
             sourceNode,
-            edge.coords[0] || targetPoint,
+            edge.coords[0] || targetMidPoint || targetPoint,
             this._gridSize,
           );
         }
         if (targetNode) {
           targetPoint = getEdgeNodeIntersection(
             targetNode,
-            edge.coords[edge.coords.length - 1] || sourcePoint,
+            edge.coords[edge.coords.length - 1] ||
+              sourceMidPoint ||
+              sourcePoint,
             this._gridSize,
             4,
           );

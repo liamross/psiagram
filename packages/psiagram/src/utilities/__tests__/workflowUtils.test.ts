@@ -185,6 +185,14 @@ describe('Workflow Utilities', () => {
       );
       expect(intersection).toMatchObject({ x: 40, y: 40 });
     });
+
+    it('accurately calculates intersection if non-grid nextPoint given', () => {
+      const node = generateNode('node1', 40, 420, 120, 80, 20);
+      const nextPoint = { x: 469, y: 469 };
+      const gridSize = 20;
+      const intersection = getEdgeNodeIntersection(node, nextPoint, gridSize);
+      expect(intersection).toMatchObject({ x: 160, y: 460 });
+    });
   });
 
   describe('areCoordsEqual', () => {

@@ -339,4 +339,23 @@ describe('Listeners', () => {
       expect(testFunc.mock.calls.length).toBe(0);
     });
   });
+
+  describe('paper init', () => {
+    it('fires when paper is initialized', () => {
+      const testFunc = jest.fn();
+
+      function TestPlugin() {} // tslint:disable-line
+      TestPlugin.prototype.initialize = (paper: Paper) => {
+        paper.addListener('paper-init', testFunc);
+      };
+
+      const _ = new Paper({
+        height: 900,
+        width: 1300,
+        plugins: [new TestPlugin()],
+      });
+
+      expect(testFunc.mock.calls.length).toBe(1);
+    });
+  });
 });

@@ -19,7 +19,7 @@ export interface IPluginProperties {
   plugins: PsiagramPlugin[];
   /**
    * Attributes are simply values: changing them will not alter the values in
-   * Paper. They are simply to pass-through any initial attributes, or the
+   * Paper. They are only used to pass-through any initial attributes, or the
    * default values set-up in Paper.
    */
   attributes: {
@@ -44,27 +44,35 @@ export declare class PsiagramPlugin {
    * Initialize is called from within the paper. This allows the plugin to hook
    * in and begin manipulating the paper instance. This should ONLY be used
    * internally by the paper.
-   *
-   * This method is marked as optional, as in some cases you may want to
-   * initialize a plugin from another plugin. Use this CAREFULLY.
-   *
-   * @param paper Instance of the paper that is initializing the plugin.
-   * @param nodes Object containing the nodes within the paper.
-   * @param edges Object containing the edges within the paper.
-   * @param properties All of the properties that the paper is initialized with.
    */
-  public initialize?(
+  public initialize(
+    /**
+     * Instance of the paper that is initializing the plugin.
+     */
     paper: Paper,
+    /**
+     * All of the properties that the paper is initialized with.
+     */
     properties: IPluginProperties,
+    /**
+     * Object containing the nodes within the paper. This will be empty when the
+     * plugin is initialized, but will serve as a reference to the actual nodes
+     * object within Paper.
+     */
     nodes: { [key: string]: IPaperStoredNode },
+    /**
+     * Object containing the edges within the paper. This will be empty when the
+     * plugin is initialized, but will serve as a reference to the actual edges
+     * object within Paper.
+     */
     edges: { [key: string]: IPaperStoredEdge },
   ): void;
   /**
    * This may be called if the paper is gracefully torn-down. Use this to clean
    * up any listeners or call any end-of-lifecycle callbacks.
    *
-   * This method is marked as optional, as in some cases you may want to
-   * tear-down a plugin from another plugin. Use this CAREFULLY.
+   * This method is marked as optional, as your plugin may not require anything
+   * to be run during a teardown process.
    */
   public teardown?(): void;
 }

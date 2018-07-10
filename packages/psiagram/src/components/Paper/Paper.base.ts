@@ -85,16 +85,6 @@ export class Paper {
     });
     this._paperWrapper.appendChild(this._paper);
 
-    // Add all initial nodes.
-    if (initialConditions && initialConditions.nodes) {
-      initialConditions.nodes.forEach(node => this.addNode(node));
-    }
-
-    // Add all initial edges.
-    if (initialConditions && initialConditions.edges) {
-      initialConditions.edges.forEach(edge => this.addEdge(edge));
-    }
-
     // Initialize all plugins.
     if (plugins) {
       plugins.forEach(plugin => {
@@ -119,6 +109,20 @@ export class Paper {
         }
       });
     }
+
+    // Add all initial nodes.
+    if (initialConditions && initialConditions.nodes) {
+      initialConditions.nodes.forEach(node => this.addNode(node));
+    }
+
+    // Add all initial edges.
+    if (initialConditions && initialConditions.edges) {
+      initialConditions.edges.forEach(edge => this.addEdge(edge));
+    }
+
+    // Fire paper init event.
+    const evt = new PaperEvent('paper-init', { paper: this });
+    this._fireEvent(evt);
   }
 
   /**
@@ -604,34 +608,6 @@ export class Paper {
       }
 
       if ((sourcePoint || sourceNode) && (targetPoint || targetNode)) {
-        let sourceMidPoint = null;
-        let targetMidPoint = null;
-
-        if (sourceNode) {
-          sourceMidPoint = getNodeMidpoint(sourceNode, this._gridSize);
-        }
-        if (targetNode) {
-          targetMidPoint = getNodeMidpoint(targetNode, this._gridSize);
-        }
-
-        if (sourceNode) {
-          sourcePoint = getEdgeNodeIntersection(
-            sourceNode,
-            edge.coords[0] || targetMidPoint || targetPoint,
-            this._gridSize,
-          );
-        }
-        if (targetNode) {
-          targetPoint = getEdgeNodeIntersection(
-            targetNode,
-            edge.coords[edge.coords.length - 1] ||
-              sourceMidPoint ||
-              sourcePoint,
-            this._gridSize,
-            4,
-          );
-        }
-
         const evt = new PaperEvent('move-edge', {
           paper: this,
           target: edge,
@@ -640,6 +616,34 @@ export class Paper {
             points: { sourcePoint, targetPoint },
           },
           defaultAction: () => {
+            let sourceMidPoint = null;
+            let targetMidPoint = null;
+
+            if (sourceNode) {
+              sourceMidPoint = getNodeMidpoint(sourceNode, this._gridSize);
+            }
+            if (targetNode) {
+              targetMidPoint = getNodeMidpoint(targetNode, this._gridSize);
+            }
+
+            if (sourceNode) {
+              sourcePoint = getEdgeNodeIntersection(
+                sourceNode,
+                edge.coords[0] || targetMidPoint || targetPoint,
+                this._gridSize,
+              );
+            }
+            if (targetNode) {
+              targetPoint = getEdgeNodeIntersection(
+                targetNode,
+                edge.coords[edge.coords.length - 1] ||
+                  sourceMidPoint ||
+                  sourcePoint,
+                this._gridSize,
+                4,
+              );
+            }
+
             edge.instance.updatePath(
               sourcePoint as ICoordinates,
               targetPoint as ICoordinates,

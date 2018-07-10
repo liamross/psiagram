@@ -36,6 +36,7 @@ export declare type paperEventType =
   | 'move-edge'
   | 'remove-edge'
   // Paper
+  | 'paper-init'
   | 'update-active-item';
 
 // =============================================================================

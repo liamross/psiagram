@@ -18,21 +18,34 @@ export interface IGridProperties {
 }
 
 export class Grid implements PsiagramPlugin {
-  private _gridColor: string;
+  private _paperElement: SVGElement | null;
+  private _gridSize: number | null;
+  private _uniqueId: string | null;
   private _subgridPath: SVGElement | null;
   private _gridPath: SVGElement | null;
+  private _gridColor: string;
 
   constructor(gridProperties?: IGridProperties) {
-    this._gridColor = (gridProperties && gridProperties.gridColor) || '#EEE';
-
-    this._subgridPath = null;
+    this._paperElement = null;
+    this._gridSize = null;
+    this._uniqueId = null;
     this._gridPath = null;
+    this._subgridPath = null;
+    this._gridColor = (gridProperties && gridProperties.gridColor) || '#EEE';
   }
 
   public initialize(paper: Paper, properties: IPluginProperties): void {
-    const paperElement = paper._getDrawSurface();
-    const gridSize = properties.attributes.gridSize;
-    const uniqueId = properties.attributes.uniqueId;
+    this._paperElement = paper._getDrawSurface();
+    this._gridSize = properties.attributes.gridSize;
+    this._uniqueId = properties.attributes.uniqueId;
+
+    paper.addListener('paper-init', this.mountGrid);
+  }
+
+  protected mountGrid = () => {
+    const paperElement = this._paperElement as SVGElement;
+    const gridSize = this._gridSize as number;
+    const uniqueId = this._uniqueId as string;
 
     const defs = createSVGWithAttributes('defs');
 
@@ -106,7 +119,7 @@ export class Grid implements PsiagramPlugin {
     defs.appendChild(arrowhead);
 
     paperElement.insertBefore(defs, paperElement.firstChild);
-  }
+  };
 
   get gridColor(): string {
     return this._gridColor;

@@ -188,6 +188,8 @@ export class ManhattanRouting implements PsiagramPlugin {
     const horizontalExit = { x: targetPoint.x, y: sourcePoint.y };
 
     // Straight from source to target.
+    // - If Nodes do not overlap and do not cross in x or y ranges, this section
+    //    will be skipped.
     if (sourceBox && targetBox) {
       const areColliding =
         sourceBox.left < targetBox.right &&
@@ -195,53 +197,48 @@ export class ManhattanRouting implements PsiagramPlugin {
         sourceBox.top < targetBox.bottom &&
         targetBox.top < sourceBox.bottom;
 
+      // If Nodes are colliding, check which is higher.
       if (areColliding) {
-        // If Nodes are colliding, check which is higher.
+        // If source is lower than target, exit from top and loop back.
         if (sourcePoint.x < targetPoint.x) {
-          // If source is lower than target, exit from top.
-          const y = Math.max(sourceBox.bottom, targetBox.bottom);
-          return [{ x: sourcePoint.x, y }, { x: targetPoint.x, y }];
-        } else {
-          // Else exit from bottom.
-          const y = Math.min(sourceBox.top, targetBox.top);
-          return [{ x: sourcePoint.x, y }, { x: targetPoint.x, y }];
+          const maxY = Math.max(sourceBox.bottom, targetBox.bottom);
+          return [{ x: sourcePoint.x, y: maxY }, { x: targetPoint.x, y: maxY }];
         }
-      } else {
-        // If Nodes are not colliding, check range of target midpoint.
-        if (targetPoint.x < sourceBox.right && targetPoint.x > sourceBox.left) {
-          // Target is within x-range of sourceBox.
-          if (sourcePoint.x < targetPoint.x) {
-            // If source is lower than target, exit from bottom.
-            return [
-              { x: sourcePoint.x, y: sourceBox.bottom },
-              { x: targetPoint.x, y: sourceBox.bottom },
-            ];
-          } else {
-            // Else exit from top.
-            return [
-              { x: sourcePoint.x, y: sourceBox.top },
-              { x: targetPoint.x, y: sourceBox.top },
-            ];
-          }
-        } else if (
-          targetPoint.y < sourceBox.top &&
-          targetPoint.y > sourceBox.bottom
-        ) {
-          // Target is within y-range of sourceBox.
-          if (sourcePoint.y < targetPoint.y) {
-            // If source is further right than target, exit from right.
-            return [
-              { x: sourceBox.right, y: sourcePoint.y },
-              { x: sourceBox.right, y: targetPoint.y },
-            ];
-          } else {
-            // Else exit from left.
-            return [
-              { x: sourceBox.left, y: sourcePoint.y },
-              { x: sourceBox.left, y: targetPoint.y },
-            ];
-          }
+        // Else exit from bottom and loop back.
+        const minY = Math.min(sourceBox.top, targetBox.top);
+        return [{ x: sourcePoint.x, y: minY }, { x: targetPoint.x, y: minY }];
+      }
+
+      // Check if target is within x-range of sourceBox.
+      if (targetPoint.x < sourceBox.right && targetPoint.x > sourceBox.left) {
+        // If source is lower than target, exit from bottom and zig-zag.
+        if (sourcePoint.x < targetPoint.x) {
+          return [
+            { x: sourcePoint.x, y: sourceBox.bottom },
+            { x: targetPoint.x, y: sourceBox.bottom },
+          ];
         }
+        // Else exit from top and zig-zag.
+        return [
+          { x: sourcePoint.x, y: sourceBox.top },
+          { x: targetPoint.x, y: sourceBox.top },
+        ];
+      }
+
+      // Check if target is within y-range of sourceBox.
+      if (targetPoint.y < sourceBox.top && targetPoint.y > sourceBox.bottom) {
+        // If source is further right than target, exit from right and zig-zag.
+        if (sourcePoint.y < targetPoint.y) {
+          return [
+            { x: sourceBox.right, y: sourcePoint.y },
+            { x: sourceBox.right, y: targetPoint.y },
+          ];
+        }
+        // Else exit from left and zig-zag.
+        return [
+          { x: sourceBox.left, y: sourcePoint.y },
+          { x: sourceBox.left, y: targetPoint.y },
+        ];
       }
     }
 

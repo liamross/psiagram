@@ -7,4 +7,5 @@ custom features.
 - [What Are Plugins](what-are-plugins.md)
 - [Grid Plugin](grid.md)
 - [Mouse Events Plugin](mouse-events.md)
+- [Routing Plugin](routing.md)
 - [Creating Plugins](creating-plugins.md)

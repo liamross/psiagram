@@ -7,102 +7,19 @@
 
 import {
   Paper,
-  getWorkflowType,
-  WorkflowType,
-  PaperItemState,
   roundToNearest,
   PsiagramPlugin,
   ICoordinates,
   IPaperStoredNode,
   IPaperStoredEdge,
   IPluginProperties,
-  PaperError,
   PaperEvent,
+  getEdgeNodeIntersection,
 } from 'psiagram';
 
-/*
-  Rules:
-
-  A. Edge must extrude one gridSize out of Node before taking a right angle.
-
-  B. Edge must travel the shortest distance between points, taking into account
-     the size and proportions of the Node it's attached to.
-
-  C. If two approaches are the same distance, ex. if from a point to a point,
-      then Edge must preserve the direction it is traveling currently.
-
-  -----------------------------------------------------------------
-
-  Note: if points are in line, Edge should always be a straight line.
-
-  Note: Treat the point one gridSize out from Node as the point!
-
-  Note: If paths are equal without previous direction, then use some default.
-        This can just be determined through the logic of the calc (ex. minValue)
-
-  -----------------------------------------------------------------
-
-  Steps:
-  
-  1. From Node midpoint or point, determine direction of next point.
-
- *  NW    N    NE
- *        |
- *  W ----|---- E
- *        |
- *  SW    S    SE
-
-  2. Then rule out two sides for each Node that exists in the pairing
-
-  3. Find the point one gridSize outside of each Node side (or some default)
-
-  4. Calculate shortest length. Cases:
-
-      A. Two Nodes
-          - NodeA.a to NodeB.a
-          - NodeA.b to NodeB.a
-          - NodeA.a to NodeB.b
-          - NodeA.b to NodeB.b
-          - (Decide on some default if some are equal)
-
-      B. One Node, One Point
-          - NodeA.a to point
-          - NodeA.b to point
-          - (Preserve direction if equal, or if Node is first do default)
-
-      B. Two Points
-          - (Preserve direction, or if no direction do default)
-
-  5. Add points to array to create 90 degree angles
-
-  6. Prevent Default
-
-  ---------------------------------------------
-
-  Default exit direction: Preserve or Horizontal
-
-  Default entry direction: Vertical
-
-
-const minX = point.x - ((node.width / 2) + Math.max(MINIMUM_NODE_EXTENSION, gridSize))
-const maxX = point.x + ((node.width / 2) + Math.max(MINIMUM_NODE_EXTENSION, gridSize))
-
-if (targetPoint < minX) {
-  // Direction is left
-
-}
-*/
-
 export enum Direction {
-  N = 'N',
-  NE = 'NE',
-  E = 'E',
-  SE = 'SE',
-  S = 'S',
-  SW = 'SW',
-  W = 'W',
-  NW = 'NW',
-  INV = '',
+  Vertical = 'V',
+  Horizontal = 'H',
 }
 
 export interface IBoundingBox {
@@ -151,9 +68,11 @@ export class ManhattanRouting implements PsiagramPlugin {
     this._initialMouseCoords = null;
     this._initialPaperCoords = null;
     this._gridSize = properties.attributes.gridSize;
+
+    this._paperInstance.addListener('move-edge', this._updateEdgeRoute);
   }
 
-  protected _updateEdgeRoute = (evt: PaperEvent) => {
+  protected _updateEdgeRoute = (evt: PaperEvent): void => {
     const paper = evt.paper;
     const edge = evt.target as IPaperStoredEdge;
     const {
@@ -171,25 +90,83 @@ export class ManhattanRouting implements PsiagramPlugin {
         targetPoint: ICoordinates | null;
       };
     };
+
+    let finalSourcePoint = sourcePoint;
+    let finalTargetPoint = targetPoint;
+
+    let prevDirection: Direction = Direction.Horizontal;
+    let fullCoordinates: ICoordinates[] = [];
+
     const bufferSize = Math.max(MINIMUM_NODE_EXTENSION, this._gridSize);
 
     const sourceBox = this._getBoundingBox(sourceNode, sourcePoint, bufferSize);
     const targetBox = this._getBoundingBox(targetNode, targetPoint, bufferSize);
+
+    // Get initial sub-points.
+    const sourceSubPoints = this._getSubPoints(
+      (sourceMidPoint || sourcePoint) as ICoordinates,
+      edge.coords[0] || targetMidPoint || targetPoint,
+      sourceBox,
+      edge.coords[0] ? null : targetBox,
+      null,
+    );
+    prevDirection = sourceSubPoints.prevDirection;
+    fullCoordinates = sourceSubPoints.coords;
+
+    // Get sub-points for each coordinate.
+    edge.coords.forEach((coord, index) => {
+      const subPoints = this._getSubPoints(
+        coord,
+        edge.coords[index + 1] || targetMidPoint || targetPoint,
+        null,
+        edge.coords[index + 1] ? null : targetBox,
+        prevDirection,
+      );
+      prevDirection = subPoints.prevDirection;
+      fullCoordinates = [...fullCoordinates, coord, ...subPoints.coords];
+    });
+
+    if (sourceNode) {
+      finalSourcePoint = getEdgeNodeIntersection(
+        sourceNode,
+        fullCoordinates[0],
+        this._gridSize,
+      );
+    }
+    if (targetNode) {
+      finalTargetPoint = getEdgeNodeIntersection(
+        targetNode,
+        fullCoordinates[fullCoordinates.length - 1],
+        this._gridSize,
+        4,
+      );
+    }
+
+    edge.instance.updatePath(
+      finalSourcePoint as ICoordinates,
+      finalTargetPoint as ICoordinates,
+      fullCoordinates.map(coordinate => ({
+        x: roundToNearest(coordinate.x, this._gridSize),
+        y: roundToNearest(coordinate.y, this._gridSize),
+      })),
+    );
+
+    evt.preventDefault();
   };
 
-  protected _getSubPoint(
+  protected _getSubPoints(
     sourcePoint: ICoordinates,
     targetPoint: ICoordinates,
     sourceBox: IBoundingBox | null,
     targetBox: IBoundingBox | null,
-    prevDirection: 'H' | 'V' | null,
-  ): ICoordinates[] {
+    prevDirection: Direction | null,
+  ): { prevDirection: Direction; coords: ICoordinates[] } {
     const verticalExit = { x: sourcePoint.x, y: targetPoint.y };
     const horizontalExit = { x: targetPoint.x, y: sourcePoint.y };
 
-    // Straight from source to target.
-    // - If Nodes do not overlap and do not cross in x or y ranges, this section
-    //    will be skipped.
+    /*
+     * SOURCE --> TARGET
+     */
     if (sourceBox && targetBox) {
       const areColliding =
         sourceBox.left < targetBox.right &&
@@ -200,96 +177,140 @@ export class ManhattanRouting implements PsiagramPlugin {
       // If Nodes are colliding, check which is higher.
       if (areColliding) {
         // If source is lower than target, exit from top and loop back.
-        if (sourcePoint.x < targetPoint.x) {
+        if (sourcePoint.y > targetPoint.y) {
           const maxY = Math.max(sourceBox.bottom, targetBox.bottom);
-          return [{ x: sourcePoint.x, y: maxY }, { x: targetPoint.x, y: maxY }];
+          return {
+            prevDirection: Direction.Vertical,
+            coords: [
+              { x: sourcePoint.x, y: maxY },
+              { x: targetPoint.x, y: maxY },
+            ],
+          };
         }
         // Else exit from bottom and loop back.
         const minY = Math.min(sourceBox.top, targetBox.top);
-        return [{ x: sourcePoint.x, y: minY }, { x: targetPoint.x, y: minY }];
+        return {
+          prevDirection: Direction.Vertical,
+          coords: [
+            { x: sourcePoint.x, y: minY },
+            { x: targetPoint.x, y: minY },
+          ],
+        };
       }
 
       // Check if target is within x-range of sourceBox.
       if (targetPoint.x < sourceBox.right && targetPoint.x > sourceBox.left) {
-        // If source is lower than target, exit from bottom and zig-zag.
-        if (sourcePoint.x < targetPoint.x) {
-          return [
-            { x: sourcePoint.x, y: sourceBox.bottom },
-            { x: targetPoint.x, y: sourceBox.bottom },
-          ];
+        // If source is higher than target, exit from bottom and zig-zag.
+        if (sourcePoint.y < targetPoint.y) {
+          return {
+            prevDirection: Direction.Vertical,
+            coords: [
+              { x: sourcePoint.x, y: sourceBox.bottom },
+              { x: targetPoint.x, y: sourceBox.bottom },
+            ],
+          };
         }
         // Else exit from top and zig-zag.
-        return [
-          { x: sourcePoint.x, y: sourceBox.top },
-          { x: targetPoint.x, y: sourceBox.top },
-        ];
+        return {
+          prevDirection: Direction.Vertical,
+          coords: [
+            { x: sourcePoint.x, y: sourceBox.top },
+            { x: targetPoint.x, y: sourceBox.top },
+          ],
+        };
       }
 
       // Check if target is within y-range of sourceBox.
-      if (targetPoint.y < sourceBox.top && targetPoint.y > sourceBox.bottom) {
-        // If source is further right than target, exit from right and zig-zag.
-        if (sourcePoint.y < targetPoint.y) {
-          return [
-            { x: sourceBox.right, y: sourcePoint.y },
-            { x: sourceBox.right, y: targetPoint.y },
-          ];
+      if (sourcePoint.y < targetBox.bottom && sourcePoint.y > targetBox.top) {
+        // If source is further left than target, exit from right and zig-zag.
+        if (sourcePoint.x < targetPoint.x) {
+          return {
+            prevDirection: Direction.Horizontal,
+            coords: [
+              { x: sourceBox.right, y: sourcePoint.y },
+              { x: sourceBox.right, y: targetPoint.y },
+            ],
+          };
         }
         // Else exit from left and zig-zag.
-        return [
-          { x: sourceBox.left, y: sourcePoint.y },
-          { x: sourceBox.left, y: targetPoint.y },
-        ];
+        return {
+          prevDirection: Direction.Horizontal,
+          coords: [
+            { x: sourceBox.left, y: sourcePoint.y },
+            { x: sourceBox.left, y: targetPoint.y },
+          ],
+        };
       }
+
+      // If no overlap, and target is not within range, exit horizontally.
+      return {
+        prevDirection: Direction.Vertical,
+        coords: [horizontalExit],
+      };
     }
 
-    // Originating at source.
-    // - If targetPoint.y is within bound of sourceBox, exit horizontally.
-    // - Else, exit vertically.
+    /*
+     * SOURCE --> POINT
+     */
     if (sourceBox) {
-      if (targetPoint.y < sourceBox.top && targetPoint.y > sourceBox.bottom) {
-        return [horizontalExit];
+      // If target is within y-range of sourceBox, exit horizontally.
+      if (targetPoint.y > sourceBox.top && targetPoint.y < sourceBox.bottom) {
+        return {
+          prevDirection: Direction.Vertical,
+          coords: [horizontalExit],
+        };
       }
-      return [verticalExit];
+      // Else exit vertically.
+      return {
+        prevDirection: Direction.Horizontal,
+        coords: [verticalExit],
+      };
     }
 
-    // Originating from intermediate point with previous direction.
-    // - Preserve previous direction, or exit horizontally if invalid.
+    /*
+     * POINT --> POINT
+     */
     if (prevDirection) {
+      // If previous direction, preserve direction.
       switch (prevDirection) {
-        case 'V':
-          return [verticalExit];
-        case 'H':
+        case Direction.Vertical:
+          return {
+            prevDirection: Direction.Horizontal,
+            coords: [verticalExit],
+          };
+        case Direction.Horizontal:
         default:
-          return [horizontalExit];
+          return {
+            prevDirection: Direction.Vertical,
+            coords: [horizontalExit],
+          };
       }
     }
-
-    // Originating from intermediate point with no previous direction.
-    // - Exit sourcePoint horizontally.
-    return [horizontalExit];
+    // Else exit horizontally.
+    return {
+      prevDirection: Direction.Vertical,
+      coords: [horizontalExit],
+    };
   }
 
-  private _getBoundingBox(
+  protected _getBoundingBox(
     node: IPaperStoredNode | null,
     point: ICoordinates | null,
     bufferSize: number,
   ): IBoundingBox {
     if (node) {
-      const widthBuffer = node.instance.width / 2 + bufferSize;
-      const heightBuffer = node.instance.height / 2 + bufferSize;
-
       return {
-        top: node.coords.x - heightBuffer,
-        bottom: node.coords.x + heightBuffer,
-        left: node.coords.y - widthBuffer,
-        right: node.coords.y + widthBuffer,
+        top: node.coords.y - bufferSize,
+        bottom: node.coords.y + node.instance.height + bufferSize,
+        left: node.coords.x - bufferSize,
+        right: node.coords.x + node.instance.width + bufferSize,
       };
     } else if (point) {
       return {
-        top: point.x - bufferSize,
-        bottom: point.x + bufferSize,
-        left: point.y - bufferSize,
-        right: point.y + bufferSize,
+        top: point.y - bufferSize,
+        bottom: point.y + bufferSize,
+        left: point.x - bufferSize,
+        right: point.x + bufferSize,
       };
     }
     return { top: 0, right: 0, bottom: 0, left: 0 };

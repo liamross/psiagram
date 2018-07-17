@@ -54,7 +54,7 @@ export class Edge {
   ): void {
     if (this._path) {
       const dString = `M ${source.x} ${source.y} ${
-        coords ? coords.map(point => `L ${point.x} ${point.y} `).join() : ''
+        coords ? coords.map(point => `L ${point.x} ${point.y} `).join('') : ''
       }L ${target.x} ${target.y}`;
 
       setSVGAttribute(this._path as SVGElement, 'd', dString);

@@ -7,8 +7,12 @@ import {
   Edge,
   PaperError,
 } from 'psiagram';
-import { Grid } from 'psiagram-plugin-grid';
-import { MouseEvents } from 'psiagram-plugin-mouse-events';
+// import { Grid } from 'psiagram-plugin-grid';
+// import { MouseEvents } from 'psiagram-plugin-mouse-events';
+// import { ManhattanRouting } from 'psiagram-plugin-routing';
+import { Grid } from '../packages/psiagram-plugin-grid/src';
+import { MouseEvents } from '../packages/psiagram-plugin-mouse-events/src';
+import { ManhattanRouting } from '../packages/psiagram-plugin-routing/src';
 
 let myPaper: Paper | null = null;
 
@@ -17,7 +21,7 @@ function loadPaper() {
     attributes: { gridSize: 20 },
     height: 900,
     width: 1300,
-    plugins: [new Grid(), new MouseEvents()],
+    plugins: [new Grid(), new MouseEvents(), new ManhattanRouting()],
     initialConditions: {
       nodes: [
         {
@@ -30,7 +34,7 @@ function loadPaper() {
           id: 'node2',
           component: Node,
           coords: { x: 400, y: 220 },
-          properties: { width: 130, height: 75, title: 'node 2' },
+          properties: { width: 130, height: 140, title: 'node 2' },
         },
       ],
       edges: [
@@ -104,7 +108,7 @@ function addNode() {
       },
       id: `new_node_test`,
       properties: {
-        height: 80,
+        height: 60,
         title: 'Title 1',
         width: 160,
       },

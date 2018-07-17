@@ -200,7 +200,7 @@ export class ManhattanRouting implements PsiagramPlugin {
 
       // If Nodes are colliding, check which is higher.
       if (areColliding) {
-        // If source is lower than target, exit from top and loop back.
+        // If source is lower than target, exit from bottom and loop back.
         if (sourcePoint.y > targetPoint.y) {
           const maxY = Math.max(sourceBox.bottom, targetBox.bottom);
           return {
@@ -211,7 +211,7 @@ export class ManhattanRouting implements PsiagramPlugin {
             ],
           };
         }
-        // Else exit from bottom and loop back.
+        // Else exit from top and loop back.
         const minY = Math.min(sourceBox.top, targetBox.top);
         return {
           prevDirection: Direction.Vertical,
@@ -244,7 +244,7 @@ export class ManhattanRouting implements PsiagramPlugin {
         };
       }
 
-      // Check if target is within y-range of sourceBox.
+      // Check if source is within y-range of targetBox.
       if (sourcePoint.y < targetBox.bottom && sourcePoint.y > targetBox.top) {
         // If source is further left than target, exit from right and zig-zag.
         if (sourcePoint.x < targetPoint.x) {

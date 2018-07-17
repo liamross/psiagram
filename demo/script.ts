@@ -21,11 +21,7 @@ function loadPaper() {
     attributes: { gridSize: 20 },
     height: 900,
     width: 1300,
-    plugins: [
-      new Grid(),
-      new MouseEvents(),
-      new ManhattanRouting({ minimumEdgeExtension: 40 }),
-    ],
+    plugins: [new Grid(), new MouseEvents(), new ManhattanRouting()],
     initialConditions: {
       nodes: [
         {

@@ -21,13 +21,17 @@ function loadPaper() {
     attributes: { gridSize: 20 },
     height: 900,
     width: 1300,
-    plugins: [new Grid(), new MouseEvents(), new ManhattanRouting()],
+    plugins: [
+      new Grid(),
+      new MouseEvents(),
+      new ManhattanRouting({ minimumEdgeExtension: 40 }),
+    ],
     initialConditions: {
       nodes: [
         {
           id: 'node1',
           component: Node,
-          coords: { x: 60, y: 220 },
+          coords: { x: 60, y: 260 },
           properties: { width: 112, height: 85, title: 'node 1' },
         },
         {
@@ -35,6 +39,12 @@ function loadPaper() {
           component: Node,
           coords: { x: 400, y: 220 },
           properties: { width: 130, height: 140, title: 'node 2' },
+        },
+        {
+          id: 'node3',
+          component: Node,
+          coords: { x: 400, y: 600 },
+          properties: { width: 100, height: 100, title: 'node 3' },
         },
       ],
       edges: [
@@ -57,8 +67,15 @@ function loadPaper() {
           id: 'edge3',
           component: Edge,
           source: { id: 'node2' },
-          target: { x: 600, y: 460 },
-          coords: [{ x: 469, y: 469 }],
+          target: { id: 'node3' },
+          coords: [],
+        },
+        {
+          id: 'edge4',
+          component: Edge,
+          source: { id: 'node3' },
+          target: { x: 800, y: 800 },
+          coords: [],
         },
       ],
     },

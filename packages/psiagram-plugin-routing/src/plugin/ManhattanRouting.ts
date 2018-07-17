@@ -17,6 +17,10 @@ import {
   getEdgeNodeIntersection,
 } from 'psiagram';
 
+export interface IManhattanRoutingProperties {
+  minimumEdgeExtension?: number;
+}
+
 export enum Direction {
   Vertical = 'V',
   Horizontal = 'H',
@@ -29,51 +33,34 @@ export interface IBoundingBox {
   left: number;
 }
 
-// Minimum distance to extend out of a Node regardless of gridSize.
-const MINIMUM_NODE_EXTENSION = 20;
-
 export class ManhattanRouting implements PsiagramPlugin {
   private _paperInstance: Paper | null;
-  private _paper: SVGElement | null;
-  private _paperWrapper: HTMLElement | null;
-  private _nodes: { [key: string]: IPaperStoredNode };
-  private _edges: { [key: string]: IPaperStoredEdge };
-  private _initialMouseCoords: ICoordinates | null;
-  private _initialPaperCoords: ICoordinates | null;
   private _gridSize: number;
+  private _minimumEdgeExtension: number;
 
-  constructor() {
+  constructor(manhattanRoutingProperties?: IManhattanRoutingProperties) {
     this._paperInstance = null;
-    this._paperWrapper = null;
-    this._paper = null;
-    this._nodes = {};
-    this._edges = {};
-    this._initialMouseCoords = null;
-    this._initialPaperCoords = null;
     this._gridSize = 0;
+    this._minimumEdgeExtension =
+      (manhattanRoutingProperties &&
+        manhattanRoutingProperties.minimumEdgeExtension) ||
+      20;
   }
 
-  public initialize(
-    paper: Paper,
-    properties: IPluginProperties,
-    nodes: { [key: string]: IPaperStoredNode },
-    edges: { [key: string]: IPaperStoredEdge },
-  ): void {
+  public initialize(paper: Paper, properties: IPluginProperties): void {
     this._paperInstance = paper;
-    this._paperWrapper = this._paperInstance.getPaperElement();
-    this._paper = this._paperInstance._getDrawSurface();
-
-    this._nodes = nodes;
-    this._edges = edges;
-    this._initialMouseCoords = null;
-    this._initialPaperCoords = null;
     this._gridSize = properties.attributes.gridSize;
 
     this._paperInstance.addListener('move-edge', this._updateEdgeRoute);
   }
 
+  public teardown() {
+    if (this._paperInstance) {
+      this._paperInstance.removeListener('move-edge', this._updateEdgeRoute);
+    }
+  }
+
   protected _updateEdgeRoute = (evt: PaperEvent): void => {
-    const paper = evt.paper;
     const edge = evt.target as IPaperStoredEdge;
     const {
       nodes: { sourceNode, sourceMidPoint, targetNode, targetMidPoint },
@@ -97,10 +84,8 @@ export class ManhattanRouting implements PsiagramPlugin {
     let prevDirection: Direction = Direction.Horizontal;
     let fullCoordinates: ICoordinates[] = [];
 
-    const bufferSize = Math.max(MINIMUM_NODE_EXTENSION, this._gridSize);
-
-    const sourceBox = this._getBoundingBox(sourceNode, sourcePoint, bufferSize);
-    const targetBox = this._getBoundingBox(targetNode, targetPoint, bufferSize);
+    const sourceBox = this._getBoundingBox(sourceNode, sourcePoint);
+    const targetBox = this._getBoundingBox(targetNode, targetPoint);
 
     // Get initial sub-points.
     const sourceSubPoints = this._getSubPoints(
@@ -154,6 +139,45 @@ export class ManhattanRouting implements PsiagramPlugin {
     evt.preventDefault();
   };
 
+  /**
+   * Get a bounding box for a Node or point.
+   *
+   * @param node Optional. Node to get bounding box of.
+   * @param point Optional. If no Node, then give a point to get bounding box.
+   */
+  protected _getBoundingBox(
+    node: IPaperStoredNode | null,
+    point: ICoordinates | null,
+  ): IBoundingBox {
+    const bufferSize = Math.max(this._minimumEdgeExtension, this._gridSize);
+    if (node) {
+      return {
+        top: node.coords.y - bufferSize,
+        bottom: node.coords.y + node.instance.height + bufferSize,
+        left: node.coords.x - bufferSize,
+        right: node.coords.x + node.instance.width + bufferSize,
+      };
+    } else if (point) {
+      return {
+        top: point.y - bufferSize,
+        bottom: point.y + bufferSize,
+        left: point.x - bufferSize,
+        right: point.x + bufferSize,
+      };
+    }
+    return { top: 0, right: 0, bottom: 0, left: 0 };
+  }
+
+  /**
+   * Get an array of sub-points to place in-between source and target points, as
+   * well as the direction Edge is traveling at the target point.
+   *
+   * @param sourcePoint Source point of Edge section.
+   * @param targetPoint Target point of Edge section.
+   * @param sourceBox Optional. Bounding box for source point.
+   * @param targetBox Optional. Bounding box for target point.
+   * @param prevDirection Optional. Previous direction Edge was traveling.
+   */
   protected _getSubPoints(
     sourcePoint: ICoordinates,
     targetPoint: ICoordinates,
@@ -291,28 +315,5 @@ export class ManhattanRouting implements PsiagramPlugin {
       prevDirection: Direction.Vertical,
       coords: [horizontalExit],
     };
-  }
-
-  protected _getBoundingBox(
-    node: IPaperStoredNode | null,
-    point: ICoordinates | null,
-    bufferSize: number,
-  ): IBoundingBox {
-    if (node) {
-      return {
-        top: node.coords.y - bufferSize,
-        bottom: node.coords.y + node.instance.height + bufferSize,
-        left: node.coords.x - bufferSize,
-        right: node.coords.x + node.instance.width + bufferSize,
-      };
-    } else if (point) {
-      return {
-        top: point.y - bufferSize,
-        bottom: point.y + bufferSize,
-        left: point.x - bufferSize,
-        right: point.x + bufferSize,
-      };
-    }
-    return { top: 0, right: 0, bottom: 0, left: 0 };
   }
 }

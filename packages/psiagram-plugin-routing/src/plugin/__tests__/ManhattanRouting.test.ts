@@ -5,12 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {
-  Node,
-  IPaperStoredNode,
-  PaperNode,
-  ICoordinates,
-} from '../../../../psiagram/src';
+import { Node, IPaperStoredNode, PaperNode, ICoordinates } from 'psiagram';
 import { ManhattanRouting, IBoundingBox, Direction } from '../ManhattanRouting';
 
 let myRouting: ManhattanRouting = null;

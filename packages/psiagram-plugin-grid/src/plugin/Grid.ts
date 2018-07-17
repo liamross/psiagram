@@ -39,10 +39,10 @@ export class Grid implements PsiagramPlugin {
     this._gridSize = properties.attributes.gridSize;
     this._uniqueId = properties.attributes.uniqueId;
 
-    paper.addListener('paper-init', this.mountGrid);
+    paper.addListener('paper-init', this._mountGrid);
   }
 
-  protected mountGrid = () => {
+  protected _mountGrid = () => {
     const paperElement = this._paperElement as SVGElement;
     const gridSize = this._gridSize as number;
     const uniqueId = this._uniqueId as string;

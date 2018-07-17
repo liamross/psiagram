@@ -7,8 +7,12 @@ import {
   Edge,
   PaperError,
 } from 'psiagram';
-import { Grid } from 'psiagram-plugin-grid';
-import { MouseEvents } from 'psiagram-plugin-mouse-events';
+// import { Grid } from 'psiagram-plugin-grid';
+// import { MouseEvents } from 'psiagram-plugin-mouse-events';
+// import { ManhattanRouting } from 'psiagram-plugin-routing';
+import { Grid } from '../packages/psiagram-plugin-grid/src';
+import { MouseEvents } from '../packages/psiagram-plugin-mouse-events/src';
+import { ManhattanRouting } from '../packages/psiagram-plugin-routing/src';
 
 let myPaper: Paper | null = null;
 
@@ -17,20 +21,30 @@ function loadPaper() {
     attributes: { gridSize: 20 },
     height: 900,
     width: 1300,
-    plugins: [new Grid(), new MouseEvents()],
+    plugins: [
+      new Grid(),
+      new MouseEvents(),
+      new ManhattanRouting({ minimumEdgeExtension: 40 }),
+    ],
     initialConditions: {
       nodes: [
         {
           id: 'node1',
           component: Node,
-          coords: { x: 60, y: 220 },
+          coords: { x: 60, y: 260 },
           properties: { width: 112, height: 85, title: 'node 1' },
         },
         {
           id: 'node2',
           component: Node,
           coords: { x: 400, y: 220 },
-          properties: { width: 130, height: 75, title: 'node 2' },
+          properties: { width: 130, height: 140, title: 'node 2' },
+        },
+        {
+          id: 'node3',
+          component: Node,
+          coords: { x: 400, y: 600 },
+          properties: { width: 100, height: 100, title: 'node 3' },
         },
       ],
       edges: [
@@ -53,8 +67,15 @@ function loadPaper() {
           id: 'edge3',
           component: Edge,
           source: { id: 'node2' },
-          target: { x: 600, y: 460 },
-          coords: [{ x: 469, y: 469 }],
+          target: { id: 'node3' },
+          coords: [],
+        },
+        {
+          id: 'edge4',
+          component: Edge,
+          source: { id: 'node3' },
+          target: { x: 800, y: 800 },
+          coords: [],
         },
       ],
     },
@@ -104,7 +125,7 @@ function addNode() {
       },
       id: `new_node_test`,
       properties: {
-        height: 80,
+        height: 60,
         title: 'Title 1',
         width: 160,
       },

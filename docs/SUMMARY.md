@@ -10,4 +10,5 @@
   - [What Are Plugins](plugins/what-are-plugins.md)
   - [Grid Plugin](plugins/grid.md)
   - [Mouse Events Plugin](plugins/mouse-events.md)
+  - [Routing Plugin](plugins/routing.md)
   - [Creating Plugins](plugins/creating-plugins.md)

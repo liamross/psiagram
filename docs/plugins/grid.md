@@ -48,7 +48,7 @@ initialized) then you can initialize it like this:
 ```ts
 import { Grid } from 'psiagram-plugin-grid';
 
-const grid = new Grid({ gridColor: '#C4C5C6' });
+const grid = new Grid();
 
 const myPaper = new Paper({
   height: 900,

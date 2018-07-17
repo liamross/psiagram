@@ -608,24 +608,24 @@ export class Paper {
       }
 
       if ((sourcePoint || sourceNode) && (targetPoint || targetNode)) {
+        let sourceMidPoint: ICoordinates | null = null;
+        let targetMidPoint: ICoordinates | null = null;
+
+        if (sourceNode) {
+          sourceMidPoint = getNodeMidpoint(sourceNode, this._gridSize);
+        }
+        if (targetNode) {
+          targetMidPoint = getNodeMidpoint(targetNode, this._gridSize);
+        }
+
         const evt = new PaperEvent('move-edge', {
           paper: this,
           target: edge,
           data: {
-            nodes: { sourceNode, targetNode },
+            nodes: { sourceNode, sourceMidPoint, targetNode, targetMidPoint },
             points: { sourcePoint, targetPoint },
           },
           defaultAction: () => {
-            let sourceMidPoint = null;
-            let targetMidPoint = null;
-
-            if (sourceNode) {
-              sourceMidPoint = getNodeMidpoint(sourceNode, this._gridSize);
-            }
-            if (targetNode) {
-              targetMidPoint = getNodeMidpoint(targetNode, this._gridSize);
-            }
-
             if (sourceNode) {
               sourcePoint = getEdgeNodeIntersection(
                 sourceNode,

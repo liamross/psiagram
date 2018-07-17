@@ -1,4 +1,4 @@
-# Psiagram Plugin Mouse Handler
+# Psiagram Plugin Routing
 
 A plugin to allow special rendering of Edges, including Manhattan Routing.
 

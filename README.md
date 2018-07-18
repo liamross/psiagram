@@ -35,7 +35,7 @@ Psiagram is a framework that enables anyone to build complex and interactive
 diagrams and workflows easily, in any project, and without the need for external
 dependencies.
 
-# Use Psiagram
+## Use Psiagram
 
 For instructions on **how to use Psiagram**, as well as documentation on the
 API, use in your project, and all of the official plugins, see the

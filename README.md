@@ -37,19 +37,22 @@ dependencies.
 
 # Use Psiagram
 
-For instructions on how to use Psiagram, as well as documentation on the API,
-use in your project, and all of the official plugins, see the
+For instructions on **how to use Psiagram**, as well as documentation on the
+API, use in your project, and all of the official plugins, see the
 [Official Documentation](https://www.psiagram.org/).
 
-For instructions on how to **work with the GitHub repository**, including
-cloning, initializing and running, see the
+For instructions on **working with the GitHub repository**, including cloning,
+initializing and running, see the
 [Contributing Document](https://github.com/liamross/psiagram/blob/master/CONTRIBUTING.md).
 
-Psiagram is a monorepo, meaning it has multiple packages in one GitHub
-repository. This ensures that inter-dependency between packages is maintained,
-and allows for consistent versioning between psiagram and its plugins.
-
 ## Packages
+
+The Psiagram repository is a **monorepo**, meaning it has multiple packages in
+one GitHub repository. This ensures that inter-dependency between packages is
+maintained, and allows for consistent versioning between psiagram and its
+plugins. Click the package name to view the package in this repository (they're
+all contained in the packages folder) or click the status to view the package
+published on npm.
 
 | Package                                                                                                                | Status                                                                                                                                  | Description            |
 | ---------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |

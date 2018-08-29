@@ -10,8 +10,8 @@ import {
   createSVGWithAttributes,
   setSVGAttribute,
   setBatchSVGAttribute,
-  setWorkflowType,
-  WorkflowType,
+  setElementType,
+  ElementType,
   roundToNearest,
   PaperError,
 } from '../../';
@@ -51,7 +51,7 @@ export class Node {
       style: 'user-select: none',
     });
 
-    setWorkflowType(this._group, WorkflowType.Node);
+    setElementType(this._group, ElementType.Node);
 
     this.initialize();
   }

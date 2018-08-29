@@ -18,6 +18,7 @@ export interface IGridProperties {
 }
 
 export class Grid implements PsiagramPlugin {
+  private _paperInstance: Paper | null;
   private _paperElement: SVGElement | null;
   private _gridSize: number | null;
   private _uniqueId: string | null;
@@ -26,6 +27,7 @@ export class Grid implements PsiagramPlugin {
   private _gridColor: string;
 
   constructor(gridProperties?: IGridProperties) {
+    this._paperInstance = null;
     this._paperElement = null;
     this._gridSize = null;
     this._uniqueId = null;
@@ -35,6 +37,7 @@ export class Grid implements PsiagramPlugin {
   }
 
   public initialize(paper: Paper, properties: IPluginProperties): void {
+    this._paperInstance = paper;
     this._paperElement = paper._getDrawSurface();
     this._gridSize = properties.attributes.gridSize;
     this._uniqueId = properties.attributes.uniqueId;
@@ -43,11 +46,10 @@ export class Grid implements PsiagramPlugin {
   }
 
   protected _mountGrid = () => {
+    const paper = this._paperInstance as Paper;
     const paperElement = this._paperElement as SVGElement;
     const gridSize = this._gridSize as number;
     const uniqueId = this._uniqueId as string;
-
-    const defs = createSVGWithAttributes('defs');
 
     // Add grid to definitions if valid grid size is provided.
     if (gridSize > 0) {
@@ -65,7 +67,7 @@ export class Grid implements PsiagramPlugin {
         'stroke-width': '0.5',
       });
       subgrid.appendChild(this._subgridPath);
-      defs.appendChild(subgrid);
+      paper._insertPaperDef(subgrid)
 
       // Create grid.
       const grid = createSVGWithAttributes('pattern', {
@@ -87,7 +89,7 @@ export class Grid implements PsiagramPlugin {
       });
       grid.appendChild(gridRect);
       grid.appendChild(this._gridPath);
-      defs.appendChild(grid);
+      paper._insertPaperDef(grid)
 
       // Create grid container.
       const gridContainer = createSVGWithAttributes('rect', {
@@ -99,26 +101,6 @@ export class Grid implements PsiagramPlugin {
       // Add grid to paper.
       paperElement.insertBefore(gridContainer, paperElement.firstChild);
     }
-
-    // Add edge arrowheads to definitions.
-    // TODO: eventually implement path without marker for dynamic colors.
-    const arrowhead = createSVGWithAttributes('marker', {
-      id: `arrow_${uniqueId}`,
-      markerWidth: '10',
-      markerHeight: '10',
-      refX: '6',
-      refY: '5',
-      orient: 'auto',
-      markerUnits: 'strokeWidth',
-    });
-    const arrowheadPath = createSVGWithAttributes('path', {
-      d: 'M 0 0 L 0 10 L 10 5 Z',
-      fill: '#333',
-    });
-    arrowhead.appendChild(arrowheadPath);
-    defs.appendChild(arrowhead);
-
-    paperElement.insertBefore(defs, paperElement.firstChild);
   };
 
   get gridColor(): string {

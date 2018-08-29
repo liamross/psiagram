@@ -8,8 +8,8 @@
 import {
   IEdgeProperties,
   ICoordinates,
-  setWorkflowType,
-  WorkflowType,
+  setElementType,
+  ElementType,
   createSVGWithAttributes,
   setSVGAttribute,
   PaperError,
@@ -38,7 +38,7 @@ export class Edge {
       style: 'user-select: none',
     });
 
-    setWorkflowType(this._group, WorkflowType.Edge);
+    setElementType(this._group, ElementType.Edge);
 
     this.initialize();
   }

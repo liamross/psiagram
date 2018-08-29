@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { Node, Edge, ICoordinates, PsiagramPlugin, WorkflowType } from '../../';
+import { Node, Edge, ICoordinates, PsiagramPlugin, ElementType } from '../../';
 
 // =============================================================================
 // Paper
@@ -43,7 +43,7 @@ export declare type paperEventType =
 // Active Item
 
 export interface IActiveItem {
-  workflowType: WorkflowType;
+  elementType: ElementType;
   id: string;
   paperItemState: PaperItemState;
   [key: string]: string;

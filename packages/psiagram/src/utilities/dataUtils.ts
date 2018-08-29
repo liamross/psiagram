@@ -5,44 +5,44 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const WORKFLOW_DATA_ATTRIBUTE = 'data-workflow-type';
+const ELEMENT_TYPE_DATA_ATTRIBUTE = 'data-element-type';
 
 /**
- * Set the data-workflow-type of an element to given WorkflowType.
+ * Set the data-element-type of an element to given ElementType.
  */
-export const setWorkflowType = (
+export const setElementType = (
   element: Element,
-  workflowType: WorkflowType,
+  elementType: ElementType,
 ): void => {
-  element.setAttribute(WORKFLOW_DATA_ATTRIBUTE, workflowType);
+  element.setAttribute(ELEMENT_TYPE_DATA_ATTRIBUTE, elementType);
 };
 
 /**
  * Check if a target element has a workflow data attribute matching given
- * WorkflowType.
+ * ElementType.
  */
-export const hasWorkflowType = (
+export const hasElementType = (
   element: Element | null = null,
-  workflowType: WorkflowType,
+  elementType: ElementType,
 ): boolean => {
-  return getWorkflowType(element) === workflowType;
+  return getElementType(element) === elementType;
 };
 
 /**
- * Returns the WorkflowType of an element or empty string if it has none.
+ * Returns the ElementType of an element or empty string if it has none.
  */
-export const getWorkflowType = (
+export const getElementType = (
   element: Element | null = null,
-): WorkflowType | string => {
+): ElementType | string => {
   return element
-    ? (element.getAttribute(WORKFLOW_DATA_ATTRIBUTE) as WorkflowType)
+    ? (element.getAttribute(ELEMENT_TYPE_DATA_ATTRIBUTE) as ElementType)
     : '';
 };
 
 /**
  * Possible values for workflow data attribute.
  */
-export enum WorkflowType {
+export enum ElementType {
   Paper = 'paper',
   Node = 'node',
   Edge = 'edge',

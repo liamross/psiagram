@@ -17,8 +17,8 @@ import {
   IPaperInputEdge,
   IPaperStoredEdge,
   paperEventType,
-  setWorkflowType,
-  WorkflowType,
+  setElementType,
+  ElementType,
   createElementWithAttributes,
   createSVGWithAttributes,
   setSVGAttribute,
@@ -33,6 +33,8 @@ import {
   edgeEndPoint,
 } from '../../';
 
+import { setPaperDefs } from './setPaperDefs';
+
 export class Paper {
   private _width: number;
   private _height: number;
@@ -44,6 +46,7 @@ export class Paper {
   private _uniqueId: string;
   private _paper: SVGElement;
   private _paperWrapper: HTMLElement;
+  private _defs: SVGElement;
 
   constructor({
     width,
@@ -75,7 +78,8 @@ export class Paper {
       height: '100%',
       class: paperClass || null,
     });
-    setWorkflowType(this._paper, WorkflowType.Paper);
+    this._defs = setPaperDefs(this._paper, this._uniqueId);
+    setElementType(this._paper, ElementType.Paper);
 
     // Set up paper wrapper.
     this._paperWrapper = createElementWithAttributes('div', {
@@ -567,6 +571,38 @@ export class Paper {
    */
   public _getDrawSurface(): SVGElement {
     return this._paper;
+  }
+
+  /**
+   * **WARNING:** The underscore "_" denotes that this method should only be
+   * used in plugins. Non-underscore methods should cover all other use cases.
+   *
+   * Insert a new def into the defs element within Paper.
+   *
+   * @param def The def to insert.
+   * @param [id] Optional. An ID that can be used to remove the def.
+   */
+  public _insertPaperDef(def: SVGElement, id: string = ''): void {
+    if (id) def.setAttribute('data-defs-id', id);
+    this._defs.appendChild(def);
+  }
+
+  /**
+   * **WARNING:** The underscore "_" denotes that this method should only be
+   * used in plugins. Non-underscore methods should cover all other use cases.
+   *
+   * Remove a def from the defs element within Paper.
+   *
+   * @param [id] Optional. The ID of the def to remove.
+   */
+  public _removePaperDef(id: string): void {
+    const childDefs = this._defs.children;
+    for (let i = childDefs.length - 1; i >= 0; i--) {
+      const def = childDefs[i];
+      if (id === def.getAttribute('data-defs-id')) {
+        this._defs.removeChild(def);
+      }
+    }
   }
 
   /**

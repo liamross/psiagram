@@ -7,8 +7,8 @@
 
 import {
   Paper,
-  getWorkflowType,
-  WorkflowType,
+  getElementType,
+  ElementType,
   PaperItemState,
   roundToNearest,
   PsiagramPlugin,
@@ -72,16 +72,16 @@ export class MouseEvents implements PsiagramPlugin {
 
   private _handleMouseDown = (evt: MouseEvent): void => {
     const containerElement = (evt.target as Element).parentElement;
-    const workflowType = getWorkflowType(containerElement);
+    const elementType = getElementType(containerElement);
     if (containerElement) {
-      switch (workflowType) {
-        case WorkflowType.Node:
+      switch (elementType) {
+        case ElementType.Node:
           this._handleNodeMouseDown(evt, containerElement.id);
           break;
-        case WorkflowType.Edge:
+        case ElementType.Edge:
           this._handleEdgeMouseDown(evt, containerElement.id);
           break;
-        case WorkflowType.Paper:
+        case ElementType.Paper:
           // Do we need to give ID?
           this._handlePaperMouseDown(evt, containerElement.id);
           break;
@@ -98,7 +98,7 @@ export class MouseEvents implements PsiagramPlugin {
       this._paperInstance.updateActiveItem({
         id,
         paperItemState: PaperItemState.Moving,
-        workflowType: WorkflowType.Node,
+        elementType: ElementType.Node,
       });
       // Store initial mouse coordinates.
       this._initialMouseCoords = {
@@ -132,7 +132,7 @@ export class MouseEvents implements PsiagramPlugin {
 
     if (
       activeItem &&
-      activeItem.workflowType === WorkflowType.Node &&
+      activeItem.elementType === ElementType.Node &&
       activeItem.paperItemState === PaperItemState.Moving &&
       this._initialMouseCoords &&
       this._initialPaperCoords &&
@@ -167,7 +167,7 @@ export class MouseEvents implements PsiagramPlugin {
 
     if (
       activeItem &&
-      activeItem.workflowType === WorkflowType.Node &&
+      activeItem.elementType === ElementType.Node &&
       activeItem.paperItemState === PaperItemState.Moving &&
       this._paperInstance
     ) {

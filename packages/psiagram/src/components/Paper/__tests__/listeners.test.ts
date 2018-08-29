@@ -12,7 +12,7 @@ import {
   Node,
   PaperEvent,
   PaperItemState,
-  WorkflowType,
+  ElementType,
 } from '../../..';
 
 let paperProperties: IPaperProperties = null;
@@ -290,7 +290,7 @@ describe('Listeners', () => {
       myPaper.updateActiveItem({
         id: 'test-node',
         paperItemState: PaperItemState.Moving,
-        workflowType: WorkflowType.Node,
+        elementType: ElementType.Node,
       });
 
       expect(testFunc.mock.calls.length).toBe(1);
@@ -304,7 +304,7 @@ describe('Listeners', () => {
       myPaper.updateActiveItem({
         id: 'test-node',
         paperItemState: PaperItemState.Moving,
-        workflowType: WorkflowType.Node,
+        elementType: ElementType.Node,
       });
 
       expect(testFunc.mock.calls.length).toBe(1);
@@ -312,7 +312,7 @@ describe('Listeners', () => {
       myPaper.updateActiveItem({
         id: 'test-node',
         paperItemState: PaperItemState.Moving,
-        workflowType: WorkflowType.Node,
+        elementType: ElementType.Node,
       });
 
       expect(testFunc.mock.calls.length).toBe(1);

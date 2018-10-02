@@ -14,8 +14,10 @@ import {
   IActiveItem,
   IPaperInputNode,
   IPaperStoredNode,
+  INodeComponentMap,
   IPaperInputEdge,
   IPaperStoredEdge,
+  IEdgeComponentMap,
   paperEventType,
   setElementType,
   ElementType,
@@ -34,12 +36,15 @@ import {
 } from '../../';
 
 import { setPaperDefs } from './setPaperDefs';
+import {} from './Paper.types';
 
 export class Paper {
   private _width: number;
   private _height: number;
   private _nodes: { [key: string]: IPaperStoredNode };
+  private _nodeComponentMap: INodeComponentMap | null;
   private _edges: { [key: string]: IPaperStoredEdge };
+  private _edgeComponentMap: IEdgeComponentMap | null;
   private _activeItem: IActiveItem | null;
   private _listeners: { [key: string]: Array<(evt: PaperEvent) => void> };
   private _gridSize: number;
@@ -114,13 +119,49 @@ export class Paper {
       });
     }
 
-    // Add all initial nodes.
+    // Add all initial nodes and mappings.
+    this._nodeComponentMap = null;
     if (initialConditions && initialConditions.nodes) {
+      const allNodesMapped =
+        initialConditions.nodeComponentMap &&
+        initialConditions.nodes.every(
+          node =>
+            node.component in
+            (initialConditions.nodeComponentMap as INodeComponentMap),
+        );
+
+      if (!allNodesMapped) {
+        throw new PaperError(
+          'E_NODE_MAP',
+          `Not all node.component strings exist in the nodeComponentMap.`,
+          'Paper.base.ts',
+          'constructor',
+        );
+      }
+
       initialConditions.nodes.forEach(node => this.addNode(node));
     }
 
-    // Add all initial edges.
+    // Add all initial edges and mappings.
+    this._edgeComponentMap = null;
     if (initialConditions && initialConditions.edges) {
+      const allEdgesMapped =
+        initialConditions.edgeComponentMap &&
+        initialConditions.edges.every(
+          edge =>
+            edge.component in
+            (initialConditions.edgeComponentMap as IEdgeComponentMap),
+        );
+
+      if (!allEdgesMapped) {
+        throw new PaperError(
+          'E_NODE_MAP',
+          `Not all edge.component strings exist in the edgeComponentMap.`,
+          'Paper.base.ts',
+          'constructor',
+        );
+      }
+
       initialConditions.edges.forEach(edge => this.addEdge(edge));
     }
 
@@ -151,7 +192,10 @@ export class Paper {
         'addNode',
       );
     } else {
-      const instance: Node = new node.component({
+      const nodeComponent = (this._nodeComponentMap as INodeComponentMap)[
+        node.component
+      ];
+      const instance: Node = new nodeComponent({
         ...node.properties,
         id: node.id,
         gridSize: this._gridSize,
@@ -292,7 +336,10 @@ export class Paper {
         'addEdge',
       );
     } else {
-      const instance: Edge = new edge.component({
+      const edgeComponent = (this._edgeComponentMap as IEdgeComponentMap)[
+        edge.component
+      ];
+      const instance: Edge = new edgeComponent({
         ...edge.properties,
         id: edge.id,
         paperUniqueId: this._uniqueId,

@@ -26,34 +26,37 @@ function loadPaper() {
       nodes: [
         {
           id: 'node1',
-          component: Node,
+          component: 'rectangle',
           coords: { x: 60, y: 260 },
           properties: { width: 112, height: 85, title: 'node 1' },
         },
         {
           id: 'node2',
-          component: Node,
+          component: 'rectangle',
           coords: { x: 400, y: 220 },
           properties: { width: 130, height: 140, title: 'node 2' },
         },
         {
           id: 'node3',
-          component: Node,
+          component: 'rectangle',
           coords: { x: 400, y: 600 },
           properties: { width: 100, height: 100, title: 'node 3' },
         },
       ],
+      nodeComponentMap: {
+        rectangle: Node,
+      },
       edges: [
         {
           id: 'edge1',
-          component: Edge,
+          component: 'line',
           source: { x: 120, y: 120 },
           target: { id: 'node1' },
           coords: [],
         },
         {
           id: 'edge2',
-          component: Edge,
+          component: 'line',
           source: { id: 'node1' },
           target: { id: 'node2' },
           coords: [],
@@ -61,19 +64,22 @@ function loadPaper() {
         },
         {
           id: 'edge3',
-          component: Edge,
+          component: 'line',
           source: { id: 'node2' },
           target: { id: 'node3' },
           coords: [],
         },
         {
           id: 'edge4',
-          component: Edge,
+          component: 'line',
           source: { id: 'node3' },
           target: { x: 800, y: 800 },
           coords: [],
         },
       ],
+      edgeComponentMap: {
+        line: Edge,
+      },
     },
   };
 

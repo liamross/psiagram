@@ -22,7 +22,9 @@ export interface IPaperProperties {
   };
   initialConditions?: {
     nodes?: IPaperInputNode[];
+    nodeComponentMap?: INodeComponentMap;
     edges?: IPaperInputEdge[];
+    edgeComponentMap?: IEdgeComponentMap;
   };
 }
 
@@ -60,7 +62,7 @@ export enum PaperItemState {
 
 export interface IPaperInputNode {
   id: string;
-  component: typeof Node;
+  component: componentName;
   coords: ICoordinates;
   properties: {
     width: number;
@@ -84,7 +86,7 @@ export declare class PaperNode extends Node {
 
 export interface IPaperInputEdge {
   id: string;
-  component: typeof Edge;
+  component: componentName;
   source: edgeEndPoint;
   target: edgeEndPoint;
   coords: ICoordinates[];
@@ -108,3 +110,16 @@ export declare class PaperEdge extends Edge {
 }
 
 export declare type edgeEndPoint = { id: string } | ICoordinates;
+
+// =============================================================================
+// Other
+
+export declare type componentName = string;
+
+export interface INodeComponentMap {
+  [key: string]: typeof Node;
+}
+
+export interface IEdgeComponentMap {
+  [key: string]: typeof Edge;
+}

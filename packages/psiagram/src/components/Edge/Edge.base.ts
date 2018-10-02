@@ -13,6 +13,7 @@ import {
   createSVGWithAttributes,
   setSVGAttribute,
   PaperError,
+  componentName,
 } from '../../';
 
 // const FONT_HEIGHT = 14;

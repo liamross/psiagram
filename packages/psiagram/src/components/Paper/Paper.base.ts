@@ -139,6 +139,7 @@ export class Paper {
         );
       }
 
+      this._nodeComponentMap = initialConditions.nodeComponentMap as INodeComponentMap;
       initialConditions.nodes.forEach(node => this.addNode(node));
     }
 
@@ -162,6 +163,7 @@ export class Paper {
         );
       }
 
+      this._edgeComponentMap = initialConditions.edgeComponentMap as IEdgeComponentMap;
       initialConditions.edges.forEach(edge => this.addEdge(edge));
     }
 

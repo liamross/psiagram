@@ -120,7 +120,7 @@ function loadPaper() {
 function addNode() {
   if (myPaper) {
     const node: IPaperInputNode = {
-      component: Node,
+      component: 'rectangle',
       coords: {
         x: 320,
         y: 160,

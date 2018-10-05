@@ -22,7 +22,7 @@ const addNode = () => {
   if (myPaper) {
     myPaper.addNode({
       id: 'node-test',
-      component: Node,
+      component: 'rectangle',
       coords: { x: 900, y: 800 },
       properties: { width: 80, height: 80, title: 'node test' },
     });
@@ -33,7 +33,7 @@ const addEdge = () => {
   if (myPaper) {
     myPaper.addEdge({
       id: 'edge-test',
-      component: Edge,
+      component: 'line',
       source: { id: 'node1' },
       target: { id: 'node2' },
       coords: [],
@@ -53,27 +53,33 @@ describe('Listeners', () => {
         nodes: [
           {
             id: 'node1',
-            component: Node,
+            component: 'rectangle',
             coords: { x: 80, y: 80 },
             properties: { width: 80, height: 80, title: 'node 1' },
           },
           {
             id: 'node2',
-            component: Node,
+            component: 'rectangle',
             coords: { x: 240, y: 80 },
             properties: { width: 80, height: 80, title: 'node 2' },
           },
         ],
+        nodeComponentMap: {
+          rectangle: Node,
+        },
         edges: [
           {
             id: 'edge1',
-            component: Edge,
+            component: 'line',
             source: { id: 'node1' },
             target: { id: 'node2' },
             coords: [],
             properties: { title: 'edge 1' },
           },
         ],
+        edgeComponentMap: {
+          line: Edge,
+        },
       },
     };
   });

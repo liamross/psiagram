@@ -7,6 +7,7 @@
 
 export interface IEdgeProperties {
   id: string;
+  gridSize: number;
   paperUniqueId: string;
   title?: string;
 }

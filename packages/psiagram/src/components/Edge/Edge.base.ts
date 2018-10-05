@@ -21,10 +21,12 @@ export class Edge {
   private _properties: IEdgeProperties;
 
   private _group: SVGElement;
+  private _clickZone: SVGElement | null;
   private _path: SVGElement | null;
   // private _text: SVGElement | null;
 
   constructor(properties: IEdgeProperties) {
+    this._clickZone = null;
     this._path = null;
     // this._text = null;
 
@@ -52,12 +54,13 @@ export class Edge {
     target: ICoordinates,
     coords?: ICoordinates[],
   ): void {
-    if (this._path) {
+    if (this._path && this._clickZone) {
       const dString = `M ${source.x} ${source.y} ${
         coords ? coords.map(point => `L ${point.x} ${point.y} `).join('') : ''
       }L ${target.x} ${target.y}`;
 
-      setSVGAttribute(this._path as SVGElement, 'd', dString);
+      setSVGAttribute(this._clickZone, 'd', dString);
+      setSVGAttribute(this._path, 'd', dString);
     } else {
       throw new PaperError(
         'E_NO_ELEM',
@@ -71,6 +74,13 @@ export class Edge {
   protected initialize(): void {
     const { title, id } = this._properties;
 
+    this._clickZone = createSVGWithAttributes('path', {
+      id: id + '_path',
+      fill: 'none',
+      stroke: 'transparent',
+      'stroke-width': `${Math.max(10, this._properties.gridSize)}px`,
+    });
+
     this._path = createSVGWithAttributes('path', {
       id: id + '_path',
       fill: 'none',
@@ -82,6 +92,7 @@ export class Edge {
 
     // TODO: Implement title block.
 
+    this._group.appendChild(this._clickZone);
     this._group.appendChild(this._path);
   }
 

@@ -344,6 +344,7 @@ export class Paper {
       const instance: Edge = new edgeComponent({
         ...edge.properties,
         id: edge.id,
+        gridSize: this._gridSize,
         paperUniqueId: this._uniqueId,
       });
 

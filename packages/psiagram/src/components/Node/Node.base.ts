@@ -14,7 +14,6 @@ import {
   ElementType,
   roundToNearest,
   PaperError,
-  componentName,
 } from '../../';
 
 const FONT_HEIGHT = 14;

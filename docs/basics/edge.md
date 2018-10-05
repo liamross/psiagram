@@ -19,7 +19,7 @@ Here is the Paper Input Edge interface defined in TypeScript:
 ```ts
 interface IPaperInputEdge {
   id: string;
-  component: typeof Edge;
+  component: string;
   source: edgeEndPoint;
   target: edgeEndPoint;
   coords: ICoordinates[];
@@ -37,13 +37,12 @@ Edge. Let's take a look into what each of those potential properties mean.
 This is the unique ID of the Edge. These **must** be unique amongst other Edges
 on the instance of Paper.
 
-#### component - `typeof Edge (not initialized)`
+#### component - `string`
 
-The component you pass in is an uninitialized Edge class. This is so that it can
-be initialized inside of Paper with any properties you pass in, as well as
-properties specific to the Paper class. You may also pass in custom Edge classes
-here, which is detailed further in the
-[custom edges section](../in-depth/custom-edges.md).
+This string maps to an Edge class within the
+`initialConditions.edgeComponentMap` object that the Paper was initialized with.
+This allows you to map different Edges to different Edge classes, allowing for
+Edges with various colors and widths.
 
 #### source - `edgeEndPoint`
 
@@ -103,7 +102,7 @@ object:
 function addEdge() {
   const edge: IPaperInputEdge = {
     id: 'new_edge_test',
-    component: Edge,
+    component: 'basic-edge',
     source: { id: 'new_node_test' },
     target: { x: 240, y: 120 },
     coords: [{ x: 140, y: 160 }],

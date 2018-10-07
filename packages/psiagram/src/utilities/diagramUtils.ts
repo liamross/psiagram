@@ -180,7 +180,7 @@ export function lineIntersect(
   y3: number,
   x4: number,
   y4: number,
-): { x: number; y: number } | null {
+) {
   const denominator = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
   if (denominator) {
     const ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denominator;
@@ -216,7 +216,8 @@ export const generateRandomString = (
   let text = '';
 
   const possibleLetters = 'bcdghjklmnpqrstvwxyz';
-  let possibleChars = possibleLetters.toUpperCase() + '0123456789';
+  const possibleNumbers = '0123456789';
+  let possibleChars = possibleLetters.toUpperCase() + possibleNumbers;
   if (useLowerCase) possibleChars += possibleLetters;
 
   for (let i = 0; i < length; i++) {
@@ -228,4 +229,79 @@ export const generateRandomString = (
   return text;
 };
 
-export const edgeLength = (edge: IPaperStoredEdge) => {};
+/**
+ * Returns the midpoint coordinate of an Edge.
+ *
+ * @param coordinates Array of coordinate points.
+ */
+export const getEdgeMidPoint = (coordinates: ICoordinates[]): ICoordinates => {
+  const half = edgeLength(coordinates) / 2;
+
+  let length = 0;
+  let index = 0;
+  let lengthSegment = 0;
+
+  while (length < half) {
+    index++;
+    lengthSegment = distanceBetweenPoints(
+      coordinates[index - 1],
+      coordinates[index],
+    );
+    length += lengthSegment;
+  }
+
+  const lengthDif = length - half;
+  const distanceFromPoint1 = lengthSegment - lengthDif;
+
+  return pointAlongLine(
+    coordinates[index - 1],
+    coordinates[index],
+    distanceFromPoint1,
+  );
+};
+
+/**
+ * Returns the total length of an Edge based on an array of coordinate points.
+ *
+ * @param coordinates Array of coordinate points.
+ */
+export const edgeLength = (coordinates: ICoordinates[]): number => {
+  let length = 0;
+  for (let i = 0; i < coordinates.length - 1; i++) {
+    length += distanceBetweenPoints(coordinates[i], coordinates[i + 1]);
+  }
+  return length;
+};
+
+/**
+ * Returns the distance between two points.
+ *
+ * @param point1 Initial point.
+ * @param point2 Second point.
+ */
+export const distanceBetweenPoints = (
+  point1: ICoordinates,
+  point2: ICoordinates,
+): number => Math.hypot(point2.x - point1.x, point2.y - point1.y);
+
+/**
+ * Returns the coordinate of a point distance away from point1 towards point2.
+ * Will only return a coordinate between point1 and point2.
+ *
+ * @param point1 Point to measure distance from.
+ * @param point2 End point of line.
+ * @param distance Distance from point1 towards point2.
+ */
+export const pointAlongLine = (
+  point1: ICoordinates,
+  point2: ICoordinates,
+  distance: number,
+): ICoordinates => {
+  if (distance <= 0) return point1;
+  const lengthHyp = distanceBetweenPoints(point1, point2);
+  if (distance >= lengthHyp) return point2;
+  const ratio = distance / lengthHyp;
+  const lengthX = point2.x - point1.x;
+  const lengthY = point2.y - point1.y;
+  return { x: point1.x + lengthX * ratio, y: point1.y + lengthY * ratio };
+};

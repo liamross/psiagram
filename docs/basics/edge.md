@@ -78,9 +78,6 @@ ID. If no Node matches the given ID, the Edge will not be added.
 An array of coordinates that the Edge path should pass through in order. These
 will snap to the nearest grid point.
 
-> NOTE: Coords currently do not snap to the nearest grid, but will by the first
-> release.
-
 #### properties (optional) - `Object`
 
 Properties is where you define any properties to pass into Edge when it's
@@ -89,9 +86,6 @@ initialized. These are the default properties:
 - title (optional) - `string`: Title to render onto Edge.
 
 The title is rendered into a rectangle at the calculated midpoint of the Edge.
-
-> NOTE: Title rendering is currently being developed and will be present in the
-> first release.
 
 ### Example
 
@@ -150,9 +144,6 @@ it's as simple as re-assigning the properties. Here's one example:
 ```ts
 yourNode.title = 'New Title';
 ```
-
-> NOTE: Title rendering is currently being developed and will be present in the
-> first release.
 
 These properties will be updated automatically in the DOM. However, this ability
 would have been available on the Edge class, let's look at updating the

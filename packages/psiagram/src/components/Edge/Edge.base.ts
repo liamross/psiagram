@@ -11,11 +11,13 @@ import {
   setElementType,
   ElementType,
   createSVGWithAttributes,
+  setBatchSVGAttribute,
   setSVGAttribute,
   PaperError,
+  getEdgeMidPoint,
 } from '../../';
 
-// const FONT_HEIGHT = 14;
+const FONT_HEIGHT = 14;
 
 export class Edge {
   private _properties: IEdgeProperties;
@@ -23,14 +25,14 @@ export class Edge {
   private _group: SVGElement;
   private _clickZone: SVGElement | null;
   private _path: SVGElement | null;
+  private _text: SVGElement | null;
   private _coordinates: ICoordinates[];
-  // private _text: SVGElement | null;
 
   constructor(properties: IEdgeProperties) {
     this._clickZone = null;
     this._path = null;
+    this._text = null;
     this._coordinates = [];
-    // this._text = null;
 
     this._properties = {
       ...properties,
@@ -70,12 +72,25 @@ export class Edge {
       'marker-end': `url(#arrow_${this._properties.paperUniqueId})`,
     });
 
-    // TODO: Implement title block.
+    this._text = createSVGWithAttributes('text', {
+      id: id + '_text',
+      'text-anchor': 'middle',
+      'font-size': FONT_HEIGHT,
+    });
+
+    this._text.textContent = title || '';
 
     this._group.appendChild(this._clickZone);
     this._group.appendChild(this._path);
+    if (this._properties.title) this._group.appendChild(this._text);
   }
 
+  protected updateTextPosition(): void {
+    const { x, y } = getEdgeMidPoint(this._coordinates);
+    setBatchSVGAttribute(this._text as SVGElement, { x, y });
+  }
+
+  // Coordinates get + set.
   get coordinates(): ICoordinates[] {
     return this._coordinates;
   }
@@ -91,6 +106,8 @@ export class Edge {
 
     if (this._path && this._clickZone) {
       this._coordinates = coordinates.slice();
+
+      this.updateTextPosition();
 
       const source = coordinates.shift() as ICoordinates;
       const target = coordinates.pop() as ICoordinates;
@@ -113,21 +130,24 @@ export class Edge {
     }
   }
 
-  // TODO: Title get + set.
-  // get title(): string {
-  //   return this._properties.title as string;
-  // }
-  // set title(title: string) {
-  //   if (this._text) {
-  //     this._properties.title = title;
-  //     this._text.textContent = title;
-  //   } else {
-  //     throw new PaperError(
-  //       'E_NO_ELEM',
-  //       `No text exists for Edge ID: ${this._properties.id}`,
-  //       'Node.base.ts',
-  //       'set title',
-  //     );
-  //   }
-  // }
+  // Title get + set.
+  get title(): string {
+    return this._properties.title as string;
+  }
+  set title(title: string) {
+    if (this._text) {
+      if (!this._properties.title && title) this._group.appendChild(this._text);
+      if (!title) this._group.removeChild(this._text);
+
+      this._properties.title = title;
+      this._text.textContent = title;
+    } else {
+      throw new PaperError(
+        'E_NO_ELEM',
+        `No text exists for Edge ID: ${this._properties.id}`,
+        'Node.base.ts',
+        'set title',
+      );
+    }
+  }
 }

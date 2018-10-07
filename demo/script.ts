@@ -74,6 +74,9 @@ function loadPaper() {
           component: 'line',
           source: { id: 'node3' },
           target: { x: 800, y: 800 },
+          properties: {
+            title: 'Test title',
+          },
           coords: [],
         },
       ],

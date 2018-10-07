@@ -23,11 +23,13 @@ export class Edge {
   private _group: SVGElement;
   private _clickZone: SVGElement | null;
   private _path: SVGElement | null;
+  private _coordinates: ICoordinates[];
   // private _text: SVGElement | null;
 
   constructor(properties: IEdgeProperties) {
     this._clickZone = null;
     this._path = null;
+    this._coordinates = [];
     // this._text = null;
 
     this._properties = {
@@ -49,36 +51,14 @@ export class Edge {
     return this._group;
   }
 
-  public updatePath(
-    source: ICoordinates,
-    target: ICoordinates,
-    coords?: ICoordinates[],
-  ): void {
-    if (this._path && this._clickZone) {
-      const dString = `M ${source.x} ${source.y} ${
-        coords ? coords.map(point => `L ${point.x} ${point.y} `).join('') : ''
-      }L ${target.x} ${target.y}`;
-
-      setSVGAttribute(this._clickZone, 'd', dString);
-      setSVGAttribute(this._path, 'd', dString);
-    } else {
-      throw new PaperError(
-        'E_NO_ELEM',
-        `No path exists for Edge ID: ${this._properties.id}`,
-        'Edge.base.ts',
-        'updatePath',
-      );
-    }
-  }
-
   protected initialize(): void {
     const { title, id } = this._properties;
 
     this._clickZone = createSVGWithAttributes('path', {
-      id: id + '_path',
+      id: id + '_clickZone',
       fill: 'none',
       stroke: 'transparent',
-      'stroke-width': `${Math.max(10, this._properties.gridSize)}px`,
+      'stroke-width': `10px`,
     });
 
     this._path = createSVGWithAttributes('path', {
@@ -94,6 +74,43 @@ export class Edge {
 
     this._group.appendChild(this._clickZone);
     this._group.appendChild(this._path);
+  }
+
+  get coordinates(): ICoordinates[] {
+    return this._coordinates;
+  }
+  set coordinates(coordinates: ICoordinates[]) {
+    if (coordinates.length < 2) {
+      throw new PaperError(
+        'E_EDGE_LENGTH',
+        `You must provide at least two coordinate points to set edge coordinates`,
+        'Edge.base.ts',
+        'coordinates',
+      );
+    }
+
+    if (this._path && this._clickZone) {
+      this._coordinates = coordinates.slice();
+
+      const source = coordinates.shift() as ICoordinates;
+      const target = coordinates.pop() as ICoordinates;
+
+      const dString = `M ${source.x} ${source.y} ${
+        coordinates.length
+          ? coordinates.map(point => `L ${point.x} ${point.y} `).join('')
+          : ''
+      }L ${target.x} ${target.y}`;
+
+      setSVGAttribute(this._clickZone, 'd', dString);
+      setSVGAttribute(this._path, 'd', dString);
+    } else {
+      throw new PaperError(
+        'E_NO_ELEM',
+        `No path exists for Edge ID: ${this._properties.id}`,
+        'Edge.base.ts',
+        'coordinates',
+      );
+    }
   }
 
   // TODO: Title get + set.

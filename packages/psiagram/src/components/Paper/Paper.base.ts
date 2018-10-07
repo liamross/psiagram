@@ -36,7 +36,6 @@ import {
 } from '../../';
 
 import { setPaperDefs } from './setPaperDefs';
-import {} from './Paper.types';
 
 export class Paper {
   private _width: number;
@@ -730,14 +729,14 @@ export class Paper {
               );
             }
 
-            edge.instance.updatePath(
+            edge.instance.coordinates = [
               sourcePoint as ICoordinates,
-              targetPoint as ICoordinates,
-              edge.coords.map(coordinate => ({
+              ...edge.coords.map(coordinate => ({
                 x: roundToNearest(coordinate.x, this._gridSize),
                 y: roundToNearest(coordinate.y, this._gridSize),
               })),
-            );
+              targetPoint as ICoordinates,
+            ];
           },
         });
 

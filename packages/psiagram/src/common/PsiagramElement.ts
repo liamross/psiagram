@@ -12,25 +12,9 @@ import {
   IPaperStoredEdge,
 } from '../';
 
-export interface IPluginProperties extends IPaperProperties {
-  plugins: PsiagramPlugin[];
+export declare class PsiagramElement {
   /**
-   * Attributes are simply values: changing them will not alter the values in
-   * Paper. They are only used to pass-through any initial attributes, or the
-   * default values set-up in Paper.
-   */
-  attributes: {
-    gridSize: number;
-    paperWrapperClass: string;
-    paperClass: string;
-    uniqueId: string;
-  };
-}
-
-export declare class PsiagramPlugin {
-  /**
-   * Use the constructor to initialize the plugin before passing it into the
-   * Paper. This allows any options to be set prior to it being initialized.
+   * The constructor is used to initialize
    */
   constructor();
   /**

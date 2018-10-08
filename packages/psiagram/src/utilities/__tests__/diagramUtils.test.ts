@@ -15,7 +15,10 @@ import {
   IPaperStoredNode,
   PaperNode,
   Node,
+  edgeLength,
+  IPaperStoredEdge,
 } from '../..';
+import { pointAlongLine, getEdgeMidPoint } from '../diagramUtils';
 
 /** Helpers */
 
@@ -47,7 +50,7 @@ const generateNode = (
 
 /** Tests */
 
-describe('Workflow Utilities', () => {
+describe('Diagram Utilities', () => {
   describe('isNodeColliding', () => {
     it('returns false if node 1 is not given', () => {
       const node1 = null;
@@ -219,6 +222,86 @@ describe('Workflow Utilities', () => {
     it('generates strings of the proper length', () => {
       expect(generateRandomString(4).length).toBe(4);
       expect(generateRandomString(8).length).toBe(8);
+    });
+  });
+
+  describe('getEdgeMidPoint', () => {
+    it('finds the midpoint of a straight line', () => {
+      const coordinates = [{ x: 1, y: 1 }, { x: 7, y: 9 }];
+      expect(getEdgeMidPoint(coordinates)).toEqual({ x: 4, y: 5 });
+    });
+
+    it('finds the midpoint of a complex line', () => {
+      const coordinates = [
+        { x: 0, y: 0 },
+        { x: 0, y: 5 }, // + 5px hypotenuse (halfway along this line)
+        { x: 5, y: 5 }, // + 5px hypotenuse (halfway along this line)
+        { x: 2, y: 9 }, // + 5px hypotenuse
+      ];
+      expect(getEdgeMidPoint(coordinates)).toEqual({ x: 2.5, y: 5 });
+    });
+
+    it('returns midpoint even if line is a single point', () => {
+      const coord = { x: 5, y: 5 };
+      const coordinates = [coord, coord];
+      expect(getEdgeMidPoint(coordinates)).toEqual(coord);
+    });
+  });
+
+  describe('edgeLength', () => {
+    it('finds the length of a straight line', () => {
+      const source = { x: 0, y: 0 };
+      const target = { x: 3, y: 4 };
+      const coordinates = [source, target];
+      expect(edgeLength(coordinates)).toBe(5);
+    });
+
+    it('finds the length of a complex line', () => {
+      const source = { x: 0, y: 0 };
+      const coords = [{ x: 0, y: 5 }, { x: 5, y: 5 }];
+      const target = { x: 5, y: 10 };
+      const coordinates = [source, ...coords, target];
+      expect(edgeLength(coordinates)).toBe(15);
+    });
+  });
+
+  describe('pointAlongLine', () => {
+    it('returns first point if given negative distance', () => {
+      const point1 = { x: 0, y: 0 };
+      const point2 = { x: 3, y: 4 };
+      const length = -1;
+      expect(pointAlongLine(point1, point2, length)).toEqual(point1);
+    });
+
+    it('returns first point if given 0 distance', () => {
+      const point1 = { x: 0, y: 0 };
+      const point2 = { x: 3, y: 4 };
+      const length = 0;
+      expect(pointAlongLine(point1, point2, length)).toEqual(point1);
+    });
+
+    it('returns second point if given distance greater than hypotenuse', () => {
+      const point1 = { x: 0, y: 0 };
+      const point2 = { x: 3, y: 4 };
+      const length = 6;
+      expect(pointAlongLine(point1, point2, length)).toEqual(point2);
+    });
+
+    it('returns point along a line', () => {
+      const point1 = { x: 1, y: 1 };
+      const point2 = { x: 7, y: 9 };
+      const length = 5;
+      expect(pointAlongLine(point1, point2, length)).toEqual({ x: 4, y: 5 });
+    });
+
+    it('returns point along a line if second point is <x and <y', () => {
+      const point1 = { x: 7, y: 9 };
+      const point2 = { x: 1, y: 1 };
+      const length = 4;
+      expect(pointAlongLine(point1, point2, length)).toEqual({
+        x: 4.6,
+        y: 5.8,
+      });
     });
   });
 });

@@ -21,12 +21,10 @@ Here is the Paper Input Node interface defined in TypeScript:
 ```ts
 interface IPaperInputNode {
   id: string;
-  component: typeof Node;
+  component: string;
   coords: ICoordinates;
-  properties: {
-    width: number;
-    height: number;
-    title?: string;
+  properties?: {
+    [property: string]: any;
   };
 }
 ```
@@ -39,13 +37,12 @@ Node. Let's take a look into what each of those potential properties mean.
 This is the unique ID of the Node. These **must** be unique amongst other Nodes
 on the instance of Paper.
 
-#### component - `typeof Node (not initialized)`
+#### component - `string`
 
-The component you pass in is an uninitialized Node class. This is so that it can
-be initialized inside of Paper with any properties you pass in, as well as
-properties specific to the Paper class. You may also pass in custom Node classes
-here, which is detailed further in the
-[custom nodes section](../in-depth/custom-nodes.md).
+This string maps to a Node class within the `initialConditions.nodeComponentMap`
+object that the Paper was initialized with. This allows you to map different
+Nodes to different Node classes, allowing for Nodes with various colors, shapes
+and sizes.
 
 #### coords - `ICoordinates`
 
@@ -61,19 +58,33 @@ Node will snap to the nearest grid if `gridSize` was provided to Paper.
   }
   ```
 
-#### properties - `Object`
+#### properties (optional) - `Object`
 
 Properties is where you define any properties to pass into Node when it's
-initialized. These are the default properties:
+initialized. These will be entirely dependent on what properties your custom
+Node accepts. For example, if your Node is a rectangle that displayes text, your
+properties object may look like this:
 
-- width - `number`: Width of the Node.
-- height - `string`: Height of the Node.
-- title (optional) - `string`: Title to render onto Node.
+```ts
+const properties = {
+  title: 'My Rectangle',
+  width: 160,
+  height: 80,
+};
+```
 
-By default, the base class Node will round width and height to `2 * gridSize`.
-This is so that any Edges connected to the Node will be centered on the Node, as
-they must have an endpoint on a grid intersect. If a title is given, it will be
-centered on the Node element.
+Whereas if it's a square perhaps you might have a slightly simpler set of
+properties:
+
+```ts
+const properties = {
+  title: 'My Square',
+  length: 80,
+};
+```
+
+For more information visit the
+[custom Nodes section](../in-depth/custom-nodes.md).
 
 ### Example
 
@@ -84,7 +95,7 @@ object:
 function addNode() {
   const node: IPaperInputNode = {
     id: 'new_node_test',
-    component: Node,
+    component: 'rectangle',
     coords: { x: 320, y: 160 },
     properties: { title: 'New Node', height: 80, width: 160 },
   };

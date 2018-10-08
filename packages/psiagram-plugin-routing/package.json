@@ -26,5 +26,8 @@
   },
   "dependencies": {
     "psiagram": "^0.0.1-beta.5"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.2"
   }
 }

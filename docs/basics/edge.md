@@ -81,11 +81,18 @@ will snap to the nearest grid point.
 #### properties (optional) - `Object`
 
 Properties is where you define any properties to pass into Edge when it's
-initialized. These are the default properties:
+initialized. These will be entirely dependent on what properties your custom
+Edge accepts. For example, a basic Edge may have most of the style built in, but
+may accept a title to display:
 
-- title (optional) - `string`: Title to render onto Edge.
+```ts
+const properties = {
+  title: 'My Rectangle',
+};
+```
 
-The title is rendered into a rectangle at the calculated midpoint of the Edge.
+For more information visit the
+[custom Edges section](../in-depth/custom-edges.md).
 
 ### Example
 
@@ -96,7 +103,7 @@ object:
 function addEdge() {
   const edge: IPaperInputEdge = {
     id: 'new_edge_test',
-    component: 'basic-edge',
+    component: 'line',
     source: { id: 'new_node_test' },
     target: { x: 240, y: 120 },
     coords: [{ x: 140, y: 160 }],

@@ -10,4 +10,5 @@ export interface IEdgeProperties {
   gridSize: number;
   paperUniqueId: string;
   title?: string;
+  [property: string]: any;
 }

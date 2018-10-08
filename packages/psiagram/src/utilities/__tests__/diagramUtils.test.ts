@@ -18,8 +18,6 @@ import {
   edgeLength,
   IPaperStoredEdge,
 } from '../..';
-import { Edge } from '../../components/Edge';
-import { PaperEdge } from '../../components/Paper';
 import { pointAlongLine, getEdgeMidPoint } from '../diagramUtils';
 
 /** Helpers */
@@ -52,7 +50,7 @@ const generateNode = (
 
 /** Tests */
 
-describe('Workflow Utilities', () => {
+describe('Diagram Utilities', () => {
   describe('isNodeColliding', () => {
     it('returns false if node 1 is not given', () => {
       const node1 = null;
@@ -241,6 +239,12 @@ describe('Workflow Utilities', () => {
         { x: 2, y: 9 }, // + 5px hypotenuse
       ];
       expect(getEdgeMidPoint(coordinates)).toEqual({ x: 2.5, y: 5 });
+    });
+
+    it('returns midpoint even if line is a single point', () => {
+      const coord = { x: 5, y: 5 };
+      const coordinates = [coord, coord];
+      expect(getEdgeMidPoint(coordinates)).toEqual(coord);
     });
   });
 

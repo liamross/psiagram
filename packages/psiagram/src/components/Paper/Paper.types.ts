@@ -64,11 +64,7 @@ export interface IPaperInputNode {
   id: string;
   component: string;
   coords: ICoordinates;
-  properties: {
-    width: number;
-    height: number;
-    title?: string;
-  };
+  properties?: { [property: string]: any };
 }
 
 export interface IPaperStoredNode {
@@ -90,9 +86,7 @@ export interface IPaperInputEdge {
   source: edgeEndPoint;
   target: edgeEndPoint;
   coords: ICoordinates[];
-  properties?: {
-    title?: string;
-  };
+  properties?: { [property: string]: any };
 }
 
 export interface IPaperStoredEdge {

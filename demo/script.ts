@@ -3,7 +3,6 @@ import {
   Paper,
   IPaperProperties,
   IPaperInputNode,
-  Node,
   Edge,
   PaperError,
 } from 'psiagram';
@@ -14,6 +13,10 @@ import { Grid } from '../packages/psiagram-plugin-grid/src';
 import { MouseEvents } from '../packages/psiagram-plugin-mouse-events/src';
 import { ManhattanRouting } from '../packages/psiagram-plugin-routing/src';
 
+import { Rectangle } from './examples/Rectangle';
+import { Caution } from './examples/Caution';
+import { StaticBlock } from './examples/StaticBlock';
+
 let myPaper: Paper | null = null;
 
 function loadPaper() {
@@ -21,7 +24,7 @@ function loadPaper() {
     attributes: { gridSize: 20 },
     height: 900,
     width: 1300,
-    plugins: [new Grid(), new MouseEvents(), new ManhattanRouting()],
+    plugins: [new Grid(), new MouseEvents()],
     initialConditions: {
       nodes: [
         {
@@ -32,19 +35,21 @@ function loadPaper() {
         },
         {
           id: 'node2',
-          component: 'rectangle',
+          component: 'caution',
           coords: { x: 400, y: 220 },
-          properties: { width: 130, height: 140, title: 'node 2' },
+          properties: { length: 130, title: 'node 2' },
         },
         {
           id: 'node3',
-          component: 'rectangle',
+          component: 'static-block',
           coords: { x: 400, y: 600 },
           properties: { width: 100, height: 100, title: 'node 3' },
         },
       ],
       nodeComponentMap: {
-        rectangle: Node,
+        rectangle: Rectangle,
+        caution: Caution,
+        'static-block': StaticBlock,
       },
       edges: [
         {

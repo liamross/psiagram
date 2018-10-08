@@ -8,150 +8,93 @@
 import {
   INodeProperties,
   createSVGWithAttributes,
-  setSVGAttribute,
-  setBatchSVGAttribute,
   setElementType,
   ElementType,
-  roundToNearest,
-  PaperError,
 } from '../../';
 
-const FONT_HEIGHT = 14;
-
 export class Node {
-  private _properties: INodeProperties;
-  private _growthUnit: number;
+  protected _properties: INodeProperties;
+  protected _group: SVGElement;
 
-  private _group: SVGElement;
-  private _shape: SVGElement | null;
-  private _text: SVGElement | null;
-
+  /**
+   * The constructor does the following things:
+   *
+   * 1. Assigns the return value of transformProperties to this._properties
+   * 2. Creates this._group
+   * 3. Calls initialize
+   *
+   * @param properties Any properties passed to the Node.
+   */
   constructor(properties: INodeProperties) {
-    this._growthUnit = properties.gridSize * 2;
-    this._shape = null;
-    this._text = null;
-
-    this._properties = {
-      ...properties,
-      width: roundToNearest(
-        properties.width,
-        this._growthUnit,
-        this._growthUnit,
-      ),
-      height: roundToNearest(
-        properties.height,
-        this._growthUnit,
-        this._growthUnit,
-      ),
-      title: properties.title || '',
-    };
-
+    this._properties = properties;
+    this.transformProperties(properties);
     this._group = createSVGWithAttributes('g', {
       id: this._properties.id,
       style: 'user-select: none',
     });
-
     setElementType(this._group, ElementType.Node);
-
     this.initialize();
   }
 
+  /**
+   * This function will always return this._group. Any visual components for
+   * this Node should be contained within this._group.
+   */
   public getNodeElement(): SVGElement {
     return this._group;
   }
 
+  /**
+   * This function allows you to easily append elements into the Node group.
+   *
+   * @param element An element to add into the Node group.
+   */
+  private addToGroup(element: SVGElement): void {
+    this._group.appendChild(element as SVGElement);
+  }
+
+  /**
+   * This function is called from the constructor in order to allow you to
+   * manipulate any of this._properties before initialize is called. If no
+   * transformations need to be made, you do not need to extend this function.
+   *
+   * @param properties Any properties passed into the Node.
+   */
+  protected transformProperties(properties: INodeProperties): void {} // tslint:disable-line:no-empty
+
+  /**
+   * This is where you build visual SVG components and append them into
+   * this._group. This function is only called once from the constructor, so any
+   * changes in the future must be done through setters.
+   */
   protected initialize(): void {
-    const { width, height, title, id } = this._properties;
-
-    this._shape = createSVGWithAttributes('rect', {
-      id: id + '_shape',
-      width,
-      height,
-      fill: '#EAEAEA',
-      stroke: '#333',
-      'stroke-width': 1,
-    });
-
-    this._text = createSVGWithAttributes('text', {
-      id: id + '_text',
-      'text-anchor': 'middle',
-      'font-size': FONT_HEIGHT,
-    });
-
-    this.updateTextPosition();
-
-    this._text.textContent = title || '';
-    this._group.appendChild(this._shape);
-    this._group.appendChild(this._text);
+    return;
   }
 
+  /**
+   * This function should be called when the node is initialized, as well as
+   * when the width or height are set. This is used to position the text within
+   * this._group.
+   */
   protected updateTextPosition(): void {
-    const { width, height } = this._properties;
-
-    const fontX = width / 2;
-    const fontY = FONT_HEIGHT / 2 + height / 2;
-
-    setBatchSVGAttribute(this._text as SVGElement, {
-      x: fontX,
-      y: fontY,
-    });
+    return;
   }
 
-  // Title get + set.
-  get title(): string {
-    return this._properties.title as string;
-  }
-  set title(title: string) {
-    if (this._text) {
-      this._properties.title = title;
-      this._text.textContent = title;
-    } else {
-      throw new PaperError(
-        'E_NO_ELEM',
-        `No text exists for Node ID: ${this._properties.id}`,
-        'Node.base.ts',
-        'set title',
-      );
-    }
-  }
-
-  // Width get + set.
+  /** Width get + set. */
   get width(): number {
-    return this._properties.width;
+    throw new Error('You must overwrite get width in your Node class.');
   }
   set width(width: number) {
-    if (this._shape) {
-      width = roundToNearest(width, this._growthUnit, this._growthUnit);
-      this._properties.width = width;
-      setSVGAttribute(this._shape, 'width', width);
-      this.updateTextPosition();
-    } else {
-      throw new PaperError(
-        'E_NO_ELEM',
-        `No shape exists for Node ID: ${this._properties.id}`,
-        'Node.base.ts',
-        'set width',
-      );
-    }
+    console.warn('You should overwrite set width to update your Node.');
+    this._properties.width = width;
   }
 
-  // Height get + set.
+  /** Height get + set. */
   get height(): number {
-    return this._properties.height;
+    throw new Error('You must overwrite get height in your Node class.');
   }
   set height(height: number) {
-    if (this._shape) {
-      height = roundToNearest(height, this._growthUnit, this._growthUnit);
-      this._properties.width = height;
-      setSVGAttribute(this._shape, 'height', height);
-      this.updateTextPosition();
-    } else {
-      throw new PaperError(
-        'E_NO_ELEM',
-        `No shape exists for Node ID: ${this._properties.id}`,
-        'Node.base.ts',
-        'set height',
-      );
-    }
+    console.warn('You should overwrite set hight to update your Node.');
+    this._properties.width = height;
   }
 }

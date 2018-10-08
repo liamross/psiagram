@@ -20,13 +20,13 @@ import {
 const FONT_HEIGHT = 14;
 
 export class Edge {
-  private _properties: IEdgeProperties;
+  protected _properties: IEdgeProperties;
 
-  private _group: SVGElement;
-  private _clickZone: SVGElement | null;
-  private _path: SVGElement | null;
-  private _text: SVGElement | null;
-  private _coordinates: ICoordinates[];
+  protected _group: SVGElement;
+  protected _clickZone: SVGElement | null;
+  protected _path: SVGElement | null;
+  protected _text: SVGElement | null;
+  protected _coordinates: ICoordinates[];
 
   constructor(properties: IEdgeProperties) {
     this._clickZone = null;

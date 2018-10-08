@@ -21,7 +21,7 @@ Here is the Paper Input Node interface defined in TypeScript:
 ```ts
 interface IPaperInputNode {
   id: string;
-  component: typeof Node;
+  component: string;
   coords: ICoordinates;
   properties: {
     width: number;
@@ -39,13 +39,12 @@ Node. Let's take a look into what each of those potential properties mean.
 This is the unique ID of the Node. These **must** be unique amongst other Nodes
 on the instance of Paper.
 
-#### component - `typeof Node (not initialized)`
+#### component - `string`
 
-The component you pass in is an uninitialized Node class. This is so that it can
-be initialized inside of Paper with any properties you pass in, as well as
-properties specific to the Paper class. You may also pass in custom Node classes
-here, which is detailed further in the
-[custom nodes section](../in-depth/custom-nodes.md).
+This string maps to a Node class within the `initialConditions.nodeComponentMap`
+object that the Paper was initialized with. This allows you to map different
+Nodes to different Node classes, allowing for Nodes with various colors, shapes
+and sizes.
 
 #### coords - `ICoordinates`
 
@@ -84,7 +83,7 @@ object:
 function addNode() {
   const node: IPaperInputNode = {
     id: 'new_node_test',
-    component: Node,
+    component: 'basic-node',
     coords: { x: 320, y: 160 },
     properties: { title: 'New Node', height: 80, width: 160 },
   };

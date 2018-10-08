@@ -190,6 +190,7 @@ export class MouseEvents implements PsiagramPlugin {
 
   private _handleEdgeMouseDown(evt: MouseEvent, id: string): void {
     // TODO: implement.
+    console.log('mouseDown on Edge');
   }
 
   private _handleEdgeMouseMove = (evt: MouseEvent): void => {

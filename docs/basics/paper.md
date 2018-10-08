@@ -37,7 +37,9 @@ interface IPaperProperties {
   };
   initialConditions?: {
     nodes?: IPaperInputNode[];
+    nodeComponentMap?: INodeComponentMap;
     edges?: IPaperInputEdge[];
+    edgeComponentMap?: IEdgeComponentMap;
   };
 }
 ```
@@ -78,7 +80,27 @@ onto Paper when it's initialized. In order to input these, object has the
 following **optional** properties:
 
 - nodes - `IPaperInputNode[]`: Initial Nodes.
+- nodeComponentMap - `INodeComponentMap`: Object to map component strings to a
+  Node class. If you have built any custom Nodes, they can be included here and
+  selected by giving the key string to the appropriate initial Nodes. See the
+  [custom Nodes section](../in-depth/custom-nodes.md) for more information on
+  creating custom Nodes.
+  ```js
+  export interface INodeComponentMap {
+    [key: string]: typeof Node;
+  }
+  ```
 - edges - `IPaperInputEdge[]`: Initial Edges.
+- edgeComponentMap - `IEdgeComponentMap`: Object to map component strings to an
+  Edge class. If you have built any custom Edges, they can be included here and
+  selected by giving the key string to the appropriate initial Edges. See the
+  [custom Edges section](../in-depth/custom-edges.md) for more information on
+  creating custom Edges.
+  ```js
+  export interface IEdgeComponentMap {
+    [key: string]: typeof Edge;
+  }
+  ```
 
 More details on input Nodes can be found in the [node section](node.md), and
 information on input Edges can be found in the [edge section](edge.md).
@@ -107,21 +129,23 @@ const myPaper = new Paper({
     nodes: [
       {
         id: 'node-1-id',
-        component: Node,
+        component: 'basic-node',
         coords: { x: 80, y: 80 },
         properties: { title: 'Node 1', width: 120, height: 80 },
       },
     ],
+    nodeComponentMap: { 'basic-node': Node },
     edges: [
       {
         id: 'edge-1-id',
-        component: Edge,
+        component: 'basic-edge',
         source: { id: 'node-1-id' },
         target: { x: 120, y: 240 },
         coords: [],
         properties: { title: 'Edge 1' },
       },
     ],
+    edgeComponentMap: { 'basic-edge': Edge },
   },
 });
 ```

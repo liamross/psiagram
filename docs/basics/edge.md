@@ -19,7 +19,7 @@ Here is the Paper Input Edge interface defined in TypeScript:
 ```ts
 interface IPaperInputEdge {
   id: string;
-  component: typeof Edge;
+  component: string;
   source: edgeEndPoint;
   target: edgeEndPoint;
   coords: ICoordinates[];
@@ -37,13 +37,12 @@ Edge. Let's take a look into what each of those potential properties mean.
 This is the unique ID of the Edge. These **must** be unique amongst other Edges
 on the instance of Paper.
 
-#### component - `typeof Edge (not initialized)`
+#### component - `string`
 
-The component you pass in is an uninitialized Edge class. This is so that it can
-be initialized inside of Paper with any properties you pass in, as well as
-properties specific to the Paper class. You may also pass in custom Edge classes
-here, which is detailed further in the
-[custom edges section](../in-depth/custom-edges.md).
+This string maps to an Edge class within the
+`initialConditions.edgeComponentMap` object that the Paper was initialized with.
+This allows you to map different Edges to different Edge classes, allowing for
+Edges with various colors and widths.
 
 #### source - `edgeEndPoint`
 
@@ -79,9 +78,6 @@ ID. If no Node matches the given ID, the Edge will not be added.
 An array of coordinates that the Edge path should pass through in order. These
 will snap to the nearest grid point.
 
-> NOTE: Coords currently do not snap to the nearest grid, but will by the first
-> release.
-
 #### properties (optional) - `Object`
 
 Properties is where you define any properties to pass into Edge when it's
@@ -90,9 +86,6 @@ initialized. These are the default properties:
 - title (optional) - `string`: Title to render onto Edge.
 
 The title is rendered into a rectangle at the calculated midpoint of the Edge.
-
-> NOTE: Title rendering is currently being developed and will be present in the
-> first release.
 
 ### Example
 
@@ -103,7 +96,7 @@ object:
 function addEdge() {
   const edge: IPaperInputEdge = {
     id: 'new_edge_test',
-    component: Edge,
+    component: 'basic-edge',
     source: { id: 'new_node_test' },
     target: { x: 240, y: 120 },
     coords: [{ x: 140, y: 160 }],
@@ -151,9 +144,6 @@ it's as simple as re-assigning the properties. Here's one example:
 ```ts
 yourNode.title = 'New Title';
 ```
-
-> NOTE: Title rendering is currently being developed and will be present in the
-> first release.
 
 These properties will be updated automatically in the DOM. However, this ability
 would have been available on the Edge class, let's look at updating the

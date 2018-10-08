@@ -237,6 +237,8 @@ export const generateRandomString = (
 export const getEdgeMidPoint = (coordinates: ICoordinates[]): ICoordinates => {
   const half = edgeLength(coordinates) / 2;
 
+  if (half === 0) return coordinates[0];
+
   let length = 0;
   let index = 0;
   let lengthSegment = 0;

@@ -16,11 +16,9 @@ import {
   PaperNode,
   Node,
   edgeLength,
-  IPaperStoredEdge,
+  pointAlongLine,
+  getEdgeMidPoint,
 } from '../..';
-import { Edge } from '../../components/Edge';
-import { PaperEdge } from '../../components/Paper';
-import { pointAlongLine, getEdgeMidPoint } from '../diagramUtils';
 
 /** Helpers */
 
@@ -52,7 +50,7 @@ const generateNode = (
 
 /** Tests */
 
-describe('Workflow Utilities', () => {
+describe('Diagram Utilities', () => {
   describe('isNodeColliding', () => {
     it('returns false if node 1 is not given', () => {
       const node1 = null;
@@ -242,6 +240,12 @@ describe('Workflow Utilities', () => {
       ];
       expect(getEdgeMidPoint(coordinates)).toEqual({ x: 2.5, y: 5 });
     });
+
+    it('returns midpoint of no-length line', () => {
+      const coord = { x: 5, y: 5 };
+      const coordinates = [coord, coord];
+      expect(getEdgeMidPoint(coordinates)).toEqual(coord);
+    });
   });
 
   describe('edgeLength', () => {
@@ -258,6 +262,13 @@ describe('Workflow Utilities', () => {
       const target = { x: 5, y: 10 };
       const coordinates = [source, ...coords, target];
       expect(edgeLength(coordinates)).toBe(15);
+    });
+
+    it('finds the length of a no-length line', () => {
+      const source = { x: 0, y: 0 };
+      const target = { x: 0, y: 0 };
+      const coordinates = [source, target];
+      expect(edgeLength(coordinates)).toBe(0);
     });
   });
 
@@ -298,6 +309,13 @@ describe('Workflow Utilities', () => {
         x: 4.6,
         y: 5.8,
       });
+    });
+
+    it('returns point along a no-length line', () => {
+      const point1 = { x: 1, y: 1 };
+      const point2 = { x: 1, y: 1 };
+      const length = 5;
+      expect(pointAlongLine(point1, point2, length)).toEqual({ x: 1, y: 1 });
     });
   });
 });

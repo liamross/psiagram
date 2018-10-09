@@ -5,10 +5,4 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export interface INodeProperties {
-  id: string;
-  gridSize: number;
-  title?: string;
-  width: number;
-  height: number;
-}
+export * from './TextNode';

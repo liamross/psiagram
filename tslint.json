@@ -3,8 +3,8 @@
   "rules": {
     "curly": [true, "ignore-same-line"],
     "max-classes-per-file": false,
-    "no-console": true,
-    "no-unused-variable": true,
+    "no-console": [true, { "allow": ["error", "warn"] }],
+    "no-unused-variable": [true, { "ignore-pattern": "^_" }],
     "object-literal-sort-keys": false,
     "ordered-imports": false,
     "variable-name": [

@@ -1,17 +1,19 @@
 {
   "compilerOptions": {
-    "sourceMap": true,
     "declaration": true,
-    "strict": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "importHelpers": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
-    "strictNullChecks": true,
     "preserveConstEnums": true,
-    "forceConsistentCasingInFileNames": true,
+    "sourceMap": true,
+    "strict": true,
+    "strictNullChecks": true,
     "target": "es5",
-    "module": "commonjs",
-    "moduleResolution": "node",
     "lib": ["es2017", "dom"]
   }
 }

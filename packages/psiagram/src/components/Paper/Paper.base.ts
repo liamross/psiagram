@@ -33,6 +33,7 @@ import {
   PaperNode,
   PaperEdge,
   edgeEndPoint,
+  INodeProperties,
 } from '../../';
 
 import { setPaperDefs } from './setPaperDefs';
@@ -196,11 +197,12 @@ export class Paper {
       const nodeComponent = (this._nodeComponentMap as INodeComponentMap)[
         node.component
       ];
-      const instance: Node = new nodeComponent({
+      const instance: Node<INodeProperties> = new nodeComponent({
         ...node.properties,
         id: node.id,
         gridSize: this._gridSize,
       });
+      instance.initialize();
 
       // Set proxies to allow direct get and set coordinates on each Node, while
       // still having it trigger within the Paper (where coords are stored).

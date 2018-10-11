@@ -23,10 +23,8 @@ interface IPaperInputNode {
   id: string;
   component: string;
   coords: ICoordinates;
-  properties: {
-    width: number;
-    height: number;
-    title?: string;
+  properties?: {
+    [property: string]: any;
   };
 }
 ```
@@ -60,19 +58,33 @@ Node will snap to the nearest grid if `gridSize` was provided to Paper.
   }
   ```
 
-#### properties - `Object`
+#### properties (optional) - `Object`
 
 Properties is where you define any properties to pass into Node when it's
-initialized. These are the default properties:
+initialized. These will be entirely dependent on what properties your custom
+Node accepts. For example, if your Node is a rectangle that displayes text, your
+properties object may look like this:
 
-- width - `number`: Width of the Node.
-- height - `string`: Height of the Node.
-- title (optional) - `string`: Title to render onto Node.
+```ts
+const properties = {
+  title: 'My Rectangle',
+  width: 160,
+  height: 80,
+};
+```
 
-By default, the base class Node will round width and height to `2 * gridSize`.
-This is so that any Edges connected to the Node will be centered on the Node, as
-they must have an endpoint on a grid intersect. If a title is given, it will be
-centered on the Node element.
+Whereas if it's a square perhaps you might have a slightly simpler set of
+properties:
+
+```ts
+const properties = {
+  title: 'My Square',
+  length: 80,
+};
+```
+
+For more information visit the
+[custom Nodes section](../in-depth/custom-nodes.md).
 
 ### Example
 
@@ -83,7 +95,7 @@ object:
 function addNode() {
   const node: IPaperInputNode = {
     id: 'new_node_test',
-    component: 'basic-node',
+    component: 'rectangle',
     coords: { x: 320, y: 160 },
     properties: { title: 'New Node', height: 80, width: 160 },
   };

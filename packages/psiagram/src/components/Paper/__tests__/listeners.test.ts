@@ -6,6 +6,7 @@
  */
 
 import {
+  Node,
   Paper,
   IPaperProperties,
   Edge,
@@ -65,7 +66,7 @@ describe('Listeners', () => {
           },
         ],
         nodeComponentMap: {
-          rectangle: Rectangle,
+          rectangle: Rectangle as typeof Node,
         },
         edges: [
           {

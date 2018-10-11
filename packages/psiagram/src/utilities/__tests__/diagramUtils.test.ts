@@ -36,7 +36,7 @@ const generateNode = (
     title: '',
     width,
     height,
-  });
+  }) as unknown;
   Object.defineProperty(newNode, 'coords', {
     value: { x, y },
   });

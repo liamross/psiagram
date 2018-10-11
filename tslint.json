@@ -3,7 +3,21 @@
   "rules": {
     "curly": [true, "ignore-same-line"],
     "max-classes-per-file": false,
-    "no-console": [true, { "allow": ["error", "warn"] }],
+    "no-console": [
+      true,
+      "assert",
+      "clear",
+      "count",
+      "group",
+      "groupCollapsed",
+      "groupEnd",
+      "info",
+      "log",
+      "table",
+      "time",
+      "timeEnd",
+      "trace"
+    ],
     "no-unused-variable": [true, { "ignore-pattern": "^_" }],
     "object-literal-sort-keys": false,
     "ordered-imports": false,

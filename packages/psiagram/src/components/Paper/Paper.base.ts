@@ -197,7 +197,7 @@ export class Paper {
       const nodeComponent = (this._nodeComponentMap as INodeComponentMap)[
         node.component
       ];
-      const instance: Node<INodeProperties> = new nodeComponent({
+      const instance = new nodeComponent({
         ...node.properties,
         id: node.id,
         gridSize: this._gridSize,
@@ -229,7 +229,7 @@ export class Paper {
       const newNode: IPaperStoredNode = {
         id: node.id,
         coords: node.coords,
-        instance: instance as PaperNode,
+        instance: (instance as unknown) as PaperNode,
       };
 
       const roundedX = roundToNearest(node.coords.x, this._gridSize);

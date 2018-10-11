@@ -19,6 +19,10 @@ export interface ITextNodeProperties extends INodeProperties {
   fontHeight?: number;
 }
 
+
+/**
+ * TextNode **must** be extended, it does not work on its own.
+ */
 export class TextNode<P extends ITextNodeProperties> extends Node<P> {
   protected _text: SVGElement | null;
 
@@ -66,7 +70,7 @@ export class TextNode<P extends ITextNodeProperties> extends Node<P> {
       throw new PaperError(
         'E_NO_ELEM',
         `No text exists for Node ID: ${this.props.id}`,
-        'Node.base.ts',
+        'TextNode.ts',
         'set title',
       );
     }

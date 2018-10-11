@@ -80,7 +80,7 @@ export class Rectangle<P extends IRectangleProperties> extends TextNode<P> {
       throw new PaperError(
         'E_NO_ELEM',
         `No shape exists for Node ID: ${this.props.id}`,
-        'Node.base.ts',
+        'Rectangle.ts',
         'set width',
       );
     }
@@ -100,7 +100,7 @@ export class Rectangle<P extends IRectangleProperties> extends TextNode<P> {
       throw new PaperError(
         'E_NO_ELEM',
         `No shape exists for Node ID: ${this.props.id}`,
-        'Node.base.ts',
+        'Rectangle.ts',
         'set height',
       );
     }

@@ -12,6 +12,7 @@ import {
   PsiagramPlugin,
   ElementType,
   INodeProperties,
+  IEdgeProperties,
 } from '../../';
 
 // =============================================================================
@@ -118,7 +119,7 @@ export interface IPaperStoredEdge {
   instance: PaperEdge;
 }
 
-export declare class PaperEdge extends Edge {
+export declare class PaperEdge extends Edge<IEdgeProperties> {
   public source: edgeEndPoint;
   public target: edgeEndPoint;
   public coords: ICoordinates[];

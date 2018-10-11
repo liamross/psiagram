@@ -6,7 +6,6 @@
  */
 
 import {
-  IEdgeProperties,
   ICoordinates,
   setElementType,
   ElementType,
@@ -16,6 +15,13 @@ import {
   PaperError,
   getEdgeMidPoint,
 } from '../../';
+
+export interface IEdgeProperties {
+  id: string;
+  gridSize: number;
+  paperUniqueId: string;
+  title?: string;
+}
 
 const FONT_HEIGHT = 14;
 
@@ -49,7 +55,7 @@ export class Edge {
     this.initialize();
   }
 
-  public getEdgeElement(): SVGElement {
+  public getElement(): SVGElement {
     return this._group;
   }
 
@@ -99,7 +105,7 @@ export class Edge {
       throw new PaperError(
         'E_EDGE_LENGTH',
         `You must provide at least two coordinate points to set edge coordinates`,
-        'Edge.base.ts',
+        'Edge.ts',
         'coordinates',
       );
     }
@@ -124,7 +130,7 @@ export class Edge {
       throw new PaperError(
         'E_NO_ELEM',
         `No path exists for Edge ID: ${this._properties.id}`,
-        'Edge.base.ts',
+        'Edge.ts',
         'coordinates',
       );
     }
@@ -145,7 +151,7 @@ export class Edge {
       throw new PaperError(
         'E_NO_ELEM',
         `No text exists for Edge ID: ${this._properties.id}`,
-        'Node.base.ts',
+        'Node.ts',
         'set title',
       );
     }

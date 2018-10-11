@@ -13,15 +13,18 @@ export interface INodeProperties {
   [property: string]: any;
 }
 
+/**
+ * Node **must** be extended, it does not work on its own.
+ */
 export class Node<P extends INodeProperties> {
   protected props: P;
-  protected _group: SVGElement;
+  private _group: SVGElement;
 
   /**
    * Node constructor. Any changes to props before they're stored in this.props
    * should be made inside of the constructor.
    *
-   * @param properties Any properties passed to the Node.
+   * @param props Any properties passed to the Node.
    */
   constructor(props: P) {
     this._group = createSVGWithAttributes('g', {
@@ -99,7 +102,7 @@ export class Node<P extends INodeProperties> {
    * this Node should be contained within the Node group by adding them using
    * this.addToGroup(element).
    */
-  public getNodeElement(): SVGElement {
+  public getElement(): SVGElement {
     return this._group;
   }
 

@@ -37,7 +37,9 @@ interface IPaperProperties {
   };
   initialConditions?: {
     nodes?: IPaperInputNode[];
+    nodeComponentMap?: INodeComponentMap;
     edges?: IPaperInputEdge[];
+    edgeComponentMap?: IEdgeComponentMap;
   };
 }
 ```
@@ -77,11 +79,32 @@ An optional object where you can define any initial Nodes or Edges to render
 onto Paper when it's initialized. In order to input these, object has the
 following **optional** properties:
 
-- nodes - `IPaperInputNode[]`: Initial Nodes.
-- edges - `IPaperInputEdge[]`: Initial Edges.
+> Note: Psiagram only provides the base classes needed to begin building custom
+> Nodes and Edges. Alone, the Node class and Edge class will not render any
+> visual components. You must extend these classes into your own
+> [custom Nodes](../in-depth/custom-nodes.md) and
+> [custom Edges](../in-depth/custom-edges.md).
 
-More details on input Nodes can be found in the [node section](node.md), and
-information on input Edges can be found in the [edge section](edge.md).
+- nodes - `IPaperInputNode[]`: Initial Node data needed to render out Nodes.
+  More details on input Nodes can be found in the [Node section](node.md).
+- nodeComponentMap - `INodeComponentMap`: Object to map component strings to an
+  extended Node class. Once you've built some Nodes, they can be included here
+  and selected by giving the key string to the appropriate initial Nodes.
+  ```js
+  export interface INodeComponentMap {
+    [key: string]: typeof Node;
+  }
+  ```
+- edges - `IPaperInputEdge[]`: Initial Edge data needed to render out Edges.
+  More details on input Edges can be found in the [Edge section](edge.md).
+- edgeComponentMap - `IEdgeComponentMap`: Object to map component strings to an
+  extended Edge class. Once you've built some Edges, they can be included here
+  and selected by giving the key string to the appropriate initial Edges.
+  ```js
+  export interface IEdgeComponentMap {
+    [key: string]: typeof Edge;
+  }
+  ```
 
 ### Initialization
 
@@ -89,9 +112,10 @@ Now that you have an idea of building a Paper Properties object, let's look at
 initializing a Paper instance.
 
 ```js
-import { Paper, Node, Edge } from 'psiagram';
+import { Paper, Rectangle, TextEdge } from 'psiagram';
 import { Grid } from 'psiagram-plugin-grid';
 import { MouseEvents } from 'psiagram-plugin-mouse-events';
+import { ManhattanRouting } from 'psiagram-plugin-routing';
 
 const myPaper = new Paper({
   height: 900,
@@ -102,26 +126,28 @@ const myPaper = new Paper({
     paperClass: 'myPaper',
     uniqueId: 'paper_unique_id',
   },
-  plugins: [new Grid(), new MouseEvents()],
+  plugins: [new Grid(), new MouseEvents(), new ManhattanRouting()],
   initialConditions: {
     nodes: [
       {
         id: 'node-1-id',
-        component: Node,
+        component: 'rectangle',
         coords: { x: 80, y: 80 },
         properties: { title: 'Node 1', width: 120, height: 80 },
       },
     ],
+    nodeComponentMap: { rectangle: Rectangle },
     edges: [
       {
         id: 'edge-1-id',
-        component: Edge,
+        component: 'text-edge',
         source: { id: 'node-1-id' },
         target: { x: 120, y: 240 },
         coords: [],
         properties: { title: 'Edge 1' },
       },
     ],
+    edgeComponentMap: { 'text-edge': TextEdge },
   },
 });
 ```

@@ -6,13 +6,16 @@ import {
   Node,
   Edge,
   PaperError,
+  Rectangle,
+  IRectangleProperties,
+  TextEdge,
 } from 'psiagram';
-// import { Grid } from 'psiagram-plugin-grid';
-// import { MouseEvents } from 'psiagram-plugin-mouse-events';
-// import { ManhattanRouting } from 'psiagram-plugin-routing';
-import { Grid } from '../packages/psiagram-plugin-grid/src';
-import { MouseEvents } from '../packages/psiagram-plugin-mouse-events/src';
-import { ManhattanRouting } from '../packages/psiagram-plugin-routing/src';
+import { Grid } from 'psiagram-plugin-grid';
+import { MouseEvents } from 'psiagram-plugin-mouse-events';
+import { ManhattanRouting } from 'psiagram-plugin-routing';
+// import { Grid } from '../packages/psiagram-plugin-grid/src';
+// import { MouseEvents } from '../packages/psiagram-plugin-mouse-events/src';
+// import { ManhattanRouting } from '../packages/psiagram-plugin-routing/src';
 
 let myPaper: Paper | null = null;
 
@@ -28,23 +31,35 @@ function loadPaper() {
           id: 'node1',
           component: 'rectangle',
           coords: { x: 60, y: 260 },
-          properties: { width: 112, height: 85, title: 'node 1' },
+          properties: {
+            width: 112,
+            height: 85,
+            title: 'node 1',
+          } as IRectangleProperties,
         },
         {
           id: 'node2',
           component: 'rectangle',
           coords: { x: 400, y: 220 },
-          properties: { width: 130, height: 140, title: 'node 2' },
+          properties: {
+            width: 130,
+            height: 140,
+            title: 'node 2',
+          } as IRectangleProperties,
         },
         {
           id: 'node3',
           component: 'rectangle',
           coords: { x: 400, y: 600 },
-          properties: { width: 100, height: 100, title: 'node 3' },
+          properties: {
+            width: 100,
+            height: 100,
+            title: 'node 3',
+          } as IRectangleProperties,
         },
       ],
       nodeComponentMap: {
-        rectangle: Node,
+        rectangle: Rectangle as typeof Node,
       },
       edges: [
         {
@@ -56,7 +71,7 @@ function loadPaper() {
         },
         {
           id: 'edge2',
-          component: 'line',
+          component: 'text-line',
           source: { id: 'node1' },
           target: { id: 'node2' },
           coords: [],
@@ -71,14 +86,18 @@ function loadPaper() {
         },
         {
           id: 'edge4',
-          component: 'line',
+          component: 'text-line',
           source: { id: 'node3' },
           target: { x: 800, y: 800 },
+          properties: {
+            title: 'Test title',
+          },
           coords: [],
         },
       ],
       edgeComponentMap: {
         line: Edge,
+        'text-line': TextEdge as typeof Edge,
       },
     },
   };

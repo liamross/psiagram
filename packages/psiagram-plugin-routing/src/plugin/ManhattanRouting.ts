@@ -127,14 +127,14 @@ export class ManhattanRouting implements PsiagramPlugin {
       );
     }
 
-    edge.instance.updatePath(
+    edge.instance.setCoordinates([
       finalSourcePoint as ICoordinates,
-      finalTargetPoint as ICoordinates,
-      fullCoordinates.map(coordinate => ({
+      ...fullCoordinates.map(coordinate => ({
         x: roundToNearest(coordinate.x, this._gridSize),
         y: roundToNearest(coordinate.y, this._gridSize),
       })),
-    );
+      finalTargetPoint as ICoordinates,
+    ]);
 
     evt.preventDefault();
   };

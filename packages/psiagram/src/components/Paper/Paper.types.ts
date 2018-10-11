@@ -5,7 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { Node, Edge, ICoordinates, PsiagramPlugin, ElementType } from '../../';
+import {
+  Node,
+  Edge,
+  ICoordinates,
+  PsiagramPlugin,
+  ElementType,
+  INodeProperties,
+  IEdgeProperties,
+} from '../../';
 
 // =============================================================================
 // Paper
@@ -26,6 +34,14 @@ export interface IPaperProperties {
     edges?: IPaperInputEdge[];
     edgeComponentMap?: IEdgeComponentMap;
   };
+}
+
+export interface INodeComponentMap {
+  [key: string]: typeof Node;
+}
+
+export interface IEdgeComponentMap {
+  [key: string]: typeof Edge;
 }
 
 export declare type paperEventType =
@@ -62,7 +78,7 @@ export enum PaperItemState {
 
 export interface IPaperInputNode {
   id: string;
-  component: componentName;
+  component: string;
   coords: ICoordinates;
   properties: {
     width: number;
@@ -77,7 +93,7 @@ export interface IPaperStoredNode {
   instance: PaperNode;
 }
 
-export declare class PaperNode extends Node {
+export declare class PaperNode extends Node<INodeProperties> {
   public coords: ICoordinates;
 }
 
@@ -86,7 +102,7 @@ export declare class PaperNode extends Node {
 
 export interface IPaperInputEdge {
   id: string;
-  component: componentName;
+  component: string;
   source: edgeEndPoint;
   target: edgeEndPoint;
   coords: ICoordinates[];
@@ -103,23 +119,10 @@ export interface IPaperStoredEdge {
   instance: PaperEdge;
 }
 
-export declare class PaperEdge extends Edge {
+export declare class PaperEdge extends Edge<IEdgeProperties> {
   public source: edgeEndPoint;
   public target: edgeEndPoint;
   public coords: ICoordinates[];
 }
 
 export declare type edgeEndPoint = { id: string } | ICoordinates;
-
-// =============================================================================
-// Other
-
-export declare type componentName = string;
-
-export interface INodeComponentMap {
-  [key: string]: typeof Node;
-}
-
-export interface IEdgeComponentMap {
-  [key: string]: typeof Edge;
-}

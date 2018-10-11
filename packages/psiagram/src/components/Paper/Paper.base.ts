@@ -33,10 +33,10 @@ import {
   PaperNode,
   PaperEdge,
   edgeEndPoint,
+  INodeProperties,
 } from '../../';
 
 import { setPaperDefs } from './setPaperDefs';
-import {} from './Paper.types';
 
 export class Paper {
   private _width: number;
@@ -197,11 +197,12 @@ export class Paper {
       const nodeComponent = (this._nodeComponentMap as INodeComponentMap)[
         node.component
       ];
-      const instance: Node = new nodeComponent({
+      const instance = new nodeComponent({
         ...node.properties,
         id: node.id,
         gridSize: this._gridSize,
       });
+      instance.initialize();
 
       // Set proxies to allow direct get and set coordinates on each Node, while
       // still having it trigger within the Paper (where coords are stored).
@@ -216,10 +217,10 @@ export class Paper {
         },
         coords: {
           get() {
-            return this._getNodeCoordsProxy(this._properties.id);
+            return this._getNodeCoordsProxy(this.props.id);
           },
           set(coords: ICoordinates) {
-            this._setNodeCoordsProxy(this._properties.id, coords);
+            this._setNodeCoordsProxy(this.props.id, coords);
           },
           configurable: true,
         },
@@ -228,7 +229,7 @@ export class Paper {
       const newNode: IPaperStoredNode = {
         id: node.id,
         coords: node.coords,
-        instance: instance as PaperNode,
+        instance: (instance as unknown) as PaperNode,
       };
 
       const roundedX = roundToNearest(node.coords.x, this._gridSize);
@@ -240,7 +241,7 @@ export class Paper {
         data: { roundedX, roundedY },
         defaultAction: () => {
           this._nodes[node.id] = newNode;
-          const ref = this._nodes[node.id].instance.getNodeElement();
+          const ref = this._nodes[node.id].instance.getElement();
 
           if (ref) {
             setSVGAttribute(
@@ -308,7 +309,7 @@ export class Paper {
           });
 
           // Remove node.
-          this._nodes[id].instance.getNodeElement().remove();
+          this._nodes[id].instance.getElement().remove();
           delete this._nodes[id];
         },
       });
@@ -341,11 +342,13 @@ export class Paper {
       const edgeComponent = (this._edgeComponentMap as IEdgeComponentMap)[
         edge.component
       ];
-      const instance: Edge = new edgeComponent({
+      const instance = new edgeComponent({
         ...edge.properties,
         id: edge.id,
+        gridSize: this._gridSize,
         paperUniqueId: this._uniqueId,
       });
+      instance.initialize();
 
       // Set proxies to allow direct get and set for source, target, and
       // coordinates on each Edge, while still having it trigger within the
@@ -377,34 +380,34 @@ export class Paper {
         },
         source: {
           get() {
-            return this._getEdgeSourceProxy(this._properties.id);
+            return this._getEdgeSourceProxy(this.props.id);
           },
           set(source: edgeEndPoint) {
-            this._setEdgeSourceProxy(this._properties.id, source);
+            this._setEdgeSourceProxy(this.props.id, source);
           },
           configurable: true,
         },
         target: {
           get() {
-            return this._getEdgeTargetProxy(this._properties.id);
+            return this._getEdgeTargetProxy(this.props.id);
           },
           set(target: edgeEndPoint) {
-            this._setEdgeTargetProxy(this._properties.id, target);
+            this._setEdgeTargetProxy(this.props.id, target);
           },
           configurable: true,
         },
         coords: {
           get() {
-            return this._getEdgeCoordsProxy(this._properties.id);
+            return this._getEdgeCoordsProxy(this.props.id);
           },
           set(coords: ICoordinates[]) {
-            this._setEdgeCoordsProxy(this._properties.id, coords);
+            this._setEdgeCoordsProxy(this.props.id, coords);
           },
           configurable: true,
         },
       });
 
-      const ref = instance.getEdgeElement();
+      const ref = instance.getElement();
 
       const hasValidSource = edge.source.hasOwnProperty('id')
         ? this._nodes[(edge.source as { id: string }).id]
@@ -475,7 +478,7 @@ export class Paper {
         paper: this,
         target: this._edges[id],
         defaultAction: () => {
-          this._edges[id].instance.getEdgeElement().remove();
+          this._edges[id].instance.getElement().remove();
           delete this._edges[id];
         },
       });
@@ -729,14 +732,14 @@ export class Paper {
               );
             }
 
-            edge.instance.updatePath(
+            edge.instance.setCoordinates([
               sourcePoint as ICoordinates,
-              targetPoint as ICoordinates,
-              edge.coords.map(coordinate => ({
+              ...edge.coords.map(coordinate => ({
                 x: roundToNearest(coordinate.x, this._gridSize),
                 y: roundToNearest(coordinate.y, this._gridSize),
               })),
-            );
+              targetPoint as ICoordinates,
+            ]);
           },
         });
 
@@ -806,7 +809,7 @@ export class Paper {
             node.coords = newCoords;
 
             setSVGAttribute(
-              node.instance.getNodeElement(),
+              node.instance.getElement(),
               'transform',
               `translate(${node.coords.x} ${node.coords.y})`,
             );

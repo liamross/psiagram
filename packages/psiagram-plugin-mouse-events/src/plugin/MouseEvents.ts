@@ -111,7 +111,7 @@ export class MouseEvents implements PsiagramPlugin {
         y: roundToNearest(node.coords.y, this._gridSize),
       };
       // Move node to top within paper.
-      this._paper.appendChild(node.instance.getNodeElement());
+      this._paper.appendChild(node.instance.getElement());
       // Initialize mouse movement and release listeners.
       document.addEventListener('mousemove', this._handleNodeMouseMove);
       document.addEventListener('mouseup', this._handleNodeMouseUp);
@@ -190,6 +190,7 @@ export class MouseEvents implements PsiagramPlugin {
 
   private _handleEdgeMouseDown(evt: MouseEvent, id: string): void {
     // TODO: implement.
+    console.log('mouseDown on Edge');
   }
 
   private _handleEdgeMouseMove = (evt: MouseEvent): void => {

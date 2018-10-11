@@ -112,7 +112,7 @@ Now that you have an idea of building a Paper Properties object, let's look at
 initializing a Paper instance.
 
 ```js
-import { Paper, Rectangle, Line } from 'psiagram';
+import { Paper, Rectangle, TextEdge } from 'psiagram';
 import { Grid } from 'psiagram-plugin-grid';
 import { MouseEvents } from 'psiagram-plugin-mouse-events';
 import { ManhattanRouting } from 'psiagram-plugin-routing';
@@ -140,14 +140,14 @@ const myPaper = new Paper({
     edges: [
       {
         id: 'edge-1-id',
-        component: 'line',
+        component: 'text-edge',
         source: { id: 'node-1-id' },
         target: { x: 120, y: 240 },
         coords: [],
         properties: { title: 'Edge 1' },
       },
     ],
-    edgeComponentMap: { line: Line },
+    edgeComponentMap: { 'text-edge': TextEdge },
   },
 });
 ```

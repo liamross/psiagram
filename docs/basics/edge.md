@@ -103,7 +103,7 @@ object:
 function addEdge() {
   const edge: IPaperInputEdge = {
     id: 'new_edge_test',
-    component: 'line',
+    component: 'text-edge',
     source: { id: 'new_node_test' },
     target: { x: 240, y: 120 },
     coords: [{ x: 140, y: 160 }],
@@ -133,8 +133,8 @@ target, and coordinates of the Edge. Without customization, an Edge class
 exposes the get/set methods for all properties passed in with the `properties`
 object detailed above. _Any custom implementation of Edge may take different
 properties, and thus may have different get/set methods_. Paper adds get/set
-methods for source, target, and coords to the Edge, thus returning a new object
-we call PaperEdge.
+methods for **source**, **target**, and **coords** to the Edge, thus returning a
+new object we call PaperEdge.
 
 We will run through some of the potential uses for PaperEdge.
 
@@ -144,17 +144,19 @@ We will run through some of the potential uses for PaperEdge.
 const yourEdge = getEdge('your-edge-id');
 ```
 
-Once you have your PaperEdge, you can manipulate the properties directly.
-Psiagram wraps all of the DOM manipulation logic inside of get/set methods, so
-it's as simple as re-assigning the properties. Here's one example:
+Once you have your PaperEdge, you can manipulate the properties directly. All of
+the DOM manipulation logic should be wrapped inside of get/set methods, so it's
+as simple as re-assigning the properties. Here's one example from a Edge with
+text:
 
 ```ts
-yourNode.title = 'New Title';
+yourEdge.title = 'New Title';
 ```
 
 These properties will be updated automatically in the DOM. However, this ability
 would have been available on the Edge class, let's look at updating the
-coordinates.
+coordinates, something only available to the `yourEdge` PaperEdge returned from
+Paper.
 
 ```ts
 yourEdge.source = { id: 'some-node-id' };

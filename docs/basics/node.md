@@ -122,8 +122,8 @@ properties added to them that simplify the process of changing the coordinates
 of the Node. Without customization, a Node class exposes the get/set methods for
 all properties passed in with the `properties` object detailed above. _Any
 custom implementation of Node may take different properties, and thus may have
-different get/set methods_. Paper adds get/set methods for coords to the Node,
-thus returning a new object we call PaperNode.
+different get/set methods_. Paper adds get/set methods for **coords** to the
+Node, thus returning a new object we call PaperNode.
 
 We will run through some of the potential uses for PaperNode.
 
@@ -133,9 +133,10 @@ We will run through some of the potential uses for PaperNode.
 const yourNode = getNode('your-node-id');
 ```
 
-Once you have your PaperNode, you can manipulate the properties directly.
-Psiagram wraps all of the DOM manipulation logic inside of get/set methods, so
-it's as simple as re-assigning the properties. Here's one example:
+Once you have your PaperNode, you can manipulate the properties directly. All of
+the DOM manipulation logic should be wrapped inside of get/set methods, so it's
+as simple as re-assigning the properties. Here's one example from a Rectangle
+with text:
 
 ```ts
 yourNode.width = 240;
@@ -145,7 +146,8 @@ yourNode.title = 'New Title';
 
 These properties will be updated automatically in the DOM. However, this ability
 would have been available on the Node class, let's look at updating the
-coordinates.
+coordinates, something only available to the `yourNode` PaperNode returned from
+Paper.
 
 ```ts
 yourNode.coords = { x: yourNode.coords.x, y: 120 };

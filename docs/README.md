@@ -3,7 +3,8 @@
 ---
 
 Psiagram (/ˈ(p)sīəˌɡram/) - a simple, feature-rich, and extensible diagram
-framework for JavaScript.
+framework for JavaScript. It provides the foundation to build anything from
+simple workflows to complex interactive graphs with vast shape libraries.
 
 ## Simple
 

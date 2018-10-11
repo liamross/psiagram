@@ -732,14 +732,14 @@ export class Paper {
               );
             }
 
-            edge.instance.coordinates = [
+            edge.instance.setCoordinates([
               sourcePoint as ICoordinates,
               ...edge.coords.map(coordinate => ({
                 x: roundToNearest(coordinate.x, this._gridSize),
                 y: roundToNearest(coordinate.y, this._gridSize),
               })),
               targetPoint as ICoordinates,
-            ];
+            ]);
           },
         });
 

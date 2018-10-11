@@ -20,7 +20,7 @@ export interface ITextEdgeProperties extends IEdgeProperties {
   fontHeight?: number;
 }
 
-export class TextEdge<P extends IEdgeProperties> extends Edge<P> {
+export class TextEdge<P extends ITextEdgeProperties> extends Edge<P> {
   protected _text: SVGElement | null;
 
   constructor(props: P) {
@@ -43,19 +43,13 @@ export class TextEdge<P extends IEdgeProperties> extends Edge<P> {
     this.addToGroup(this._text);
   }
 
+  public setCoordinates(coordinates: ICoordinates[]): void {
+    super.setCoordinates(coordinates);
+    this.updateTextPosition();
+  }
+
   protected updateTextPosition(): void {
     const { x, y } = getEdgeMidPoint(this._coordinates);
     setBatchSVGAttribute(this._text as SVGElement, { x, y });
-  }
-
-  /** Coordinates get + set. */
-  get coordinates(): ICoordinates[] {
-    // @ts-ignore
-    return super.coordinates;
-  }
-  set coordinates(coordinates: ICoordinates[]) {
-    // @ts-ignore
-    super.coordinates = coordinates;
-    this.updateTextPosition();
   }
 }

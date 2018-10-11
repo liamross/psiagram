@@ -8,6 +8,7 @@ import {
   PaperError,
   Rectangle,
   IRectangleProperties,
+  TextEdge,
 } from 'psiagram';
 import { Grid } from 'psiagram-plugin-grid';
 import { MouseEvents } from 'psiagram-plugin-mouse-events';
@@ -70,7 +71,7 @@ function loadPaper() {
         },
         {
           id: 'edge2',
-          component: 'line',
+          component: 'text-line',
           source: { id: 'node1' },
           target: { id: 'node2' },
           coords: [],
@@ -85,7 +86,7 @@ function loadPaper() {
         },
         {
           id: 'edge4',
-          component: 'line',
+          component: 'text-line',
           source: { id: 'node3' },
           target: { x: 800, y: 800 },
           properties: {
@@ -96,6 +97,7 @@ function loadPaper() {
       ],
       edgeComponentMap: {
         line: Edge,
+        'text-line': TextEdge as typeof Edge,
       },
     },
   };

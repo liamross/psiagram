@@ -28,6 +28,12 @@ export class Edge<P extends IEdgeProperties> {
   protected _coordinates: ICoordinates[];
   private _group: SVGElement;
 
+  /**
+   * Edge constructor. Any changes to props before they're stored in this.props
+   * should be made inside of the constructor.
+   *
+   * @param props Any properties passed to the Edge.
+   */
   constructor(props: P) {
     this._clickZone = null;
     this._path = null;
@@ -41,6 +47,12 @@ export class Edge<P extends IEdgeProperties> {
     this.props = props;
   }
 
+  /**
+   * Initialize is called when the Edge is being mounted into the DOM. You can
+   * build visual SVG components and add them to the group using
+   * this.addToGroup(element). This function is only called once, so any changes
+   * in the future must be done through setters.
+   */
   public initialize(): void {
     const { id } = this.props;
 
@@ -65,15 +77,33 @@ export class Edge<P extends IEdgeProperties> {
   }
 
   /**
-   * Coordinates set **should** be extended.
+   * Teardown is called when the Edge is being removed from the DOM. You can
+   * cause transformations, change appearance, and teardown any listeners or
+   * processes. If none of these are needed, you do not need to overwrite this
+   * function.
+   */
+  public teardown(): void {
+    return;
+  }
+
+  /**
+   * Get the actual coordinates of the Edge.
+   */
+  public getCoordinates(): ICoordinates[] {
+    return this._coordinates;
+  }
+
+  /**
+   * Set the coordinates of the Edge.
+   *
+   * This **should** be extended.
    *
    * For example, if your Edge has a text field, then a text position updater
    * should be called any time new coordinates are set.
+   *
+   * @param coordinates Actual coordinate points for the Edge.
    */
-  get coordinates(): ICoordinates[] {
-    return this._coordinates;
-  }
-  set coordinates(coordinates: ICoordinates[]) {
+  public setCoordinates(coordinates: ICoordinates[]): void {
     if (coordinates.length < 2) {
       throw new PaperError(
         'E_EDGE_LENGTH',

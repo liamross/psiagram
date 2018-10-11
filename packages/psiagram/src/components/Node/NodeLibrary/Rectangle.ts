@@ -5,11 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { TextNode } from '../NodeAbstracts/TextNode';
+
 import {
   createSVGWithAttributes,
   roundToNearest,
   setSVGAttribute,
-  TextNode,
   ITextNodeProperties,
   PaperError,
 } from '../../../';

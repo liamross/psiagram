@@ -5,8 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { Node } from '../Node';
+
 import {
-  Node,
   createSVGWithAttributes,
   PaperError,
   INodeProperties,

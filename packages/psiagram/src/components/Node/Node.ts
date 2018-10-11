@@ -53,7 +53,7 @@ export class Node<P extends INodeProperties> {
   }
 
   /**
-   * Width get and set must be overwritten.
+   * Width get and set **must** be overwritten.
    *
    * External methods need to call ThisNode.width in order to calculate various
    * things, and it's not as straightforward as getting it from props (ex: your
@@ -73,7 +73,7 @@ export class Node<P extends INodeProperties> {
   }
 
   /**
-   * Height get and set must be overwritten.
+   * Height get and set **must** be overwritten.
    *
    * External methods need to call ThisNode.height in order to calculate various
    * things, and it's not as straightforward as getting it from props (ex: your

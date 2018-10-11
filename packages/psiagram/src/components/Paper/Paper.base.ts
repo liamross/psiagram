@@ -217,10 +217,10 @@ export class Paper {
         },
         coords: {
           get() {
-            return this._getNodeCoordsProxy(this._properties.id);
+            return this._getNodeCoordsProxy(this.props.id);
           },
           set(coords: ICoordinates) {
-            this._setNodeCoordsProxy(this._properties.id, coords);
+            this._setNodeCoordsProxy(this.props.id, coords);
           },
           configurable: true,
         },

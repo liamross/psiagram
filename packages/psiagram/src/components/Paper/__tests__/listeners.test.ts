@@ -9,7 +9,7 @@ import {
   Paper,
   IPaperProperties,
   Edge,
-  Node,
+  Rectangle,
   PaperEvent,
   PaperItemState,
   ElementType,
@@ -65,7 +65,7 @@ describe('Listeners', () => {
           },
         ],
         nodeComponentMap: {
-          rectangle: Node,
+          rectangle: Rectangle,
         },
         edges: [
           {

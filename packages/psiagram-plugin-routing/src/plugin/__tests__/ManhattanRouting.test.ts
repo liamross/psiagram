@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { Node, IPaperStoredNode, PaperNode, ICoordinates } from 'psiagram';
+import { IPaperStoredNode, PaperNode, ICoordinates, Rectangle } from 'psiagram';
 import { ManhattanRouting, IBoundingBox, Direction } from '../ManhattanRouting';
 
 let myRouting: ManhattanRouting = null;
@@ -20,13 +20,13 @@ const generateNode = (
   height = 80,
   gridSize = 0,
 ): IPaperStoredNode => {
-  const newNode = new Node({
+  const newNode = new Rectangle({
     id,
     gridSize,
     title: '',
     width,
     height,
-  });
+  }) as unknown;
   Object.defineProperty(newNode, 'coords', {
     value: { x, y },
   });

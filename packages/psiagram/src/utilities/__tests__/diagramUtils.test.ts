@@ -14,7 +14,7 @@ import {
   generateRandomString,
   IPaperStoredNode,
   PaperNode,
-  Node,
+  Rectangle,
   edgeLength,
   pointAlongLine,
   getEdgeMidPoint,
@@ -30,7 +30,7 @@ const generateNode = (
   height = 80,
   gridSize = 0,
 ): IPaperStoredNode => {
-  const newNode = new Node({
+  const newNode = new Rectangle({
     id,
     gridSize,
     title: '',

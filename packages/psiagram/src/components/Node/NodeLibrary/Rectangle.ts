@@ -23,20 +23,21 @@ export interface IRectangleProperties extends ITextNodeProperties {
   strokeWidth?: number;
 }
 
-export class Rectangle extends TextNode<IRectangleProperties> {
+export class Rectangle<P extends IRectangleProperties> extends TextNode<P> {
   protected _shape: SVGElement | null;
   private _growthUnit: number;
 
-  constructor(props: IRectangleProperties) {
+  constructor(props: P) {
     super(props);
     this._shape = null;
     this._growthUnit = props.gridSize * 2;
 
     this.props = {
-      ...this.props,
-      fillColor: props.fillColor || '#EAEAEA',
+      // To avoid ts error https://github.com/Microsoft/TypeScript/issues/14409
+      ...(this.props as any),
       strokeColor: props.strokeColor || '#333',
       strokeWidth: props.strokeWidth || 1,
+      fillColor: props.fillColor || '#EAEAEA',
       width: roundToNearest(props.width, this._growthUnit, this._growthUnit),
       height: roundToNearest(props.height, this._growthUnit, this._growthUnit),
     };
@@ -52,8 +53,6 @@ export class Rectangle extends TextNode<IRectangleProperties> {
       strokeWidth,
     } = this.props;
 
-    super.initialize();
-
     this._shape = createSVGWithAttributes('rect', {
       id: id + '_shape',
       width,
@@ -63,6 +62,8 @@ export class Rectangle extends TextNode<IRectangleProperties> {
       'stroke-width': strokeWidth,
     });
     this.addToGroup(this._shape);
+
+    super.initialize();
   }
 
   // Width get + set.

@@ -38,6 +38,8 @@ export class TextNode<P extends ITextNodeProperties> extends Node<P> {
     });
     this._text.textContent = title || '';
     this.addToGroup(this._text);
+
+    this.updateTextPosition();
   }
 
   protected updateTextPosition(): void {

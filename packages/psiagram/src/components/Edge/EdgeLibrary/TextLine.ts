@@ -5,22 +5,21 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { Edge } from '../Edge';
+import { Line, ILineProperties } from './Line';
 
 import {
-  IEdgeProperties,
   ICoordinates,
   createSVGWithAttributes,
   setBatchSVGAttribute,
   getEdgeMidPoint,
 } from '../../../';
 
-export interface ITextEdgeProperties extends IEdgeProperties {
+export interface ITextLineProperties extends ILineProperties {
   title: string;
   fontHeight?: number;
 }
 
-export class TextEdge<P extends ITextEdgeProperties> extends Edge<P> {
+export class TextLine<P extends ITextLineProperties> extends Line<P> {
   protected _text: SVGElement | null;
 
   constructor(props: P) {

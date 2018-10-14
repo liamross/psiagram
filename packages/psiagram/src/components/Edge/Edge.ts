@@ -10,8 +10,6 @@ import {
   setElementType,
   ElementType,
   createSVGWithAttributes,
-  setSVGAttribute,
-  PaperError,
 } from '../../';
 
 export interface IEdgeProperties {
@@ -21,11 +19,11 @@ export interface IEdgeProperties {
   [property: string]: any;
 }
 
+/**
+ * Edge **must** be extended, it does not work on its own.
+ */
 export class Edge<P extends IEdgeProperties> {
   protected props: P;
-  protected _clickZone: SVGElement | null;
-  protected _path: SVGElement | null;
-  protected _coordinates: ICoordinates[];
   private _group: SVGElement;
 
   /**
@@ -35,10 +33,6 @@ export class Edge<P extends IEdgeProperties> {
    * @param props Any properties passed to the Edge.
    */
   constructor(props: P) {
-    this._clickZone = null;
-    this._path = null;
-    this._coordinates = [];
-
     this._group = createSVGWithAttributes('g', {
       id: props.id,
       style: 'user-select: none',
@@ -48,32 +42,15 @@ export class Edge<P extends IEdgeProperties> {
   }
 
   /**
+   * The initialize method **must** be overwritten.
+   *
    * Initialize is called when the Edge is being mounted into the DOM. You can
    * build visual SVG components and add them to the group using
    * this.addToGroup(element). This function is only called once, so any changes
    * in the future must be done through setters.
    */
   public initialize(): void {
-    const { id } = this.props;
-
-    this._clickZone = createSVGWithAttributes('path', {
-      id: id + '_clickZone',
-      fill: 'none',
-      stroke: 'transparent',
-      'stroke-width': `10px`,
-    });
-
-    this._path = createSVGWithAttributes('path', {
-      id: id + '_path',
-      fill: 'none',
-      stroke: '#333',
-      'stroke-linecap': 'round',
-      'stroke-width': '1px',
-      'marker-end': `url(#arrow_${this.props.paperUniqueId})`,
-    });
-
-    this.addToGroup(this._clickZone);
-    this.addToGroup(this._path);
+    throw new Error('Must implement initialize method.');
   }
 
   /**
@@ -87,54 +64,27 @@ export class Edge<P extends IEdgeProperties> {
   }
 
   /**
+   * The getCoordinates method **must** be overwritten.
+   *
    * Get the actual coordinates of the Edge.
    */
   public getCoordinates(): ICoordinates[] {
-    return this._coordinates;
+    throw new Error('Must implement getCoordinates.');
   }
 
   /**
+   * The setCoordinates method **must** be overwritten.
+   *
    * Set the coordinates of the Edge.
    *
-   * This **should** be extended.
-   *
+   * This should also update anything dependend on the position of your Edge.
    * For example, if your Edge has a text field, then a text position updater
    * should be called any time new coordinates are set.
    *
    * @param coordinates Actual coordinate points for the Edge.
    */
   public setCoordinates(coordinates: ICoordinates[]): void {
-    if (coordinates.length < 2) {
-      throw new PaperError(
-        'E_EDGE_LENGTH',
-        `You must provide at least two coordinate points to set edge coordinates`,
-        'Edge.ts',
-        'coordinates',
-      );
-    }
-
-    if (this._path && this._clickZone) {
-      this._coordinates = coordinates.slice();
-
-      const source = coordinates.shift() as ICoordinates;
-      const target = coordinates.pop() as ICoordinates;
-
-      const dString = `M ${source.x} ${source.y} ${
-        coordinates.length
-          ? coordinates.map(point => `L ${point.x} ${point.y} `).join('')
-          : ''
-      }L ${target.x} ${target.y}`;
-
-      setSVGAttribute(this._clickZone, 'd', dString);
-      setSVGAttribute(this._path, 'd', dString);
-    } else {
-      throw new PaperError(
-        'E_NO_ELEM',
-        `No path exists for Edge ID: ${this.props.id}`,
-        'Edge.ts',
-        'coordinates',
-      );
-    }
+    throw new Error('Must implement setCoordinates.');
   }
 
   /**

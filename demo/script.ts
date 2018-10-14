@@ -1,21 +1,30 @@
 // tslint:disable:no-console
+
 import {
+  // Paper
   Paper,
   IPaperProperties,
   IPaperInputNode,
+
+  // Nodes
   Node,
-  Edge,
-  PaperError,
   Rectangle,
   IRectangleProperties,
-  TextEdge,
+
+  // Edges
+  Edge,
+  Line,
+  TextLine,
+  ITextLineProperties,
+
+  // Other
+  PaperError,
+  PaperEvent,
 } from 'psiagram';
+
 import { Grid } from 'psiagram-plugin-grid';
 import { MouseEvents } from 'psiagram-plugin-mouse-events';
 import { ManhattanRouting } from 'psiagram-plugin-routing';
-// import { Grid } from '../packages/psiagram-plugin-grid/src';
-// import { MouseEvents } from '../packages/psiagram-plugin-mouse-events/src';
-// import { ManhattanRouting } from '../packages/psiagram-plugin-routing/src';
 
 let myPaper: Paper | null = null;
 
@@ -75,7 +84,7 @@ function loadPaper() {
           source: { id: 'node1' },
           target: { id: 'node2' },
           coords: [],
-          properties: { title: 'edge 2' },
+          properties: { title: 'Edge 2' } as ITextLineProperties,
         },
         {
           id: 'edge3',
@@ -89,34 +98,40 @@ function loadPaper() {
           component: 'text-line',
           source: { id: 'node3' },
           target: { x: 800, y: 800 },
-          properties: {
-            title: 'Test title',
-          },
+          properties: { title: 'Edge 4' } as ITextLineProperties,
           coords: [],
         },
       ],
       edgeComponentMap: {
-        line: Edge,
-        'text-line': TextEdge as typeof Edge,
+        line: Line as typeof Edge,
+        'text-line': TextLine as typeof Edge,
       },
     },
   };
 
   myPaper = new Paper(paperProperties);
 
-  function eventListener(evt) {
-    // prettier-ignore
-    console.log(
-      '=========================',
-      '\nevent: ', evt,
-      '\neventType: ', evt.eventType,
-      '\npaper: ', evt.paper,
-      '\ntarget: ', evt.target,
-      '\ncanPropagate: ', evt.canPropagate,
-      '\ndata: ', evt.data,
-      '\n=========================',
-    );
+  function eventListener(evt: PaperEvent) {
+    console.log({
+      EVENT: evt.eventType
+        .replace(/-/g, ' ')
+        .replace(/^\w/, c => c.toUpperCase()),
+      PROPERTIES: {
+        canPropagate: evt.canPropagate,
+        data: evt.data,
+        eventType: evt.eventType,
+        paper: evt.paper,
+        target: evt.target,
+      },
+      METHODS: {
+        defaultAction: evt.defaultAction,
+        preventDefault: evt.preventDefault,
+        stopPropagation: evt.stopPropagation,
+      },
+    });
   }
+
+  // Enable listeners as needed.
 
   // Node listeners
   // myPaper.addListener('add-node', eventListener);
@@ -151,8 +166,6 @@ function addNode() {
         width: 160,
       },
     };
-
-    // myPaper.addNode(node);
 
     try {
       myPaper.addNode(node);

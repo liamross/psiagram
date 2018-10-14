@@ -5,13 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { TextNode } from '../NodeAbstracts/TextNode';
+import { TextNode, ITextNodeProperties } from '../NodeAbstracts/TextNode';
 
 import {
   createSVGWithAttributes,
   roundToNearest,
   setSVGAttribute,
-  ITextNodeProperties,
   PaperError,
 } from '../../../';
 
@@ -66,7 +65,7 @@ export class Rectangle<P extends IRectangleProperties> extends TextNode<P> {
     super.initialize();
   }
 
-  // Width get + set.
+  /** Width get + set. */
   get width(): number {
     return this.props.width;
   }
@@ -86,7 +85,7 @@ export class Rectangle<P extends IRectangleProperties> extends TextNode<P> {
     }
   }
 
-  // Height get + set.
+  /** Height get + set. */
   get height(): number {
     return this.props.height;
   }

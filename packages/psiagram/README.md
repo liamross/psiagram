@@ -10,5 +10,5 @@ For the code base, and to see other packages, see
 ## To Use
 
 ```js
-import { Paper, Node, TextNode, Rectangle, Edge, TextEdge } from 'psiagram';
+import { Paper, Node, TextNode, Rectangle, Edge, TextLine } from 'psiagram';
 ```

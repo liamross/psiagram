@@ -9,7 +9,7 @@ import {
   Node,
   Paper,
   IPaperProperties,
-  Edge,
+  Line,
   Rectangle,
   PaperEvent,
   PaperItemState,
@@ -79,7 +79,7 @@ describe('Listeners', () => {
           },
         ],
         edgeComponentMap: {
-          line: Edge,
+          line: Line,
         },
       },
     };

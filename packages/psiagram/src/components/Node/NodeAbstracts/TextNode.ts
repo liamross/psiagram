@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { Node } from '../Node';
+// Must import separately, or prototype will be undefined.
+import { Node, INodeProperties } from '../Node';
 
 import {
   createSVGWithAttributes,
   PaperError,
-  INodeProperties,
   setBatchSVGAttribute,
 } from '../../../';
 
@@ -18,7 +18,6 @@ export interface ITextNodeProperties extends INodeProperties {
   title: string;
   fontHeight?: number;
 }
-
 
 /**
  * TextNode **must** be extended, it does not work on its own.
@@ -29,7 +28,13 @@ export class TextNode<P extends ITextNodeProperties> extends Node<P> {
   constructor(props: P) {
     super(props);
     this._text = null;
-    this.props.fontHeight = props.fontHeight || 14;
+
+    this.props = {
+      // To avoid ts error https://github.com/Microsoft/TypeScript/issues/14409
+      ...(this.props as any),
+      title: props.title,
+      fontHeight: props.fontHeight || 14,
+    };
   }
 
   public initialize(): void {

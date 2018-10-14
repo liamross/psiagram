@@ -5,4 +5,5 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export * from './TextEdge';
+export * from './Line';
+export * from './TextLine';

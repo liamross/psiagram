@@ -36,6 +36,8 @@ export class Node<P extends INodeProperties> {
   }
 
   /**
+   * The initialize method **must** be overwritten.
+   *
    * Initialize is called when the Node is being mounted into the DOM. You can
    * build visual SVG components and add them to the group using
    * this.addToGroup(element). This function is only called once, so any changes

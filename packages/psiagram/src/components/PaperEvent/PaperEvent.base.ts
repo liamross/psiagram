@@ -53,8 +53,9 @@ export class PaperEvent {
   }
 
   /**
-   * If canPropagate is true, event will continue to propagate to any remaining
-   * listeners. This can be prevented permanently by calling stopPropagation.
+   * Get boolean canPropagate. If canPropagate is true, event will continue to
+   * propagate to any remaining listeners. Propagation can be stopped by calling
+   * stopPropagation.
    */
   get canPropagate(): boolean {
     return this._canPropagate;

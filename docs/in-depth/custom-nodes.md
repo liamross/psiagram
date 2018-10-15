@@ -23,15 +23,13 @@ But first, some links to various Node files:
 Feel free to check the links out to get a basic idea of some of the Nodes
 provided by Psiagram. They will be referenced later on.
 
-## Node API
-
 The base Node takes care of a lot of the internal-use scenarios (example: the
 `getElement` method is defined already, so that Paper can call it to get the
 Node group, which is also pre-defined). However, some of the functionality must
 be implemented in order for your custom Node to work. The following are the
 methods and interfaces within the Node API.
 
-### Base Node Initialization Properties
+## Base Node Initialization Properties
 
 The properties of the base Node defined in TypeScript are:
 
@@ -50,7 +48,7 @@ passed in from the Paper instance.
 See the `Text Node` to see how `IBaseNodeProperties` is extended to allow for
 more properties.
 
-### Base Node Class Properties
+## Base Node Class Properties
 
 The properties of the Base Class defined in TypeScript are:
 
@@ -70,12 +68,12 @@ is accessible from all extending classes.
 Check out how `Text Node` extends the constructor of `BaseNode` to set defaults
 for certain props.
 
-### Base Node Class Methods
+## Base Node Class Methods
 
 There are multiple methods within the base Node. Many of these should not be
 touched, or should only be extended if needed.
 
-#### constructor
+### constructor
 
 ```ts
 constructor(props: P);
@@ -109,7 +107,7 @@ constructor(props: P) {
 }
 ```
 
-#### initialize
+### initialize
 
 ```ts
 initialize(): void;
@@ -140,7 +138,7 @@ public initialize(): void {
 }
 ```
 
-#### teardown
+### teardown
 
 ```ts
 teardown(): void;
@@ -150,135 +148,135 @@ Teardown is called when the Node is being removed from the DOM. You can cause
 transformations, change appearance, and teardown any listeners or processes. If
 none of these are needed, you do not need to overwrite this function.
 
-#### width
+### width
 
 Width get and set **must** be overwritten.
 
-- get
+#### get
 
-  ```ts
-  get width(): number;
-  ```
+```ts
+get width(): number;
+```
 
-  External methods need to call ThisNode.width in order to calculate various
-  things, and it's not as straightforward as getting it from props (ex: your
-  component is a circle that takes only radius, so get width must return 2 \*
-  radius).
+External methods need to call ThisNode.width in order to calculate various
+things, and it's not as straightforward as getting it from props (ex: your
+component is a circle that takes only radius, so get width must return 2 \*
+radius).
 
-  For example, here is the width getter in `Rectangle`:
+For example, here is the width getter in `Rectangle`:
 
-  ```ts
-  get width(): number {
-    return this.props.width;
+```ts
+get width(): number {
+  return this.props.width;
+}
+```
+
+#### set
+
+```ts
+set width(width: number);
+```
+
+You may also wish to adjust the width of this component, and in doing so, you
+want those changes to be reflected in the DOM automatically. All of the
+manipulations must be wrapped in setters so updating the DOM is as easy as
+This.Node.width = 200;
+
+For example, here is the width setter in `Rectangle`:
+
+```ts
+set width(width: number) {
+  // Check if shape exists (shape is the actual visual part of the Node in the
+  // case of the Rectangle class).
+  if (this._shape) {
+    // Round the width to the nearest growth unit (a multiple of the grid to
+    // ensure clean width and height).
+    width = roundToNearest(width, this._growthUnit, this._growthUnit);
+
+    // Assign it to props.
+    this.props.width = width;
+
+    // Manipulate the width in the DOM.
+    setSVGAttribute(this._shape, 'width', width);
+
+    // Update the position of the text to align with the new width.
+    this.updateTextPosition(width, this.props.height);
+  } else {
+    throw new PaperError(
+      'E_NO_ELEM',
+      `No shape exists for Node ID: ${this.props.id}`,
+      'Rectangle.ts',
+      'set width',
+    );
   }
-  ```
+}
+```
 
-- set
-
-  ```ts
-  set width(width: number);
-  ```
-
-  You may also wish to adjust the width of this component, and in doing so, you
-  want those changes to be reflected in the DOM automatically. All of the
-  manipulations must be wrapped in setters so updating the DOM is as easy as
-  This.Node.width = 200;
-
-  For example, here is the width setter in `Rectangle`:
-
-  ```ts
-  set width(width: number) {
-    // Check if shape exists (shape is the actual visual part of the Node in the
-    // case of the Rectangle class).
-    if (this._shape) {
-      // Round the width to the nearest growth unit (a multiple of the grid to
-      // ensure clean width and height).
-      width = roundToNearest(width, this._growthUnit, this._growthUnit);
-
-      // Assign it to props.
-      this.props.width = width;
-
-      // Manipulate the width in the DOM.
-      setSVGAttribute(this._shape, 'width', width);
-
-      // Update the position of the text to align with the new width.
-      this.updateTextPosition(width, this.props.height);
-    } else {
-      throw new PaperError(
-        'E_NO_ELEM',
-        `No shape exists for Node ID: ${this.props.id}`,
-        'Rectangle.ts',
-        'set width',
-      );
-    }
-  }
-  ```
-
-#### height
+### height
 
 Height get and set **must** be overwritten.
 
-- get
+#### get
 
-  ```ts
-  get height(): number;
-  ```
+```ts
+get height(): number;
+```
 
-  External methods need to call ThisNode.height in order to calculate various
-  things, and it's not as straightforward as getting it from props (ex: your
-  component is a circle that takes only radius, so get height must return 2 \*
-  radius).
+External methods need to call ThisNode.height in order to calculate various
+things, and it's not as straightforward as getting it from props (ex: your
+component is a circle that takes only radius, so get height must return 2 \*
+radius).
 
-  For example, here is the height getter in `Rectangle`:
+For example, here is the height getter in `Rectangle`:
 
-  ```ts
-  get height(): number {
-    return this.props.height;
+```ts
+get height(): number {
+  return this.props.height;
+}
+```
+
+#### set
+
+```ts
+set height(height: number);
+```
+
+You may also wish to adjust the height of this component, and in doing so, you
+want those changes to be reflected in the DOM automatically. All of the
+manipulations must be wrapped in setters so updating the DOM is as easy as
+This.Node.height = 200;
+
+For example, here is the height setter in `Rectangle`:
+
+```ts
+set height(height: number) {
+  // Check if shape exists (shape is the actual visual part of the Node in the
+  // case of the Rectangle class).
+  if (this._shape) {
+    // Round the height to the nearest growth unit (a multiple of the grid to
+    // ensure clean height and height).
+    height = roundToNearest(height, this._growthUnit, this._growthUnit);
+
+    // Assign it to props.
+    this.props.height = height;
+
+    // Manipulate the height in the DOM.
+    setSVGAttribute(this._shape, 'height', height);
+
+    // Update the position of the text to align with the new height.
+    this.updateTextPosition(this.props.width, height);
+  } else {
+    throw new PaperError(
+      'E_NO_ELEM',
+      `No shape exists for Node ID: ${this.props.id}`,
+      'Rectangle.ts',
+      'set height',
+    );
   }
-  ```
+}
+```
 
-- set
-
-  ```ts
-  set height(height: number);
-  ```
-
-  You may also wish to adjust the height of this component, and in doing so, you
-  want those changes to be reflected in the DOM automatically. All of the
-  manipulations must be wrapped in setters so updating the DOM is as easy as
-  This.Node.height = 200;
-
-  For example, here is the height setter in `Rectangle`:
-
-  ```ts
-  set height(height: number) {
-    // Check if shape exists (shape is the actual visual part of the Node in the
-    // case of the Rectangle class).
-    if (this._shape) {
-      // Round the height to the nearest growth unit (a multiple of the grid to
-      // ensure clean height and height).
-      height = roundToNearest(height, this._growthUnit, this._growthUnit);
-
-      // Assign it to props.
-      this.props.height = height;
-
-      // Manipulate the height in the DOM.
-      setSVGAttribute(this._shape, 'height', height);
-
-      // Update the position of the text to align with the new height.
-      this.updateTextPosition(this.props.width, height);
-    } else {
-      throw new PaperError(
-        'E_NO_ELEM',
-        `No shape exists for Node ID: ${this.props.id}`,
-        'Rectangle.ts',
-        'set height',
-      );
-    }
-  }
-  ```
-
-#### getElement
+### getElement
 
 ```ts
 getElement(): SVGElement;
@@ -292,7 +290,7 @@ This function will always return the Node group. Any visual components for this
 Node should be contained within the Node group by adding them using
 this.addToGroup(element).
 
-#### addToGroup
+### addToGroup
 
 ```ts
 addToGroup(element: SVGElement): void;

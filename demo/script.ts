@@ -28,6 +28,9 @@ import { ManhattanRouting } from 'psiagram-plugin-routing';
 
 let myPaper: Paper | null = null;
 
+/**
+ * Initialize myPaper and mount Paper into html.
+ */
 function loadPaper() {
   const paperProperties: IPaperProperties = {
     attributes: { gridSize: 20 },
@@ -111,46 +114,16 @@ function loadPaper() {
 
   myPaper = new Paper(paperProperties);
 
-  function eventListener(evt: PaperEvent) {
-    console.log({
-      EVENT: evt.eventType
-        .replace(/-/g, ' ')
-        .replace(/^\w/, c => c.toUpperCase()),
-      PROPERTIES: {
-        canPropagate: evt.canPropagate,
-        data: evt.data,
-        eventType: evt.eventType,
-        paper: evt.paper,
-        target: evt.target,
-      },
-      METHODS: {
-        defaultAction: evt.defaultAction,
-        preventDefault: evt.preventDefault,
-        stopPropagation: evt.stopPropagation,
-      },
-    });
-  }
-
-  // Enable listeners as needed.
-
-  // Node listeners
-  // myPaper.addListener('add-node', eventListener);
-  // myPaper.addListener('move-node', eventListener);
-  // myPaper.addListener('remove-node', eventListener);
-
-  // Edge listeners
-  // myPaper.addListener('add-edge', eventListener);
-  // myPaper.addListener('move-edge', eventListener);
-  // myPaper.addListener('remove-edge', eventListener);
-
-  // Paper listeners
-  // myPaper.addListener('update-active-item', eventListener);
+  addListeners();
 
   // Append paper into div #_target
   const target = document.getElementById('_target');
   target.appendChild(myPaper.getPaperElement());
 }
 
+/**
+ * Add new_node_test to the Paper if not already added.
+ */
 function addNode() {
   if (myPaper) {
     const node: IPaperInputNode = {
@@ -176,11 +149,63 @@ function addNode() {
   }
 }
 
+/**
+ * Move new_node_test to 0,0 on the Paper if it exists.
+ */
 function moveNode() {
-  const node = document.getElementById('new_node_test');
-  if (myPaper && node) {
-    const nodeInstance = myPaper.getNode('new_node_test');
-    nodeInstance.coords = { x: 0, y: 0 };
+  if (myPaper) {
+    try {
+      const nodeInstance = myPaper.getNode('new_node_test');
+      nodeInstance.coords = { x: 0, y: 0 };
+    } catch (err) {
+      const error = err as PaperError;
+      console.error(error.toString());
+    }
+  }
+}
+
+/**
+ * Add listeners to myPaper if it is initialized.
+ */
+function addListeners() {
+  if (myPaper) {
+    function eventListener(evt: PaperEvent) {
+      console.log({
+        EVENT: evt.eventType
+          .replace(/-/g, ' ')
+          .replace(/^\w/, c => c.toUpperCase()),
+        PROPERTIES: {
+          canPropagate: evt.canPropagate,
+          data: evt.data,
+          eventType: evt.eventType,
+          paper: evt.paper,
+          target: evt.target,
+        },
+        METHODS: {
+          defaultAction: evt.defaultAction,
+          preventDefault: evt.preventDefault,
+          stopPropagation: evt.stopPropagation,
+        },
+      });
+    }
+
+    // ENABLE LISTENERS AS NEEDED.
+
+    // Node listeners:
+
+    // myPaper.addListener('add-node', eventListener);
+    // myPaper.addListener('move-node', eventListener);
+    // myPaper.addListener('remove-node', eventListener);
+
+    // Edge listeners:
+
+    // myPaper.addListener('add-edge', eventListener);
+    // myPaper.addListener('move-edge', eventListener);
+    // myPaper.addListener('remove-edge', eventListener);
+
+    // Paper listeners:
+
+    // myPaper.addListener('update-active-item', eventListener);
   }
 }
 

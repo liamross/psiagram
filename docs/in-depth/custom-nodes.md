@@ -113,7 +113,7 @@ constructor(props: P) {
 initialize(): void;
 ```
 
-The initialize method **must** be overwritten.
+> The initialize method **must** be overwritten.
 
 Initialize is called when the Node is being mounted into the DOM. You can build
 visual SVG components and add them to the group using
@@ -150,7 +150,7 @@ none of these are needed, you do not need to overwrite this function.
 
 ### width
 
-Width get and set **must** be overwritten.
+> Width get and set **must** be overwritten.
 
 #### get
 
@@ -214,7 +214,7 @@ set width(width: number) {
 
 ### height
 
-Height get and set **must** be overwritten.
+> Height get and set **must** be overwritten.
 
 #### get
 

@@ -7,12 +7,12 @@ import {
   IPaperInputNode,
 
   // Nodes
-  Node,
+  BaseNode,
   Rectangle,
   IRectangleProperties,
 
   // Edges
-  Edge,
+  BaseEdge,
   Line,
   TextLine,
   ITextLineProperties,
@@ -71,7 +71,7 @@ function loadPaper() {
         },
       ],
       nodeComponentMap: {
-        rectangle: Rectangle as typeof Node,
+        rectangle: Rectangle as typeof BaseNode,
       },
       edges: [
         {
@@ -106,8 +106,8 @@ function loadPaper() {
         },
       ],
       edgeComponentMap: {
-        line: Line as typeof Edge,
-        'text-line': TextLine as typeof Edge,
+        line: Line as typeof BaseEdge,
+        'text-line': TextLine as typeof BaseEdge,
       },
     },
   };

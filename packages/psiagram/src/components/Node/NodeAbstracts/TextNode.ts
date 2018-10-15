@@ -5,14 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { Node, INodeProperties } from '../Node';
+import { BaseNode, IBaseNodeProperties } from '../BaseNode';
 import {
   createSVGWithAttributes,
   setBatchSVGAttribute,
 } from '../../../utilities';
 import { PaperError } from '../../PaperError';
 
-export interface ITextNodeProperties extends INodeProperties {
+export interface ITextNodeProperties extends IBaseNodeProperties {
   title: string;
   fontHeight?: number;
 }
@@ -20,7 +20,7 @@ export interface ITextNodeProperties extends INodeProperties {
 /**
  * TextNode **must** be extended, it does not work on its own.
  */
-export class TextNode<P extends ITextNodeProperties> extends Node<P> {
+export class TextNode<P extends ITextNodeProperties> extends BaseNode<P> {
   protected _text: SVGElement | null;
 
   constructor(props: P) {
@@ -45,12 +45,10 @@ export class TextNode<P extends ITextNodeProperties> extends Node<P> {
     });
     this._text.textContent = title || '';
     this.addToGroup(this._text);
-
-    this.updateTextPosition();
   }
 
-  protected updateTextPosition(): void {
-    const { width, height, fontHeight } = this.props;
+  protected updateTextPosition(width: number, height: number): void {
+    const { fontHeight } = this.props;
 
     const fontX = width / 2;
     const fontY = (fontHeight as number) / 2 + height / 2;

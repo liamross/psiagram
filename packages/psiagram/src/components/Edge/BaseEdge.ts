@@ -12,17 +12,16 @@ import {
 } from '../../utilities';
 import { ICoordinates } from '../../common';
 
-export interface IEdgeProperties {
+export interface IBaseEdgeProperties {
   id: string;
   gridSize: number;
   paperUniqueId: string;
-  [property: string]: any;
 }
 
 /**
  * Edge **must** be extended, it does not work on its own.
  */
-export class Edge<P extends IEdgeProperties> {
+export class BaseEdge<P extends IBaseEdgeProperties> {
   protected props: P;
   private _group: SVGElement;
 

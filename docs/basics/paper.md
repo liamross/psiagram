@@ -80,7 +80,7 @@ onto Paper when it's initialized. In order to input these, object has the
 following **optional** properties:
 
 > Note: Psiagram only provides the base classes needed to begin building custom
-> Nodes and Edges. Alone, the Node class and Edge class will not render any
+> Nodes and Edges. Alone, the BaseNode class and Edge class will not render any
 > visual components. You must extend these classes into your own
 > [custom Nodes](../in-depth/custom-nodes.md) and
 > [custom Edges](../in-depth/custom-edges.md).
@@ -88,11 +88,11 @@ following **optional** properties:
 - nodes - `IPaperInputNode[]`: Initial Node data needed to render out Nodes.
   More details on input Nodes can be found in the [Node section](node.md).
 - nodeComponentMap - `INodeComponentMap`: Object to map component strings to an
-  extended Node class. Once you've built some Nodes, they can be included here
-  and selected by giving the key string to the appropriate initial Nodes.
+  extended BaseNode class. Once you've built some Nodes, they can be included
+  here and selected by giving the key string to the appropriate initial Nodes.
   ```js
   export interface INodeComponentMap {
-    [key: string]: typeof Node;
+    [key: string]: typeof BaseNode;
   }
   ```
 - edges - `IPaperInputEdge[]`: Initial Edge data needed to render out Edges.
@@ -102,7 +102,7 @@ following **optional** properties:
   and selected by giving the key string to the appropriate initial Edges.
   ```js
   export interface IEdgeComponentMap {
-    [key: string]: typeof Edge;
+    [key: string]: typeof BaseEdge;
   }
   ```
 

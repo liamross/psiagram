@@ -11,16 +11,15 @@ import {
   ElementType,
 } from '../../utilities';
 
-export interface INodeProperties {
+export interface IBaseNodeProperties {
   id: string;
   gridSize: number;
-  [property: string]: any;
 }
 
 /**
  * Node **must** be extended, it does not work on its own.
  */
-export class Node<P extends INodeProperties> {
+export class BaseNode<P extends IBaseNodeProperties> {
   protected props: P;
   private _group: SVGElement;
 

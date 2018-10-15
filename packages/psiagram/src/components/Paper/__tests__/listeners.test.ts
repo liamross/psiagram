@@ -7,8 +7,8 @@
 
 import { IPaperProperties, PaperItemState } from '../Paper.types';
 import { Paper } from '../';
-import { Rectangle, Node } from '../../Node';
-import { Line, Edge } from '../../Edge';
+import { Rectangle, BaseNode } from '../../Node';
+import { Line, BaseEdge } from '../../Edge';
 import { PaperEvent } from '../../PaperEvent';
 import { ElementType } from '../../../utilities';
 
@@ -62,7 +62,7 @@ describe('Listeners', () => {
           },
         ],
         nodeComponentMap: {
-          rectangle: Rectangle as typeof Node,
+          rectangle: Rectangle as typeof BaseNode,
         },
         edges: [
           {
@@ -75,7 +75,7 @@ describe('Listeners', () => {
           },
         ],
         edgeComponentMap: {
-          line: Line as typeof Edge,
+          line: Line as typeof BaseEdge,
         },
       },
     };

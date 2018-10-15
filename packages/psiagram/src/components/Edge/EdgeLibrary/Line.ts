@@ -5,14 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { Edge, IEdgeProperties } from '../Edge';
+import { BaseEdge, IBaseEdgeProperties } from '../BaseEdge';
 import { ICoordinates } from '../../../common';
 import { createSVGWithAttributes, setSVGAttribute } from '../../../utilities';
 import { PaperError } from '../../PaperError';
 
-export interface ILineProperties extends IEdgeProperties {} // tslint:disable-line:no-empty-interface
+export interface ILineProperties extends IBaseEdgeProperties {} // tslint:disable-line:no-empty-interface
 
-export class Line<P extends ILineProperties> extends Edge<P> {
+export class Line<P extends ILineProperties> extends BaseEdge<P> {
   protected _clickZone: SVGElement | null;
   protected _path: SVGElement | null;
   protected _coordinates: ICoordinates[];

@@ -23,7 +23,7 @@ export interface IRectangleProperties extends ITextNodeProperties {
 
 export class Rectangle<P extends IRectangleProperties> extends TextNode<P> {
   protected _shape: SVGElement | null;
-  private _growthUnit: number;
+  protected _growthUnit: number;
 
   constructor(props: P) {
     super(props);
@@ -62,6 +62,8 @@ export class Rectangle<P extends IRectangleProperties> extends TextNode<P> {
     this.addToGroup(this._shape);
 
     super.initialize();
+
+    this.updateTextPosition(width, height);
   }
 
   /** Width get + set. */
@@ -73,7 +75,7 @@ export class Rectangle<P extends IRectangleProperties> extends TextNode<P> {
       width = roundToNearest(width, this._growthUnit, this._growthUnit);
       this.props.width = width;
       setSVGAttribute(this._shape, 'width', width);
-      this.updateTextPosition();
+      this.updateTextPosition(width, this.props.height);
     } else {
       throw new PaperError(
         'E_NO_ELEM',
@@ -93,7 +95,7 @@ export class Rectangle<P extends IRectangleProperties> extends TextNode<P> {
       height = roundToNearest(height, this._growthUnit, this._growthUnit);
       this.props.width = height;
       setSVGAttribute(this._shape, 'height', height);
-      this.updateTextPosition();
+      this.updateTextPosition(this.props.width, height);
     } else {
       throw new PaperError(
         'E_NO_ELEM',

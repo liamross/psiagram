@@ -5,6 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export * from './Node';
+export * from './BaseNode';
 export * from './NodeAbstracts';
 export * from './NodeLibrary';

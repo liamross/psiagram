@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { Paper } from '../../';
+import { Paper } from '../Paper/Paper.base';
 
 export interface IPaperEventProperties {
   /**

@@ -5,15 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { TextNode } from '../NodeAbstracts/TextNode';
-
+import { TextNode, ITextNodeProperties } from '../NodeAbstracts/TextNode';
 import {
-  createSVGWithAttributes,
   roundToNearest,
+  createSVGWithAttributes,
   setSVGAttribute,
-  ITextNodeProperties,
-  PaperError,
-} from '../../../';
+} from '../../../utilities';
+import { PaperError } from '../../PaperError';
 
 export interface IRectangleProperties extends ITextNodeProperties {
   width: number;
@@ -25,7 +23,7 @@ export interface IRectangleProperties extends ITextNodeProperties {
 
 export class Rectangle<P extends IRectangleProperties> extends TextNode<P> {
   protected _shape: SVGElement | null;
-  private _growthUnit: number;
+  protected _growthUnit: number;
 
   constructor(props: P) {
     super(props);
@@ -64,9 +62,11 @@ export class Rectangle<P extends IRectangleProperties> extends TextNode<P> {
     this.addToGroup(this._shape);
 
     super.initialize();
+
+    this.updateTextPosition(width, height);
   }
 
-  // Width get + set.
+  /** Width get + set. */
   get width(): number {
     return this.props.width;
   }
@@ -75,7 +75,7 @@ export class Rectangle<P extends IRectangleProperties> extends TextNode<P> {
       width = roundToNearest(width, this._growthUnit, this._growthUnit);
       this.props.width = width;
       setSVGAttribute(this._shape, 'width', width);
-      this.updateTextPosition();
+      this.updateTextPosition(width, this.props.height);
     } else {
       throw new PaperError(
         'E_NO_ELEM',
@@ -86,7 +86,7 @@ export class Rectangle<P extends IRectangleProperties> extends TextNode<P> {
     }
   }
 
-  // Height get + set.
+  /** Height get + set. */
   get height(): number {
     return this.props.height;
   }
@@ -95,7 +95,7 @@ export class Rectangle<P extends IRectangleProperties> extends TextNode<P> {
       height = roundToNearest(height, this._growthUnit, this._growthUnit);
       this.props.width = height;
       setSVGAttribute(this._shape, 'height', height);
-      this.updateTextPosition();
+      this.updateTextPosition(this.props.width, height);
     } else {
       throw new PaperError(
         'E_NO_ELEM',

@@ -7,8 +7,6 @@
 
 /**
  * A PaperError thrown by an issue in Psiagram.
- *
- * TODO: Will not work as intended until Babel 7.
  */
 export class PaperError extends Error {
   public name: string;

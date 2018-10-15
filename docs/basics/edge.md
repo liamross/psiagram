@@ -82,8 +82,8 @@ will snap to the nearest grid point.
 
 Properties is where you define any properties to pass into Edge when it's
 initialized. These will be entirely dependent on what properties your custom
-Edge accepts. For example, a basic Edge may have most of the style built in, but
-may accept a title to display:
+Edge accepts. For example, a basic TextLine may have most of the style built in,
+but may accept a title to display:
 
 ```ts
 const properties = {

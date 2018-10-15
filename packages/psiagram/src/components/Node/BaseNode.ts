@@ -5,18 +5,21 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { createSVGWithAttributes, ElementType, setElementType } from '../../';
+import {
+  createSVGWithAttributes,
+  setElementType,
+  ElementType,
+} from '../../utilities';
 
-export interface INodeProperties {
+export interface IBaseNodeProperties {
   id: string;
   gridSize: number;
-  [property: string]: any;
 }
 
 /**
  * Node **must** be extended, it does not work on its own.
  */
-export class Node<P extends INodeProperties> {
+export class BaseNode<P extends IBaseNodeProperties> {
   protected props: P;
   private _group: SVGElement;
 
@@ -36,6 +39,8 @@ export class Node<P extends INodeProperties> {
   }
 
   /**
+   * The initialize method **must** be overwritten.
+   *
    * Initialize is called when the Node is being mounted into the DOM. You can
    * build visual SVG components and add them to the group using
    * this.addToGroup(element). This function is only called once, so any changes

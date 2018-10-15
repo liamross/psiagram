@@ -5,7 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { Paper, paperEventType, IPaperEventProperties } from '../../';
+import { paperEventType } from '../Paper/Paper.types';
+import { Paper } from '../Paper/Paper.base';
+import { IPaperEventProperties } from './PaperEvent.types';
 
 export class PaperEvent {
   private _eventType: paperEventType;
@@ -53,8 +55,9 @@ export class PaperEvent {
   }
 
   /**
-   * If canPropagate is true, event will continue to propagate to any remaining
-   * listeners. This can be prevented permanently by calling stopPropagation.
+   * Get boolean canPropagate. If canPropagate is true, event will continue to
+   * propagate to any remaining listeners. Propagation can be stopped by calling
+   * stopPropagation.
    */
   get canPropagate(): boolean {
     return this._canPropagate;

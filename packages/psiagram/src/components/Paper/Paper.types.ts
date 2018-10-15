@@ -5,15 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {
-  Node,
-  Edge,
-  ICoordinates,
-  PsiagramPlugin,
-  ElementType,
-  INodeProperties,
-  IEdgeProperties,
-} from '../../';
+import { PsiagramPlugin, ICoordinates } from '../../common';
+import { BaseNode, IBaseNodeProperties } from '../Node';
+import { BaseEdge, IBaseEdgeProperties } from '../Edge';
+import { ElementType } from '../../utilities';
 
 // =============================================================================
 // Paper
@@ -37,11 +32,11 @@ export interface IPaperProperties {
 }
 
 export interface INodeComponentMap {
-  [key: string]: typeof Node;
+  [key: string]: typeof BaseNode;
 }
 
 export interface IEdgeComponentMap {
-  [key: string]: typeof Edge;
+  [key: string]: typeof BaseEdge;
 }
 
 export declare type paperEventType =
@@ -93,7 +88,7 @@ export interface IPaperStoredNode {
   instance: PaperNode;
 }
 
-export declare class PaperNode extends Node<INodeProperties> {
+export declare class PaperNode extends BaseNode<IBaseNodeProperties> {
   public coords: ICoordinates;
 }
 
@@ -119,7 +114,7 @@ export interface IPaperStoredEdge {
   instance: PaperEdge;
 }
 
-export declare class PaperEdge extends Edge<IEdgeProperties> {
+export declare class PaperEdge extends BaseEdge<IBaseEdgeProperties> {
   public source: edgeEndPoint;
   public target: edgeEndPoint;
   public coords: ICoordinates[];

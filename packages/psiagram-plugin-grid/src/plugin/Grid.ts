@@ -67,7 +67,7 @@ export class Grid implements PsiagramPlugin {
         'stroke-width': '0.5',
       });
       subgrid.appendChild(this._subgridPath);
-      paper._insertPaperDef(subgrid)
+      paper._insertPaperDef(subgrid);
 
       // Create grid.
       const grid = createSVGWithAttributes('pattern', {
@@ -89,7 +89,7 @@ export class Grid implements PsiagramPlugin {
       });
       grid.appendChild(gridRect);
       grid.appendChild(this._gridPath);
-      paper._insertPaperDef(grid)
+      paper._insertPaperDef(grid);
 
       // Create grid container.
       const gridContainer = createSVGWithAttributes('rect', {

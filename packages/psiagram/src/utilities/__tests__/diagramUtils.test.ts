@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { IPaperStoredNode, PaperNode } from '../../components/Paper';
+import { Rectangle } from '../../components/Node';
 import {
   isNodeColliding,
   roundToNearest,
@@ -12,13 +14,10 @@ import {
   getEdgeNodeIntersection,
   areCoordsEqual,
   generateRandomString,
-  IPaperStoredNode,
-  PaperNode,
-  Rectangle,
+  getEdgeMidPoint,
   edgeLength,
   pointAlongLine,
-  getEdgeMidPoint,
-} from '../..';
+} from '../diagramUtils';
 
 /** Helpers */
 

@@ -5,15 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {
-  Node,
-  Edge,
-  ICoordinates,
-  PsiagramPlugin,
-  ElementType,
-  INodeProperties,
-  IEdgeProperties,
-} from '../../';
+import { PsiagramPlugin, ICoordinates } from '../../common';
+import { Node, INodeProperties } from '../Node';
+import { Edge, IEdgeProperties } from '../Edge';
+import { ElementType } from '../../utilities';
 
 // =============================================================================
 // Paper

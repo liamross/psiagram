@@ -5,38 +5,36 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { setPaperDefs } from './setPaperDefs';
 import {
-  Node,
-  Edge,
-  PaperEvent,
-  ICoordinates,
-  IPaperProperties,
-  IActiveItem,
-  IPaperInputNode,
   IPaperStoredNode,
   INodeComponentMap,
-  IPaperInputEdge,
   IPaperStoredEdge,
   IEdgeComponentMap,
+  IActiveItem,
+  IPaperProperties,
+  IPaperInputNode,
+  PaperNode,
+  IPaperInputEdge,
+  edgeEndPoint,
+  PaperEdge,
   paperEventType,
+} from './Paper.types';
+import { PaperEvent } from '../PaperEvent';
+import {
+  generateRandomString,
+  roundToNearest,
+  createSVGWithAttributes,
   setElementType,
   ElementType,
   createElementWithAttributes,
-  createSVGWithAttributes,
   setSVGAttribute,
-  roundToNearest,
   getNodeMidpoint,
   getEdgeNodeIntersection,
   areCoordsEqual,
-  generateRandomString,
-  PaperError,
-  PaperNode,
-  PaperEdge,
-  edgeEndPoint,
-  INodeProperties,
-} from '../../';
-
-import { setPaperDefs } from './setPaperDefs';
+} from '../../utilities';
+import { PaperError } from '../PaperError';
+import { ICoordinates } from '../../common';
 
 export class Paper {
   private _width: number;

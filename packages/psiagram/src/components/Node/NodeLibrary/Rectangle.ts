@@ -6,13 +6,12 @@
  */
 
 import { TextNode, ITextNodeProperties } from '../NodeAbstracts/TextNode';
-
 import {
-  createSVGWithAttributes,
   roundToNearest,
+  createSVGWithAttributes,
   setSVGAttribute,
-  PaperError,
-} from '../../../';
+} from '../../../utilities';
+import { PaperError } from '../../PaperError';
 
 export interface IRectangleProperties extends ITextNodeProperties {
   width: number;

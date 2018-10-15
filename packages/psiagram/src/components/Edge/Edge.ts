@@ -6,11 +6,11 @@
  */
 
 import {
-  ICoordinates,
+  createSVGWithAttributes,
   setElementType,
   ElementType,
-  createSVGWithAttributes,
-} from '../../';
+} from '../../utilities';
+import { ICoordinates } from '../../common';
 
 export interface IEdgeProperties {
   id: string;

@@ -5,16 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {
-  Node,
-  Paper,
-  IPaperProperties,
-  Line,
-  Rectangle,
-  PaperEvent,
-  PaperItemState,
-  ElementType,
-} from '../../..';
+import { IPaperProperties, PaperItemState } from '../Paper.types';
+import { Paper } from '../';
+import { Rectangle, Node } from '../../Node';
+import { Line, Edge } from '../../Edge';
+import { PaperEvent } from '../../PaperEvent';
+import { ElementType } from '../../../utilities';
 
 let paperProperties: IPaperProperties = null;
 let myPaper: Paper = null;
@@ -79,7 +75,7 @@ describe('Listeners', () => {
           },
         ],
         edgeComponentMap: {
-          line: Line,
+          line: Line as typeof Edge,
         },
       },
     };

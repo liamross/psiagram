@@ -5,15 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// Must import separately, or prototype will be undefined.
 import { Edge, IEdgeProperties } from '../Edge';
-
-import {
-  ICoordinates,
-  createSVGWithAttributes,
-  setSVGAttribute,
-  PaperError,
-} from '../../../';
+import { ICoordinates } from '../../../common';
+import { createSVGWithAttributes, setSVGAttribute } from '../../../utilities';
+import { PaperError } from '../../PaperError';
 
 export interface ILineProperties extends IEdgeProperties {} // tslint:disable-line:no-empty-interface
 

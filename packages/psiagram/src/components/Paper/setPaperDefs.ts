@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { createSVGWithAttributes } from '../../';
+import { createSVGWithAttributes } from '../../utilities';
 
 /**
  * Builds out the complete defs element for Paper component.

@@ -5,7 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { IPaperStoredNode, IParameters, ICoordinates } from '../';
+import { IPaperStoredNode } from '../components/Paper';
+import { ICoordinates, IParameters } from '../common';
 
 /**
  * Returns true if nodes are overlapping in the workspace, false otherwise.

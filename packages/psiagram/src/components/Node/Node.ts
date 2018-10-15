@@ -5,7 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { createSVGWithAttributes, ElementType, setElementType } from '../../';
+import {
+  createSVGWithAttributes,
+  setElementType,
+  ElementType,
+} from '../../utilities';
 
 export interface INodeProperties {
   id: string;

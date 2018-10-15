@@ -5,14 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// Must import separately, or prototype will be undefined.
 import { Node, INodeProperties } from '../Node';
-
 import {
   createSVGWithAttributes,
-  PaperError,
   setBatchSVGAttribute,
-} from '../../../';
+} from '../../../utilities';
+import { PaperError } from '../../PaperError';
 
 export interface ITextNodeProperties extends INodeProperties {
   title: string;

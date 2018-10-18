@@ -45,10 +45,18 @@ export class TextNode<P extends ITextNodeProperties> extends BaseNode<P> {
     });
     this._text.textContent = title || '';
     this.addToGroup(this._text);
+
+    this.updateTextPosition();
   }
 
-  protected updateTextPosition(width: number, height: number): void {
+  /**
+   * Updates the position of the text to keep it centered based on the width and
+   * height of the Node.
+   */
+  protected updateTextPosition(): void {
     const { fontHeight } = this.props;
+    const width = this.width;
+    const height = this.height;
 
     const fontX = width / 2;
     const fontY = (fontHeight as number) / 2 + height / 2;

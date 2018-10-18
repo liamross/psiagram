@@ -135,6 +135,9 @@ public initialize(): void {
 
   // Add the elements to the private Node group by using the addToGroup method.
   this.addToGroup(this._text);
+
+  // This is a function specific to TextNode to update text position on change.
+  this.updateTextPosition();
 }
 ```
 
@@ -199,8 +202,9 @@ set width(width: number) {
     // Manipulate the width in the DOM.
     setSVGAttribute(this._shape, 'width', width);
 
-    // Update the position of the text to align with the new width.
-    this.updateTextPosition(width, this.props.height);
+    // Update the position of the text to align with the new width. (this is a
+    // method unique to TextNode).
+    this.updateTextPosition();
   } else {
     throw new PaperError(
       'E_NO_ELEM',

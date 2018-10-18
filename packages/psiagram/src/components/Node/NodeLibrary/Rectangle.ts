@@ -61,9 +61,8 @@ export class Rectangle<P extends IRectangleProperties> extends TextNode<P> {
     });
     this.addToGroup(this._shape);
 
+    // Super is called last so text is added on top of shape.
     super.initialize();
-
-    this.updateTextPosition(width, height);
   }
 
   /** Width get + set. */
@@ -75,7 +74,7 @@ export class Rectangle<P extends IRectangleProperties> extends TextNode<P> {
       width = roundToNearest(width, this._growthUnit, this._growthUnit);
       this.props.width = width;
       setSVGAttribute(this._shape, 'width', width);
-      this.updateTextPosition(width, this.props.height);
+      this.updateTextPosition();
     } else {
       throw new PaperError(
         'E_NO_ELEM',
@@ -95,7 +94,7 @@ export class Rectangle<P extends IRectangleProperties> extends TextNode<P> {
       height = roundToNearest(height, this._growthUnit, this._growthUnit);
       this.props.width = height;
       setSVGAttribute(this._shape, 'height', height);
-      this.updateTextPosition(this.props.width, height);
+      this.updateTextPosition();
     } else {
       throw new PaperError(
         'E_NO_ELEM',

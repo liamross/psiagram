@@ -15,7 +15,6 @@ import { ICoordinates } from '../../common';
 export interface IBaseEdgeProperties {
   id: string;
   gridSize: number;
-  paperUniqueId: string;
 }
 
 /**

@@ -421,7 +421,7 @@ export class Paper {
           source: edge.source,
           target: edge.target,
           coords: edge.coords,
-          instance: instance as PaperEdge,
+          instance: (instance as unknown) as PaperEdge,
         };
 
         const evt = new PaperEvent('add-edge', {

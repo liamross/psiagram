@@ -161,7 +161,7 @@ none of these are needed, you do not need to overwrite this function.
 get width(): number;
 ```
 
-External methods need to call ThisNode.width in order to calculate various
+External methods need to call `ThisNode.width` in order to calculate various
 things, and it's not as straightforward as getting it from props (ex: your
 component is a circle that takes only radius, so get width must return 2 \*
 radius).
@@ -226,7 +226,7 @@ set width(width: number) {
 get height(): number;
 ```
 
-External methods need to call ThisNode.height in order to calculate various
+External methods need to call `ThisNode.height` in order to calculate various
 things, and it's not as straightforward as getting it from props (ex: your
 component is a circle that takes only radius, so get height must return 2 \*
 radius).

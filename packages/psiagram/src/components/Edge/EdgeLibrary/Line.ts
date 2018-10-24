@@ -10,9 +10,7 @@ import { ICoordinates } from '../../../common';
 import { createSVGWithAttributes, setSVGAttribute } from '../../../utilities';
 import { PaperError } from '../../PaperError';
 
-export interface ILineProperties extends IBaseEdgeProperties {
-  paperUniqueId: string;
-}
+export interface ILineProperties extends IBaseEdgeProperties {} // tslint:disable-line:no-empty-interface
 
 export class Line<P extends ILineProperties> extends BaseEdge<P> {
   protected _clickZone: SVGElement | null;
@@ -28,12 +26,12 @@ export class Line<P extends ILineProperties> extends BaseEdge<P> {
     this.props = {
       // To avoid ts error https://github.com/Microsoft/TypeScript/issues/14409
       ...(this.props as any),
-      paperUniqueId: props.paperUniqueId,
+      paperUniqueId: props.uniqueId,
     };
   }
 
   public initialize(): void {
-    const { id, paperUniqueId } = this.props;
+    const { id, uniqueId } = this.props;
 
     this._clickZone = createSVGWithAttributes('path', {
       id: id + '_clickZone',
@@ -48,7 +46,7 @@ export class Line<P extends ILineProperties> extends BaseEdge<P> {
       stroke: '#333',
       'stroke-linecap': 'round',
       'stroke-width': '1px',
-      'marker-end': `url(#arrow_${paperUniqueId})`,
+      'marker-end': `url(#arrow_${uniqueId})`,
     });
 
     this.addToGroup(this._clickZone);

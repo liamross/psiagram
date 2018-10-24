@@ -199,6 +199,8 @@ export class Paper {
         ...node.properties,
         id: node.id,
         gridSize: this._gridSize,
+        uniqueId: this._uniqueId,
+        paper: this,
       });
       instance.initialize();
 
@@ -344,7 +346,8 @@ export class Paper {
         ...edge.properties,
         id: edge.id,
         gridSize: this._gridSize,
-        paperUniqueId: this._uniqueId,
+        uniqueId: this._uniqueId,
+        paper: this,
       });
       instance.initialize();
 

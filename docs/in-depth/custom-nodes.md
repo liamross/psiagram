@@ -37,13 +37,15 @@ The properties of the base Node defined in TypeScript are:
 export interface IBaseNodeProperties {
   id: string;
   gridSize: number;
+  uniqueId: string;
+  paper: Paper;
 }
 ```
 
-The `id` and `gridSize` properties are given by Paper to every Node. As you can
-see, there isn't much here to define the look and feel of the Node. This only
-serves as a foundation, and provides definitions for the two properties that are
-passed in from the Paper instance.
+The `id`, `gridSize`, `uniqueId` and `paper` properties are given by Paper to
+every Node. As you can see, there isn't much here to define the look and feel of
+the Node. This only serves as a foundation, and provides definitions for the two
+properties that are passed in from the Paper instance.
 
 See the `Text Node` to see how `IBaseNodeProperties` is extended to allow for
 more properties.

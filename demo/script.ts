@@ -14,6 +14,7 @@ import {
   // Edges
   BaseEdge,
   Line,
+  ILineProperties,
   TextLine,
   ITextLineProperties,
 
@@ -80,6 +81,7 @@ function loadPaper() {
           source: { x: 120, y: 120 },
           target: { id: 'node1' },
           coords: [],
+          properties: { strokeColor: 'green' } as ILineProperties,
         },
         {
           id: 'edge2',
@@ -87,7 +89,10 @@ function loadPaper() {
           source: { id: 'node1' },
           target: { id: 'node2' },
           coords: [],
-          properties: { title: 'Edge 2' } as ITextLineProperties,
+          properties: {
+            title: 'Edge 2',
+            strokeColor: 'blue',
+          } as ITextLineProperties,
         },
         {
           id: 'edge3',
@@ -95,6 +100,7 @@ function loadPaper() {
           source: { id: 'node2' },
           target: { id: 'node3' },
           coords: [],
+          properties: { strokeWidth: 4 } as ILineProperties,
         },
         {
           id: 'edge4',
@@ -137,7 +143,7 @@ function addNode() {
         height: 60,
         title: 'Title 1',
         width: 160,
-      },
+      } as IRectangleProperties,
     };
 
     try {

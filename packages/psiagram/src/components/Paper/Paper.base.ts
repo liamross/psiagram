@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { setPaperDefs } from './setPaperDefs';
 import {
   IPaperStoredNode,
   INodeComponentMap,
@@ -81,7 +80,11 @@ export class Paper {
       height: '100%',
       class: paperClass || null,
     });
-    this._defs = setPaperDefs(this._paper, this._uniqueId);
+
+    const defs = createSVGWithAttributes('defs');
+    this._paper.appendChild(defs);
+    this._defs = defs;
+
     setElementType(this._paper, ElementType.Paper);
 
     // Set up paper wrapper.
@@ -199,6 +202,8 @@ export class Paper {
         ...node.properties,
         id: node.id,
         gridSize: this._gridSize,
+        uniqueId: this._uniqueId,
+        paper: this,
       });
       instance.initialize();
 
@@ -344,7 +349,8 @@ export class Paper {
         ...edge.properties,
         id: edge.id,
         gridSize: this._gridSize,
-        paperUniqueId: this._uniqueId,
+        uniqueId: this._uniqueId,
+        paper: this,
       });
       instance.initialize();
 
@@ -431,7 +437,7 @@ export class Paper {
             this._edges[edge.id] = newEdge;
 
             this._updateEdgeRoute(edge.id);
-            this._paper.insertBefore(ref, this._paper.firstChild);
+            this._paper.insertBefore(ref, this._defs.nextSibling);
           },
         });
 

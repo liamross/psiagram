@@ -11,7 +11,8 @@ import { createSVGWithAttributes, setSVGAttribute } from '../../../utilities';
 import { PaperError } from '../../PaperError';
 
 export interface ILineProperties extends IBaseEdgeProperties {
-  paperUniqueId: string;
+  strokeColor?: string;
+  strokeWidth?: number;
 }
 
 export class Line<P extends ILineProperties> extends BaseEdge<P> {
@@ -28,12 +29,30 @@ export class Line<P extends ILineProperties> extends BaseEdge<P> {
     this.props = {
       // To avoid ts error https://github.com/Microsoft/TypeScript/issues/14409
       ...(this.props as any),
-      paperUniqueId: props.paperUniqueId,
+      strokeColor: props.strokeColor || '#333',
+      strokeWidth: props.strokeWidth || 1,
     };
   }
 
   public initialize(): void {
-    const { id, paperUniqueId } = this.props;
+    const { id, paper, strokeColor, strokeWidth } = this.props;
+
+    // Create an SVG arrowhead for this line.
+    const arrowhead = createSVGWithAttributes('marker', {
+      id: this.getArrowId(),
+      markerWidth: '10',
+      markerHeight: '10',
+      refX: '6',
+      refY: '5',
+      orient: 'auto',
+      markerUnits: 'userSpaceOnUse',
+    });
+    const arrowheadPath = createSVGWithAttributes('path', {
+      d: 'M 0 0 L 0 10 L 10 5 Z',
+      fill: strokeColor,
+    });
+    arrowhead.appendChild(arrowheadPath);
+    paper._insertPaperDef(arrowhead, this.getArrowId());
 
     this._clickZone = createSVGWithAttributes('path', {
       id: id + '_clickZone',
@@ -45,14 +64,19 @@ export class Line<P extends ILineProperties> extends BaseEdge<P> {
     this._path = createSVGWithAttributes('path', {
       id: id + '_path',
       fill: 'none',
-      stroke: '#333',
+      stroke: strokeColor,
       'stroke-linecap': 'round',
-      'stroke-width': '1px',
-      'marker-end': `url(#arrow_${paperUniqueId})`,
+      'stroke-width': strokeWidth,
+      'marker-end': `url(#${this.getArrowId()})`,
     });
 
     this.addToGroup(this._clickZone);
     this.addToGroup(this._path);
+  }
+
+  public teardown(): void {
+    const { paper } = this.props;
+    paper._removePaperDef(this.getArrowId());
   }
 
   public getCoordinates(): ICoordinates[] {
@@ -91,5 +115,10 @@ export class Line<P extends ILineProperties> extends BaseEdge<P> {
         'coordinates',
       );
     }
+  }
+
+  protected getArrowId() {
+    const { id, uniqueId } = this.props;
+    return `arrow_${uniqueId}_${id}`;
   }
 }

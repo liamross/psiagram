@@ -87,7 +87,7 @@ but may accept a title to display:
 
 ```ts
 const properties = {
-  title: 'My Rectangle',
+  title: 'My Line',
 };
 ```
 

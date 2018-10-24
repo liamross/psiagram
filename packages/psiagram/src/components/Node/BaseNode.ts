@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { Paper } from '../Paper';
 import {
   createSVGWithAttributes,
   setElementType,
@@ -14,6 +15,8 @@ import {
 export interface IBaseNodeProperties {
   id: string;
   gridSize: number;
+  uniqueId: string;
+  paper: Paper;
 }
 
 /**

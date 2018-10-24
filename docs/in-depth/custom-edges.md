@@ -35,16 +35,18 @@ The properties of the base Edge defined in TypeScript are:
 export interface IBaseEdgeProperties {
   id: string;
   gridSize: number;
+  uniqueId: string;
+  paper: Paper;
 }
 ```
 
-The `id` and `gridSize` properties are given by Paper to every Edge. As you can
-see, there isn't much here to define the look and feel of the Edge. This only
-serves as a foundation, and provides definitions for the two properties that are
-passed in from the Paper instance.
+The `id`, `gridSize`, `uniqueId` and `paper` properties are given by Paper to
+every Edge. As you can see, there isn't much here to define the look and feel of
+the Edge. This only serves as a foundation, and provides definitions for the two
+properties that are passed in from the Paper instance.
 
-See the `Line` to see how `IBaseEdgeProperties` is extended to allow for more
-properties.
+See the `TextLine` to see how `IBaseEdgeProperties` is extended to allow for
+more properties.
 
 ## Base Edge Class Properties
 
@@ -122,7 +124,28 @@ an example:
 
 ```ts
 public initialize(): void {
-    const { id, paperUniqueId } = this.props;
+  const { id, paper, strokeColor, strokeWidth } = this.props;
+
+  // Create an SVG arrowhead for this line.
+  const arrowhead = createSVGWithAttributes('marker', {
+    id: this.getArrowId(),
+    markerWidth: '10',
+    markerHeight: '10',
+    refX: '6',
+    refY: '5',
+    orient: 'auto',
+    markerUnits: 'userSpaceOnUse',
+  });
+  const arrowheadPath = createSVGWithAttributes('path', {
+    d: 'M 0 0 L 0 10 L 10 5 Z',
+    fill: strokeColor,
+  });
+  arrowhead.appendChild(arrowheadPath);
+
+  // Use the paper prop to call the insert def method. This is a special method
+  // that should only be used by plugins and if you absolutely need it within
+  // your custom elements.
+  paper._insertPaperDef(arrowhead, this.getArrowId());
 
   // Create a large transparent click zone so click events don't require too
   // much precision.

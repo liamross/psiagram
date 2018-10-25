@@ -171,6 +171,20 @@ function moveNode() {
 }
 
 /**
+ * Remove new_node_test from Paper if it exists.
+ */
+function removeNode() {
+  if (myPaper) {
+    try {
+      myPaper.removeNode('new_node_test');
+    } catch (err) {
+      const error = err as PaperError;
+      console.error(error.toString());
+    }
+  }
+}
+
+/**
  * Add listeners to myPaper if it is initialized.
  */
 function addListeners() {
@@ -217,6 +231,9 @@ function addListeners() {
 
 document.getElementById('_addNodeButton').addEventListener('click', addNode);
 document.getElementById('_moveNodeButton').addEventListener('click', moveNode);
+document
+  .getElementById('_removeNodeButton')
+  .addEventListener('click', removeNode);
 
 // Load paper element once DOM is loaded.
 document.addEventListener('DOMContentLoaded', () => loadPaper());

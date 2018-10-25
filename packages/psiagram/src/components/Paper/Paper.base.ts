@@ -298,6 +298,9 @@ export class Paper {
         paper: this,
         target: this._nodes[id],
         defaultAction: () => {
+          // Fire node teardown.
+          this._nodes[id].instance.teardown();
+
           // Remove all edges that use node as end point.
           Object.keys(this._edges).forEach(edgeId => {
             const edge = this._edges[edgeId];
@@ -482,6 +485,10 @@ export class Paper {
         paper: this,
         target: this._edges[id],
         defaultAction: () => {
+          // Fire edge teardown.
+          this._edges[id].instance.teardown();
+
+          // Remove edge.
           this._edges[id].instance.getElement().remove();
           delete this._edges[id];
         },

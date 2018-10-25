@@ -486,7 +486,7 @@ export class Paper {
         target: this._edges[id],
         defaultAction: () => {
           // Fire edge teardown.
-          this._nodes[id].instance.teardown();
+          this._edges[id].instance.teardown();
 
           // Remove edge.
           this._edges[id].instance.getElement().remove();

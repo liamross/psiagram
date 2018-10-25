@@ -7,8 +7,8 @@
 
 import { IPaperProperties, PaperItemState } from '../Paper.types';
 import { Paper } from '../';
-import { Rectangle, BaseNode } from '../../Node';
-import { Line, BaseEdge } from '../../Edge';
+import { Rectangle, BaseNode, IRectangleProperties } from '../../Node';
+import { Line, BaseEdge, TextLine, ITextLineProperties } from '../../Edge';
 import { PaperEvent } from '../../PaperEvent';
 import { ElementType } from '../../../utilities';
 
@@ -21,7 +21,11 @@ const addNode = () => {
       id: 'node-test',
       component: 'rectangle',
       coords: { x: 900, y: 800 },
-      properties: { width: 80, height: 80, title: 'node test' },
+      properties: {
+        width: 80,
+        height: 80,
+        title: 'node test',
+      } as IRectangleProperties,
     });
   }
 };
@@ -30,11 +34,11 @@ const addEdge = () => {
   if (myPaper) {
     myPaper.addEdge({
       id: 'edge-test',
-      component: 'line',
+      component: 'text-line',
       source: { id: 'node1' },
       target: { id: 'node2' },
       coords: [],
-      properties: { title: 'edge test' },
+      properties: { title: 'edge test' } as ITextLineProperties,
     });
   }
 };
@@ -52,13 +56,21 @@ describe('Listeners', () => {
             id: 'node1',
             component: 'rectangle',
             coords: { x: 80, y: 80 },
-            properties: { width: 80, height: 80, title: 'node 1' },
+            properties: {
+              width: 80,
+              height: 80,
+              title: 'node 1',
+            } as IRectangleProperties,
           },
           {
             id: 'node2',
             component: 'rectangle',
             coords: { x: 240, y: 80 },
-            properties: { width: 80, height: 80, title: 'node 2' },
+            properties: {
+              width: 80,
+              height: 80,
+              title: 'node 2',
+            } as IRectangleProperties,
           },
         ],
         nodeComponentMap: {
@@ -67,15 +79,15 @@ describe('Listeners', () => {
         edges: [
           {
             id: 'edge1',
-            component: 'line',
+            component: 'text-line',
             source: { id: 'node1' },
             target: { id: 'node2' },
             coords: [],
-            properties: { title: 'edge 1' },
+            properties: { title: 'edge 1' } as ITextLineProperties,
           },
         ],
         edgeComponentMap: {
-          line: Line as typeof BaseEdge,
+          'text-line': TextLine as typeof BaseEdge,
         },
       },
     };

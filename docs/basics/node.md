@@ -84,7 +84,7 @@ const properties = {
 ```
 
 For more information visit the
-[custom Nodes section](../indepth/custom-nodes.md).
+[custom Nodes section](../in-depth/custom-nodes.md).
 
 ### Example
 
@@ -110,7 +110,7 @@ This is the class that defines the shape, color, and render details of a Node.
 It is passed into Paper as the component property of Paper Input Node. Creating
 Nodes with different shapes and colors requires extending the Node class.
 Creating custom Nodes is detailed in the
-[custom nodes section](../indepth/custom-nodes.md). You will never interact
+[custom nodes section](../in-depth/custom-nodes.md). You will never interact
 directly with a Node class, it is only passed in to the Paper. when you call the
 `getNode` method, it actually returns an augmented version of the Node class
 that will be discussed next.
@@ -156,7 +156,7 @@ yourNode.coords = { x: yourNode.coords.x, y: 120 };
 Here, we have kept the x-coordinate the same, but updated the y-coordinate
 to 120. This will update in the DOM automatically, and will also fire a
 `move-node` event. More detail on events can be found in the
-[events section](../indepth/events.md).
+[events section](../in-depth/events.md).
 
 **Gotcha**: Because this uses getters and setters to wrap the DOM manipulation
 logic, you must re-assign `yourNode.coords` entirely. You can't do something

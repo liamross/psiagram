@@ -82,8 +82,8 @@ following **optional** properties:
 > Note: Psiagram only provides the base classes needed to begin building custom
 > Nodes and Edges. Alone, the BaseNode class and Edge class will not render any
 > visual components. You must extend these classes into your own
-> [custom Nodes](../indepth/custom-nodes.md) and
-> [custom Edges](../indepth/custom-edges.md).
+> [custom Nodes](../in-depth/custom-nodes.md) and
+> [custom Edges](../in-depth/custom-edges.md).
 
 - nodes - `IPaperInputNode[]`: Initial Node data needed to render out Nodes.
   More details on input Nodes can be found in the [Node section](node.md).
@@ -250,7 +250,7 @@ getActiveItem(): IActiveItem | null;
 Returns the current active item object, or null if there is no current active
 item. Active items allow specifying which component is currently moving or
 selected. For more information, see the
-[active item section](../indepth/active-item.md).
+[active item section](../in-depth/active-item.md).
 
 ### updateActiveItem
 
@@ -260,7 +260,7 @@ updateActiveItem(activeItem?: IActiveItem): void;
 
 Update the current active item, or remove it by calling the method without an
 argument. For more information, see the
-[active item section](../indepth/active-item.md).
+[active item section](../in-depth/active-item.md).
 
 ### addListener
 
@@ -270,7 +270,7 @@ addListener(type: paperEventType, listener: (evt: PaperEvent) => void): void;
 
 Add a listener for a specific event type. This listener will be called when the
 event is triggered within the paper. For more details on types of events, or the
-PaperEvent object, visit the [events section](../indepth/events.md).
+PaperEvent object, visit the [events section](../in-depth/events.md).
 
 ### removeListener
 
@@ -279,4 +279,4 @@ removeListener(type: paperEventType, listener: (evt: PaperEvent) => void): void;
 ```
 
 Remove a previously added listener. For more details on types of events, or the
-PaperEvent object, visit the [events section](../indepth/events.md).
+PaperEvent object, visit the [events section](../in-depth/events.md).

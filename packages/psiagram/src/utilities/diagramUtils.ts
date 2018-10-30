@@ -303,3 +303,61 @@ export const pointAlongLine = (
   const lengthY = point2.y - point1.y;
   return { x: point1.x + lengthX * ratio, y: point1.y + lengthY * ratio };
 };
+
+/**
+ * Returns the distance of a point to the line, as well as the closest point
+ * along the line.
+ *
+ * @param linePoint1 First point of line.
+ * @param linePoint2 Second point of line.
+ * @param point Point to find distance and closest point along line for.
+ */
+export const closestPointAlongLine = (
+  linePoint1: ICoordinates,
+  linePoint2: ICoordinates,
+  point: ICoordinates,
+): { distance: number; point: ICoordinates } => {
+  const { x: x1, y: y1 } = linePoint1;
+  const { x: x2, y: y2 } = linePoint2;
+  const { x: x0, y: y0 } = point;
+
+  const line = distanceBetweenPoints(linePoint1, linePoint2);
+  const lineFrom1 = distanceBetweenPoints(linePoint1, point);
+  const lineFrom2 = distanceBetweenPoints(linePoint2, point);
+
+  // If angle from point one is greater or equal to 90 degrees, choose it.
+  const angleFrom1 = Math.acos(
+    (line ** 2 + lineFrom1 ** 2 - lineFrom2 ** 2) / (2 * line * lineFrom1),
+  );
+  if (angleFrom1 >= Math.PI / 2) {
+    return { distance: lineFrom1, point: linePoint1 };
+  }
+
+  // If angle from point two is greater or equal to 90 degrees, choose it.
+  const angleFrom2 = Math.acos(
+    (line ** 2 + lineFrom2 ** 2 - lineFrom1 ** 2) / (2 * line * lineFrom2),
+  );
+  if (angleFrom2 >= Math.PI / 2) {
+    return { distance: lineFrom2, point: linePoint2 };
+  }
+
+  // Find distance from point to line.
+  const numerator = Math.abs(
+    (y2 - y1) * x0 - (x2 - x1) * y0 + x2 * y1 - y2 * x1,
+  );
+  const denominator = Math.sqrt((y2 - y1) ** 2 + (x2 - x1) ** 2);
+  const distance = numerator / denominator;
+
+  // Calculate the distance from line point one that an intersect would be.
+  const angleC = Math.PI / 2 - angleFrom1;
+  const distanceFrom1 = Math.sqrt(
+    lineFrom1 ** 2 +
+      distance ** 2 -
+      2 * lineFrom1 * distance * Math.cos(angleC),
+  );
+
+  return {
+    distance,
+    point: pointAlongLine(linePoint1, linePoint2, distanceFrom1),
+  };
+};

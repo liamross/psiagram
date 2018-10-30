@@ -17,6 +17,8 @@ import {
   getEdgeMidPoint,
   edgeLength,
   pointAlongLine,
+  closestPointAlongLine,
+  distanceBetweenPoints,
 } from '../diagramUtils';
 
 /** Helpers */
@@ -35,6 +37,8 @@ const generateNode = (
     title: '',
     width,
     height,
+    uniqueId: '',
+    paper: null,
   }) as unknown;
   Object.defineProperty(newNode, 'coords', {
     value: { x, y },
@@ -315,6 +319,53 @@ describe('Diagram Utilities', () => {
       const point2 = { x: 1, y: 1 };
       const length = 5;
       expect(pointAlongLine(point1, point2, length)).toEqual({ x: 1, y: 1 });
+    });
+  });
+
+  describe('closestPointAlongLine', () => {
+    it('returns first endpoint if perpendicular', () => {
+      const linePoint1 = { x: 0, y: 0 };
+      const linePoint2 = { x: 5, y: 0 };
+      const point = { x: 0, y: 5 };
+      const result = closestPointAlongLine(linePoint1, linePoint2, point);
+      expect(result).toEqual({ distance: 5, point: linePoint1 });
+    });
+
+    it('returns second endpoint if perpendicular', () => {
+      const linePoint1 = { x: 0, y: 0 };
+      const linePoint2 = { x: 5, y: 0 };
+      const point = { x: 5, y: 5 };
+      const result = closestPointAlongLine(linePoint1, linePoint2, point);
+      expect(result).toEqual({ distance: 5, point: linePoint2 });
+    });
+
+    it('returns first endpoint if beyond endpoint', () => {
+      const linePoint1 = { x: 0, y: 0 };
+      const linePoint2 = { x: 5, y: 0 };
+      const point = { x: -10, y: -10 };
+      const distance = distanceBetweenPoints(linePoint1, point);
+      const result = closestPointAlongLine(linePoint1, linePoint2, point);
+      expect(result).toEqual({ distance, point: linePoint1 });
+    });
+
+    it('returns second endpoint if beyond endpoint', () => {
+      const linePoint1 = { x: 0, y: 0 };
+      const linePoint2 = { x: 5, y: 0 };
+      const point = { x: 10, y: 10 };
+      const distance = distanceBetweenPoints(linePoint2, point);
+      const result = closestPointAlongLine(linePoint1, linePoint2, point);
+      expect(result).toEqual({ distance, point: linePoint2 });
+    });
+
+    it('returns point along line and correct distance', () => {
+      const linePoint1 = { x: 0, y: 0 };
+      const linePoint2 = { x: 5, y: 0 };
+      const point = { x: 1, y: 10 };
+      const result = closestPointAlongLine(linePoint1, linePoint2, point);
+      expect(result).toEqual({
+        distance: point.y,
+        point: { x: point.x, y: linePoint1.y },
+      });
     });
   });
 });

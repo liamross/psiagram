@@ -92,7 +92,7 @@ const properties = {
 ```
 
 For more information visit the
-[custom Edges section](../in-depth/custom-edges.md).
+[custom Edges section](../indepth/custom-edges.md).
 
 ### Example
 
@@ -120,7 +120,7 @@ This is the class that defines the render details of an Edge. It is passed into
 Paper as the component property of Paper Input Edge. Creating Edges with
 different colors and other characteristics requires extending the Edge class.
 Creating custom Edges is detailed in the
-[custom edges section](../in-depth/custom-edges.md). You will never interact
+[custom edges section](../indepth/custom-edges.md). You will never interact
 directly with a Edge class, it is only passed in to the Paper. when you call the
 `getEdge` method, it actually returns an augmented version of the Edge class
 that will be discussed next.
@@ -169,7 +169,7 @@ yourEdge.coords = yourEdge.coords.concat([{ x: 20, y: 40 }]);
 
 Each of these changes will update in the DOM automatically, and will also fire a
 `move-edge` event. More detail on events can be found in the
-[events section](../in-depth/events.md).
+[events section](../indepth/events.md).
 
 **Gotcha**: Because this uses getters and setters to wrap the DOM manipulation
 logic, you must re-assign the properties entirely. You can't do something like:

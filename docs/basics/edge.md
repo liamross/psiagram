@@ -129,7 +129,7 @@ yourEdge.coords = yourEdge.coords.concat([{ x: 20, y: 40 }]);
 
 Each of these changes will update in the DOM automatically, and will also fire a `move-edge` event. More detail on events can be found in the [events section](../in-depth/events.md).
 
-**Gotcha**: Because this uses getters and setters to wrap the DOM manipulation logic, you must re-assign the properties entirely. You can't do something like:
+**Gotcha**: Because this uses getters and setters to wrap the DOM manipulation logic, you must re-assign the properties entirely. You **can't** do something like:
 
 ```typescript
 yourEdge.target.x = 50;

@@ -1,6 +1,6 @@
 # Custom Edges
 
-Edges are the connective elements within a Psiagram Paper. They could be any connective shape: a simple black line, or a clickable arrow with a title block. This section exposes the API of Edges and describes the steps needed to build your first custom Edge.
+Edges are the **connective elements** within a Psiagram Paper. They could be any connective shape: a simple black line, or a clickable arrow with a title block. This section exposes the API of Edges and describes the steps needed to build your first custom Edge.
 
 But first, some links to various Edge files:
 
@@ -49,7 +49,7 @@ private _group: SVGElement;
 
 `P` represents the props given to the base Edge or extending class. These props **must** extend `IBaseEdgeProperties` - i.e. they must include `id` and `gridSize`.
 
-Group is kept private, and should not be touched by any classes extending the base Edge. However, `props` is to be used for storing any passed-in props, and is accessible from all extending classes.
+Group is kept private, and should **not** be touched by any classes extending the base Edge. However, `props` is to be used for storing any passed-in props, and is accessible from all extending classes.
 
 Check out how `Line` extends the constructor of `BaseEdge` to set defaults for certain props.
 

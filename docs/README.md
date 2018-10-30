@@ -23,7 +23,7 @@ core, it provides **high-performance rendering** of SVG diagram components, and
 an extensive but simple API to interact with the diagram.
 
 For an in-depth look into some features, see the
-[in-depth section](./indepth/README.md).
+[in-depth section](./in-depth/README.md).
 
 ## Extensible
 

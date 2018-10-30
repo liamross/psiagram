@@ -1,3 +1,4 @@
-# Creating Plugins
+# Events
 
 🚧 Section is coming very soon. 🚧
+

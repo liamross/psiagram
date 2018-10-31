@@ -6,7 +6,7 @@
  */
 
 import { IPaperStoredNode, PaperNode, ICoordinates, Rectangle } from 'psiagram';
-import { ManhattanRouting, IBoundingBox, Direction } from '../ManhattanRouting';
+import { ManhattanRouting, IBoundingBox, Direction } from './ManhattanRouting';
 
 let myRouting: ManhattanRouting = null;
 

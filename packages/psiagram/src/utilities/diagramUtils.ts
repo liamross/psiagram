@@ -95,8 +95,8 @@ export const getNodeMidpoint = (
  *
  * @param node Node with boundary to trim edge at.
  * @param nextPoint The next point closest to the node center.
- * @param [gridSize] Optional. The size of the grid to snap to.
- * @param [nodeOutline] Optional. Distance in px away from node to trim edge.
+ * @param gridSize Optional. The size of the grid to snap to.
+ * @param nodeOutline Optional. Distance in px away from node to trim edge.
  */
 export const getEdgeNodeIntersection = (
   node: IPaperStoredNode,

@@ -19,6 +19,14 @@ export interface ITextNodeProperties extends IBaseNodeProperties {
 
 /**
  * TextNode **must** be extended, it does not work on its own.
+ *
+ * To work, a class extending TextNode must:
+ *
+ * 1. Implement width get and set
+ * 2. Implement height get and set
+ *
+ * Additionally, it should probably render a shape, otherwise the Node will
+ * just be the text block.
  */
 export class TextNode<P extends ITextNodeProperties> extends BaseNode<P> {
   protected _text: SVGElement | null;

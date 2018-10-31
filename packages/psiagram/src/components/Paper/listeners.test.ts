@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { IPaperProperties, PaperItemState } from '../Paper.types';
-import { Paper } from '../';
-import { Rectangle, BaseNode, IRectangleProperties } from '../../Node';
-import { Line, BaseEdge, TextLine, ITextLineProperties } from '../../Edge';
-import { PaperEvent } from '../../PaperEvent';
-import { ElementType } from '../../../utilities';
+import { IPaperProperties, PaperItemState } from './Paper.types';
+import { Paper } from './Paper.base';
+import { Rectangle, BaseNode, IRectangleProperties } from '../Node';
+import { BaseEdge, TextLine, ITextLineProperties } from '../Edge';
+import { PaperEvent } from '../PaperEvent';
+import { ElementType } from '../../utilities';
 
 let paperProperties: IPaperProperties = null;
 let myPaper: Paper = null;

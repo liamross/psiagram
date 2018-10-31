@@ -1,31 +1,37 @@
 // tslint:disable:no-console
 
-import {
-  // Paper
-  Paper,
-  IPaperProperties,
-  IPaperInputNode,
+// import {
+//   // Paper
+//   Paper,
+//   IPaperProperties,
+//   IPaperInputNode,
 
-  // Nodes
-  BaseNode,
-  Rectangle,
-  IRectangleProperties,
+//   // Nodes
+//   BaseNode,
+//   Rectangle,
+//   IRectangleProperties,
 
-  // Edges
-  BaseEdge,
-  Line,
-  ILineProperties,
-  TextLine,
-  ITextLineProperties,
+//   // Edges
+//   BaseEdge,
+//   Line,
+//   ILineProperties,
+//   TextLine,
+//   ITextLineProperties,
 
-  // Other
-  PaperError,
-  PaperEvent,
-} from 'psiagram';
+//   // Other
+//   PaperError,
+//   PaperEvent,
+// } from 'psiagram';
 
-import { Grid } from 'psiagram-plugin-grid';
-import { MouseEvents } from 'psiagram-plugin-mouse-events';
-import { ManhattanRouting } from 'psiagram-plugin-routing';
+// import { Grid } from 'psiagram-plugin-grid';
+// import { MouseEvents } from 'psiagram-plugin-mouse-events';
+// import { ManhattanRouting } from 'psiagram-plugin-routing';
+
+// prettier-ignore
+import { Paper, IPaperProperties, IPaperInputNode, BaseNode, Rectangle, IRectangleProperties, BaseEdge, Line, ILineProperties, TextLine, ITextLineProperties, PaperError, PaperEvent } from 'psiagram/src';
+import { Grid } from 'psiagram-plugin-grid/src';
+import { MouseEvents } from 'psiagram-plugin-mouse-events/src';
+import { ManhattanRouting } from 'psiagram-plugin-routing/src';
 
 let myPaper: Paper | null = null;
 

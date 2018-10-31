@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { IPaperStoredNode, PaperNode } from '../../components/Paper';
-import { Rectangle } from '../../components/Node';
+import { IPaperStoredNode, PaperNode } from '../components/Paper';
+import { Rectangle } from '../components/Node';
 import {
   isNodeColliding,
   roundToNearest,
@@ -19,7 +19,7 @@ import {
   pointAlongLine,
   closestPointAlongLine,
   distanceBetweenPoints,
-} from '../diagramUtils';
+} from './diagramUtils';
 
 /** Helpers */
 

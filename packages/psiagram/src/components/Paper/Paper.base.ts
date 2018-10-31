@@ -518,7 +518,7 @@ export class Paper {
    * object with the workflow item type, id of the item, and the state you wish
    * to move the item to.
    *
-   * @param [activeItem] Optional. Active item object.
+   * @param activeItem Optional. Active item object.
    */
   public updateActiveItem(activeItem?: IActiveItem): void {
     const oldActiveItem = this._activeItem;
@@ -643,7 +643,7 @@ export class Paper {
    * Insert a new def into the defs element within Paper.
    *
    * @param def The def to insert.
-   * @param [id] Optional. An ID that can be used to remove the def.
+   * @param id Optional. An ID that can be used to remove the def.
    */
   public _insertPaperDef(def: SVGElement, id: string = ''): void {
     if (id) def.setAttribute('data-defs-id', id);
@@ -656,7 +656,7 @@ export class Paper {
    *
    * Remove a def from the defs element within Paper.
    *
-   * @param [id] Optional. The ID of the def to remove.
+   * @param id Optional. The ID of the def to remove.
    */
   public _removePaperDef(id: string): void {
     const childDefs = this._defs.children;

@@ -17,6 +17,7 @@ import {
   IPaperStoredEdge,
   IPluginProperties,
   PaperError,
+  distanceBetweenPoints,
 } from 'psiagram';
 
 export class MouseEvents implements PsiagramPlugin {
@@ -202,6 +203,34 @@ export class MouseEvents implements PsiagramPlugin {
         x: evt.pageX,
         y: evt.pageY,
       };
+      // Get stored and actual edge coordinates.
+      const storedCoords = edge.coords;
+      const actualCoords = edge.instance.getCoordinates();
+
+      // Find storedCoord
+      const closestPointAndDistance = storedCoords
+        .map(coord => ({
+          distance: distanceBetweenPoints(coord, this
+            ._initialMouseCoords as ICoordinates),
+          point: coord,
+        }))
+        .reduce<{ distance: number; point: ICoordinates | null }>(
+          (closestPoint, currentPointAndDistance) =>
+            closestPoint.distance <= currentPointAndDistance.distance
+              ? closestPoint
+              : currentPointAndDistance,
+          { distance: Infinity, point: null },
+        );
+
+      if (closestPointAndDistance.distance <= this._gridSize) {
+        const indexOfStoredCoord = storedCoords.indexOf(
+          closestPointAndDistance.point as ICoordinates,
+        );
+        //
+      }
+
+      // For each edge, check distance. Find closest one. Then, iterate along
+      // storedCoords and try to find
     } else {
       throw new PaperError(
         'E_NO_ID',
@@ -218,6 +247,9 @@ export class MouseEvents implements PsiagramPlugin {
 
   private _handleEdgeMouseUp = (): void => {
     // TODO: implement.
+    // 1. If double click timer is running and not timed out, remove the edge
+    //    coordinate.
+    // 2. If mouse coordinates haven't changed, start double click timer.
   };
 
   private _handlePaperMouseDown(evt: MouseEvent, id: string): void {

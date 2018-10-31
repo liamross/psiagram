@@ -43,7 +43,12 @@ function loadPaper() {
     attributes: { gridSize: 20 },
     height: 900,
     width: 1300,
-    plugins: [new Grid(), new MouseEvents(), new ManhattanRouting()],
+    plugins: [
+      //
+      new Grid(),
+      new MouseEvents(),
+      // new ManhattanRouting(),
+    ],
     initialConditions: {
       nodes: [
         {
@@ -86,7 +91,7 @@ function loadPaper() {
           component: 'line',
           source: { x: 120, y: 120 },
           target: { id: 'node1' },
-          coords: [],
+          coords: [{ x: 147, y: 148 }, { x: 187, y: 198 }],
           properties: { strokeColor: 'green' } as ILineProperties,
         },
         {

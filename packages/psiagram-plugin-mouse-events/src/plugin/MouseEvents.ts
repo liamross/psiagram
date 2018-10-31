@@ -189,8 +189,27 @@ export class MouseEvents implements PsiagramPlugin {
   };
 
   private _handleEdgeMouseDown(evt: MouseEvent, id: string): void {
-    // TODO: implement.
-    console.log('mouseDown on Edge');
+    if (this._edges.hasOwnProperty(id) && this._paperInstance && this._paper) {
+      const edge = this._edges[id];
+      // Set clicked edge as moving item.
+      this._paperInstance.updateActiveItem({
+        id,
+        paperItemState: PaperItemState.Moving,
+        elementType: ElementType.Edge,
+      });
+      // Store initial mouse coordinates.
+      this._initialMouseCoords = {
+        x: evt.pageX,
+        y: evt.pageY,
+      };
+    } else {
+      throw new PaperError(
+        'E_NO_ID',
+        `Edge with id ${id} does not exist.`,
+        'MouseEvents.ts',
+        '_handleEdgeMouseDown',
+      );
+    }
   }
 
   private _handleEdgeMouseMove = (evt: MouseEvent): void => {

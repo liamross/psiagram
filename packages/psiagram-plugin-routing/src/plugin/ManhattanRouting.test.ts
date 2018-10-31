@@ -26,6 +26,8 @@ const generateNode = (
     title: '',
     width,
     height,
+    uniqueId: '',
+    paper: null,
   }) as unknown;
   Object.defineProperty(newNode, 'coords', {
     value: { x, y },

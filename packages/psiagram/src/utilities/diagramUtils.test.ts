@@ -19,6 +19,7 @@ import {
   pointAlongLine,
   closestPointAlongLine,
   distanceBetweenPoints,
+  distanceFromLine,
 } from './diagramUtils';
 
 /** Helpers */
@@ -319,6 +320,50 @@ describe('Diagram Utilities', () => {
       const point2 = { x: 1, y: 1 };
       const length = 5;
       expect(pointAlongLine(point1, point2, length)).toEqual({ x: 1, y: 1 });
+    });
+  });
+
+  describe('distanceFromLine', () => {
+    it('returns first endpoint if perpendicular', () => {
+      const linePoint1 = { x: 0, y: 0 };
+      const linePoint2 = { x: 5, y: 0 };
+      const point = { x: 0, y: 5 };
+      const result = distanceFromLine(linePoint1, linePoint2, point);
+      expect(result).toBe(5);
+    });
+
+    it('returns second endpoint if perpendicular', () => {
+      const linePoint1 = { x: 0, y: 0 };
+      const linePoint2 = { x: 5, y: 0 };
+      const point = { x: 5, y: 5 };
+      const result = distanceFromLine(linePoint1, linePoint2, point);
+      expect(result).toBe(5);
+    });
+
+    it('returns first endpoint if beyond endpoint', () => {
+      const linePoint1 = { x: 0, y: 0 };
+      const linePoint2 = { x: 5, y: 0 };
+      const point = { x: -10, y: -10 };
+      const distance = distanceBetweenPoints(linePoint1, point);
+      const result = distanceFromLine(linePoint1, linePoint2, point);
+      expect(result).toBe(distance);
+    });
+
+    it('returns second endpoint if beyond endpoint', () => {
+      const linePoint1 = { x: 0, y: 0 };
+      const linePoint2 = { x: 5, y: 0 };
+      const point = { x: 10, y: 10 };
+      const distance = distanceBetweenPoints(linePoint2, point);
+      const result = distanceFromLine(linePoint1, linePoint2, point);
+      expect(result).toBe(distance);
+    });
+
+    it('returns point along line and correct distance', () => {
+      const linePoint1 = { x: 0, y: 0 };
+      const linePoint2 = { x: 5, y: 0 };
+      const point = { x: 1, y: 10 };
+      const result = distanceFromLine(linePoint1, linePoint2, point);
+      expect(result).toBe(point.y);
     });
   });
 

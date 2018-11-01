@@ -1,7 +1,7 @@
 # Routing Plugin
 
 | repository | npm |
-| :--- | :--- |
+| :---: | :---: |
 | [psiagram-plugin-routing](https://github.com/liamross/psiagram/tree/master/packages/psiagram-plugin-routing) | [![NPM Version](https://badge.fury.io/js/psiagram-plugin-routing.svg)](https://www.npmjs.com/package/psiagram-plugin-routing) |
 
 The Routing Plugin provides solutions for enhancing the routing of your Edges as they connect Nodes or points.

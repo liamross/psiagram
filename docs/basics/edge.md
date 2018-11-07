@@ -1,6 +1,8 @@
 # Edge
 
-Edges **dictate flow** within Psiagram.  They can often be thought of as lines connecting the Nodes within a diagram. Edge classes detail all the rendering information for Edge lines rendered onto Paper, such as color and title. Again, various objects in the Psiagram ecosystem contain the Edge name, with each referring to a specific part of the Edge lifecycle. Let's take a look.
+Edges **dictate flow** within Psiagram.  They can often be thought of as lines connecting the Nodes within a diagram. Edge classes detail all the rendering information for Edge lines rendered onto Paper, such as color and title. 
+
+This section will address the input required to create an Edge within the Paper, and details the output Edge given by Paper.
 
 ## Paper Input Edge
 
@@ -31,7 +33,7 @@ This is the unique ID of the Edge. These **must** be unique amongst other Edges 
 
 #### component - `string`
 
-This string maps to an Edge class within the `initialConditions.edgeComponentMap` object that the Paper was initialized with. This allows you to map different Edges to different Edge classes, allowing for Edges with various colors and widths.
+This string maps to an Edge class within the `initialConditions.edgeComponentMap` object that the Paper was initialized with. This allows you to map different Paper Input Edges to different Edge classes, allowing for each Edge to have different colors and widths. Information on Paper's initial conditions can be found [here](paper.md), and custom Edge information is [here](../in-depth/custom-edges.md).
 
 #### source - `edgeEndPoint`
 
@@ -74,7 +76,7 @@ For more information visit the [custom Edges section](../in-depth/custom-edges.m
 
 ### Example
 
-Here's an example of how to add an Edge to the Paper using the Paper Input Edge object:
+Here's an example of how to add an Edge to the Paper using the Paper Input Edge object. In this case, Paper would have been initialized with a custom Edge class inside of `edgeComponentMap` initial properties, with the key `'text-edge'`. This custom Edge will be initialized with the provided properties upon calling addEdge.
 
 ```typescript
 function addEdge() {
@@ -91,13 +93,17 @@ function addEdge() {
 }
 ```
 
-## Edge Class
-
-This is the class that defines the render details of an Edge. It is passed into Paper as the component property of Paper Input Edge. Creating Edges with different colors and other characteristics requires extending the Edge class. Creating custom Edges is detailed in the [custom edges section](../in-depth/custom-edges.md). You will never interact directly with a Edge class, it is only passed in to the Paper. when you call the `getEdge` method, it actually returns an augmented version of the Edge class that will be discussed next.
-
 ## Paper Edge
 
-When Edge classes are initialized within Paper, they have special proxy properties added to them that simplify the process of changing the source, target, and coordinates of the Edge. Without customization, an Edge class exposes the get/set methods for all properties passed in with the `properties` object detailed above. _Any custom implementation of Edge may take different properties, and thus may have different get/set methods_. Paper adds get/set methods for **source**, **target**, and **coords** to the Edge, thus returning a new object we call PaperEdge.
+While the Paper Input Edge is the input to the Paper, the Paper Edge is the output. In many ways, you can think of it as an initialized Edge class. Whichever custom Edge class was specified by the component property of the Paper Input Edge, will now be passed back as the Paper Edge.
+
+However, there are three additional properties added to a Paper Edge.
+
+* **`source`** - The ID of the source Node, or a coordinate point.
+* **`target`** - The ID of the target Node, or a coordinate point.
+* **`coords`** - An array of additional coordinate points for the Edge to pass through.
+
+Of course, these are in addition to any properties defined by the custom Edge \(example: a `title` property or a `strokeWidth` property\).
 
 We will run through some of the potential uses for PaperEdge.
 
@@ -107,13 +113,7 @@ We will run through some of the potential uses for PaperEdge.
 const yourEdge = getEdge('your-edge-id');
 ```
 
-Once you have your PaperEdge, you can manipulate the properties directly. All of the DOM manipulation logic should be wrapped inside of get/set methods, so it's as simple as re-assigning the properties. Here's one example from a Edge with text:
-
-```typescript
-yourEdge.title = 'New Title';
-```
-
-These properties will be updated automatically in the DOM. However, this ability would have been available on the Edge class, let's look at updating the coordinates, something only available to the `yourEdge` PaperEdge returned from Paper.
+Now that you have your Edge, you can manipulate the additional properties:
 
 ```typescript
 // Updating source and target
@@ -129,11 +129,11 @@ yourEdge.coords = yourEdge.coords.concat([{ x: 20, y: 40 }]);
 
 Each of these changes will update in the DOM automatically, and will also fire a `move-edge` event. More detail on events can be found in the [events section](../in-depth/events.md).
 
-**Gotcha**: Because this uses getters and setters to wrap the DOM manipulation logic, you must re-assign the properties entirely. You **can't** do something like:
+**Warning**: Because this uses getters and setters to wrap the DOM manipulation logic, you must re-assign the properties entirely. You **can't** do something like:
 
 ```typescript
 yourEdge.target.x = 50;
 ```
 
-This just changes the x property of the object without actually calling the setter. Therefore, none of the wrapped DOM manipulation logic will fire. Notice that for `yourEdge.coords`, the array spread operator \(or concat\) was used when adding a new element to the end of the array rather than using push. This is so that a new array is assigned to coords in order to fire the setter.
+This just changes the x-property of the object **without calling the set method**. Since the object itself **remains the same**, the set method for target **will not be triggered** and none of the DOM manipulation logic will fire. Notice that for `yourEdge.coords`, the array spread operator \(or concat\) was used when adding a new element to the end of the array rather than using push. This is so that a new array is assigned to coords in order to trigger the set method.
 

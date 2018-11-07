@@ -77,7 +77,7 @@ An optional object where you can define any initial Nodes or Edges to render ont
 
   here and selected by giving the key string to the appropriate initial Nodes.
 
-  ```javascript
+  ```typescript
   export interface INodeComponentMap {
     [key: string]: typeof BaseNode;
   }
@@ -93,7 +93,7 @@ An optional object where you can define any initial Nodes or Edges to render ont
 
   and selected by giving the key string to the appropriate initial Edges.
 
-  ```javascript
+  ```typescript
   export interface IEdgeComponentMap {
     [key: string]: typeof BaseEdge;
   }

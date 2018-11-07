@@ -1,10 +1,10 @@
 # Node
 
-Nodes are the building blocks of any diagram in Psiagram. At their most basic they are rectangular SVG components rendered onto paper. Node classes provide all of the rendering information such as appearance, title placement, etc. However, there are various objects in the Psiagram ecosystem that contain the Node name, and each pertains to a specific part of the Node lifecycle. Let's go into more detail.
+Nodes are the **building blocks** of any diagram in Psiagram. At their most basic they are rectangular SVG components rendered onto Paper. Node classes provide all of the rendering information such as appearance, title placement, etc. However, there are various objects in the Psiagram ecosystem that contain the Node name, and each pertains to a specific part of the Node lifecycle. Let's go into more detail.
 
 ## Paper Input Node
 
-This is the 'Node' that is input into Paper to create a Node. This can be given in the `nodes` array in the `initialConditions` object when initializing Paper, or in the `addNode` method call. See the [paper section](paper.md) for more on the initialization details or method definitions.
+This is the input given to Paper to create a Node within Psiagram. This can be given in the `nodes` array in the `initialConditions` object when initializing Paper, or in the `addNode` method call. See the [Paper section](paper.md) for more on the initialization details or method definitions.
 
 ### IPaperInputNode Specification
 

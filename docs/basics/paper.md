@@ -67,11 +67,11 @@ An optional object where you can define any initial Nodes or Edges to render ont
 
 > Note: Psiagram only provides the base classes needed to begin building custom Nodes and Edges. Alone, the BaseNode class and Edge class will not render any visual components. You must extend these classes into your own [custom Nodes](../in-depth/custom-nodes.md) and [custom Edges](../in-depth/custom-edges.md).
 
-* nodes - `IPaperInputNode[]`: Initial Node data needed to render out Nodes.
+* **nodes** - `IPaperInputNode[]`: Initial Node data needed to render out Nodes.
 
   More details on input Nodes can be found in the [Node section](node.md).
 
-* nodeComponentMap - `INodeComponentMap`: Object to map component strings to an
+* **nodeComponentMap** - `INodeComponentMap`: Object to map component strings to an
 
   extended BaseNode class. Once you've built some Nodes, they can be included
 
@@ -83,11 +83,11 @@ An optional object where you can define any initial Nodes or Edges to render ont
   }
   ```
 
-* edges - `IPaperInputEdge[]`: Initial Edge data needed to render out Edges.
+* **edges** - `IPaperInputEdge[]`: Initial Edge data needed to render out Edges.
 
   More details on input Edges can be found in the [Edge section](edge.md).
 
-* edgeComponentMap - `IEdgeComponentMap`: Object to map component strings to an
+* **edgeComponentMap** - `IEdgeComponentMap`: Object to map component strings to an
 
   extended Edge class. Once you've built some Edges, they can be included here
 
@@ -165,7 +165,13 @@ Let's examine some of the methods that you can call on your Paper instance.
 getPaperElement(): HTMLElement;
 ```
 
-Returns the Paper wrapper, which contains the Paper SVG element, as well as all rendered components. This is the method you would call to retrieve the wrapper to render into your DOM.
+Returns the Paper wrapper, which contains the Paper SVG element, as well as all rendered components. This is the method you would call to retrieve the wrapper to render into your DOM. Here's an example of how to mount your paper.
+
+```typescript
+const paperElement = myPaper.getPaperElement();
+const target = document.getElementById('_target');
+target.appendChild(paperElement);
+```
 
 ### addNode
 
@@ -173,7 +179,7 @@ Returns the Paper wrapper, which contains the Paper SVG element, as well as all 
 addNode(node: IPaperInputNode): void;
 ```
 
-Add a Node to the Paper. While we touched on adding Nodes through Paper Properties when the Paper is initialized, you can also do it at any point using this method. for more details on input Nodes, see the [node section](node.md).
+Add a Node to the Paper. While we touched on adding Nodes through Paper Properties when the Paper is initialized, you can also do it at any point using this method. This is also used internally by Paper for every initial Node provided. For more details on input Nodes, see the [Node section](node.md).
 
 ### getNode
 
@@ -181,7 +187,7 @@ Add a Node to the Paper. While we touched on adding Nodes through Paper Properti
 getNode(id: string): PaperNode;
 ```
 
-Returns the Node instance that matches the given id. The PaperNode that is returned exposes multiple properties that you can set to manipulate the Node's position, appearance, title, and more. These are detailed in the [node section](node.md).
+Returns the Node instance that matches the given ID. The PaperNode that is returned exposes multiple properties that you can set to manipulate the Node's position, appearance, title, and more. These are detailed in the [Node section](node.md).
 
 ### removeNode
 
@@ -189,7 +195,7 @@ Returns the Node instance that matches the given id. The PaperNode that is retur
 removeNode(id: string): void;
 ```
 
-Remove a Node from the Paper that matches the given id.
+Remove a Node from the Paper with the given ID.
 
 ### addEdge
 
@@ -197,7 +203,7 @@ Remove a Node from the Paper that matches the given id.
 addEdge(edge: IPaperInputEdge): void;
 ```
 
-Add an Edge to the Paper. Similarly to addNode, this allows you to add Edges after Paper has been initialized. For more information on input Edges, see the [edge section](edge.md).
+Add an Edge to the Paper. Like addNode, this allows you to add Edges at any point after Paper has been initialized. This is also used internally within Paper for adding any initial Edges. For more information on input Edges, see the [Edge section](edge.md).
 
 ### getEdge
 
@@ -205,7 +211,7 @@ Add an Edge to the Paper. Similarly to addNode, this allows you to add Edges aft
 getEdge(id: string): PaperEdge;
 ```
 
-Returns the Edge instance that matches the given id. The PaperEdge that is returned exposes multiple properties that you can set to manipulate the Edge's position, appearance, title, and more. These are detailed in the [edge section](edge.md).
+Returns the Edge instance that matches the given ID. The PaperEdge that is returned exposes multiple properties that you can set to manipulate the Edge's position, appearance, title, and more. These are detailed in the [Edge section](edge.md).
 
 ### removeEdge
 
@@ -213,7 +219,7 @@ Returns the Edge instance that matches the given id. The PaperEdge that is retur
 removeEdge(id: string): void;
 ```
 
-Remove a Edge from the Paper that matches the given id.
+Remove an Edge from the Paper that matches the given ID.
 
 ### getActiveItem
 
@@ -237,7 +243,7 @@ Update the current active item, or remove it by calling the method without an ar
 addListener(type: paperEventType, listener: (evt: PaperEvent) => void): void;
 ```
 
-Add a listener for a specific event type. This listener will be called when the event is triggered within the paper. For more details on types of events, or the PaperEvent object, visit the [events section](../in-depth/events.md).
+Add a listener for a specific event type. This listener will be called when the event is triggered within the Paper. For more details on types of events, or the PaperEvent object, visit the [events section](../in-depth/events.md).
 
 ### removeListener
 

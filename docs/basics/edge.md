@@ -1,10 +1,10 @@
 # Edge
 
-Edges dictate the flow of a diagram in Psiagram. Edge classes detail all the rendering information for Edge lines rendered onto Paper, such as color and title. Again, various objects in the Psiagram ecosystem contain the Edge name, with each referring to a specific part of the Edge lifecycle. Let's take a look.
+Edges **dictate flow** within Psiagram.  They can often be thought of as lines connecting the Nodes within a diagram. Edge classes detail all the rendering information for Edge lines rendered onto Paper, such as color and title. Again, various objects in the Psiagram ecosystem contain the Edge name, with each referring to a specific part of the Edge lifecycle. Let's take a look.
 
 ## Paper Input Edge
 
-This is the 'Edge' that is input into Paper to create an Edge. This can be given in the `edges` array in the `initialConditions` object when initializing Paper, or in the `addEdge` method call. See the [paper section](paper.md) for more on the initialization details or method definitions.
+This is the input given to Paper to create an Edge within Psiagram. This can be given in the `edges` array in the `initialConditions` object when initializing Paper, or in the `addEdge` method call. See the [Paper section](paper.md) for more on the initialization details or method definitions.
 
 ### IPaperInputEdge Specification
 

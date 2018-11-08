@@ -5,8 +5,7 @@
 You can control the Paper using the following:
 
 1. The **PaperProperties** passed into Paper during initialization
-2. External **Plugins** that are passed into the Paper during initialization
-3. The **API** of the Paper object \(**methods** and **listeners**\)
+2. The **API** of the Paper object \(**methods** and **listeners**\)
 
 This documentation will take a look into some of the basics of setting up and using Paper.
 
@@ -50,7 +49,7 @@ This is the physical height of the Paper surface in pixels. Like width, it is re
 
 #### plugins \(optional\) - `PsiagramPlugin[]`
 
-An optional array of any initialized plugins you wish to pass into Paper. Plugins add functionality to Paper. This will be detailed further in the [plugins section](../plugins/).
+An optional array of any initialized plugins you wish to pass into Paper. Plugins add functionality to Paper. This will be detailed further in the [plugins section](../plugins/). Plugins often have a significant impact on the functionality of Psiagram, and can be used to add sophisticated functionality to a diagram.
 
 #### attributes \(optional\) - `Object`
 

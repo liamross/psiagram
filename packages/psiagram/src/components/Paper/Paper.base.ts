@@ -523,22 +523,7 @@ export class Paper {
   public updateActiveItem(activeItem?: IActiveItem): void {
     const oldActiveItem = this._activeItem;
 
-    if (oldActiveItem) {
-      // If all keys are identical, exit function.
-      if (
-        activeItem &&
-        Object.keys(activeItem).every(
-          key => oldActiveItem[key] === activeItem[key],
-        )
-      ) {
-        return;
-      } else {
-        // TODO: Do any 'exit' actions on oldActiveItem.
-      }
-    }
-
-    // If both items are null or undefined, exit function.
-    if (activeItem == null && oldActiveItem == null) {
+    if (activeItem == null && oldActiveItem === null) {
       return;
     }
 
@@ -547,12 +532,7 @@ export class Paper {
       target: activeItem || null,
       data: { oldActiveItem },
       defaultAction: () => {
-        // Update active item.
         this._activeItem = activeItem || null;
-
-        if (activeItem) {
-          // TODO: Do any 'initialization' actions on the new active item.
-        }
       },
     });
 

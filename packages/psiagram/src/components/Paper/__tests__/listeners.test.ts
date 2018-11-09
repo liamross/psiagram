@@ -304,21 +304,21 @@ describe('Listeners', () => {
 
       myPaper.updateActiveItem({
         id: 'test-node',
-        paperItemState: PaperItemState.Moving,
+        paperItemState: PaperItemState.Selected,
         elementType: ElementType.Node,
       });
 
       expect(testFunc.mock.calls.length).toBe(1);
     });
 
-    it('does not call if active item does not change', () => {
+    it('calls even if active item remains the same', () => {
       const testFunc = jest.fn();
 
       myPaper.addListener('update-active-item', testFunc);
 
       myPaper.updateActiveItem({
         id: 'test-node',
-        paperItemState: PaperItemState.Moving,
+        paperItemState: PaperItemState.Selected,
         elementType: ElementType.Node,
       });
 
@@ -326,11 +326,11 @@ describe('Listeners', () => {
 
       myPaper.updateActiveItem({
         id: 'test-node',
-        paperItemState: PaperItemState.Moving,
+        paperItemState: PaperItemState.Selected,
         elementType: ElementType.Node,
       });
 
-      expect(testFunc.mock.calls.length).toBe(1);
+      expect(testFunc.mock.calls.length).toBe(2);
     });
 
     it('does not call if active item remains nothing', () => {

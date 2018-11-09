@@ -9,7 +9,6 @@ import {
   Paper,
   getElementType,
   ElementType,
-  PaperItemState,
   roundToNearest,
   PsiagramPlugin,
   ICoordinates,
@@ -17,6 +16,7 @@ import {
   IPaperStoredEdge,
   IPluginProperties,
   PaperError,
+  PaperItemState,
 } from 'psiagram';
 
 export class MouseEvents implements PsiagramPlugin {
@@ -97,8 +97,9 @@ export class MouseEvents implements PsiagramPlugin {
       // Set clicked node as moving item.
       this._paperInstance.updateActiveItem({
         id,
-        paperItemState: PaperItemState.Moving,
+        isMoving: true,
         elementType: ElementType.Node,
+        paperItemState: PaperItemState.Default,
       });
       // Store initial mouse coordinates.
       this._initialMouseCoords = {
@@ -132,8 +133,8 @@ export class MouseEvents implements PsiagramPlugin {
 
     if (
       activeItem &&
+      activeItem.isMoving &&
       activeItem.elementType === ElementType.Node &&
-      activeItem.paperItemState === PaperItemState.Moving &&
       this._initialMouseCoords &&
       this._initialPaperCoords &&
       this._paperInstance
@@ -167,13 +168,14 @@ export class MouseEvents implements PsiagramPlugin {
 
     if (
       activeItem &&
+      activeItem.isMoving &&
       activeItem.elementType === ElementType.Node &&
-      activeItem.paperItemState === PaperItemState.Moving &&
       this._paperInstance
     ) {
       // Set active node to selected state.
       this._paperInstance.updateActiveItem({
-        ...activeItem,
+        elementType: activeItem.elementType,
+        id: activeItem.id,
         paperItemState: PaperItemState.Selected,
       });
     } else {

@@ -59,11 +59,10 @@ export interface IActiveItem {
   elementType: ElementType;
   id: string;
   paperItemState: PaperItemState;
-  [key: string]: string;
+  [key: string]: any;
 }
 
 export enum PaperItemState {
-  Moving = 'moving',
   Selected = 'selected',
   Default = 'default',
 }

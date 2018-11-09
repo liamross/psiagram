@@ -58,13 +58,8 @@ export declare type paperEventType =
 export interface IActiveItem {
   elementType: ElementType;
   id: string;
-  paperItemState: PaperItemState;
+  isSelected: boolean;
   [key: string]: any;
-}
-
-export enum PaperItemState {
-  Selected = 'selected',
-  Default = 'default',
 }
 
 // =============================================================================

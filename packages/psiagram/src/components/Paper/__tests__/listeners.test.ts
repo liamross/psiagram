@@ -304,7 +304,7 @@ describe('Listeners', () => {
 
       myPaper.updateActiveItem({
         id: 'test-node',
-        paperItemState: PaperItemState.Selected,
+        isSelected: true,
         elementType: ElementType.Node,
       });
 
@@ -318,7 +318,7 @@ describe('Listeners', () => {
 
       myPaper.updateActiveItem({
         id: 'test-node',
-        paperItemState: PaperItemState.Selected,
+        isSelected: false,
         elementType: ElementType.Node,
       });
 
@@ -326,7 +326,7 @@ describe('Listeners', () => {
 
       myPaper.updateActiveItem({
         id: 'test-node',
-        paperItemState: PaperItemState.Selected,
+        isSelected: true,
         elementType: ElementType.Node,
       });
 

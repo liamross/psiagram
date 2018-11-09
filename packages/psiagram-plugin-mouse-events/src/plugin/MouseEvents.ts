@@ -16,7 +16,6 @@ import {
   IPaperStoredEdge,
   IPluginProperties,
   PaperError,
-  PaperItemState,
 } from 'psiagram';
 
 export class MouseEvents implements PsiagramPlugin {
@@ -99,7 +98,7 @@ export class MouseEvents implements PsiagramPlugin {
         id,
         isMoving: true,
         elementType: ElementType.Node,
-        paperItemState: PaperItemState.Default,
+        isSelected: false,
       });
       // Store initial mouse coordinates.
       this._initialMouseCoords = {
@@ -149,6 +148,7 @@ export class MouseEvents implements PsiagramPlugin {
       // Find new block coordinates.
       const blockX = this._initialPaperCoords.x - roundedMouseDeltaX;
       const blockY = this._initialPaperCoords.y - roundedMouseDeltaY;
+      // Set coordinates.
       const node = this._paperInstance.getNode(id);
       node.coords = { x: blockX, y: blockY };
     } else {
@@ -174,9 +174,9 @@ export class MouseEvents implements PsiagramPlugin {
     ) {
       // Set active node to selected state.
       this._paperInstance.updateActiveItem({
-        elementType: activeItem.elementType,
-        id: activeItem.id,
-        paperItemState: PaperItemState.Selected,
+        ...activeItem,
+        isMoving: false,
+        isSelected: true,
       });
     } else {
       throw new PaperError(

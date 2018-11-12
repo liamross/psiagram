@@ -1,6 +1,6 @@
 # Custom Nodes
 
-In order to use Psiagram to the fullest, developers can use the framework to build out a custom Node library. In this section we will touch on the API of Nodes and how to extend the base Node class in order to build custom components.
+In order to use Psiagram to the fullest, developers can use the framework to build out a custom Node library. In this section we will touch on the API of Nodes and how to extend the [Base Node](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Node/BaseNode.ts) class in order to build custom components.
 
 But first, some links to various Node files:
 
@@ -18,7 +18,7 @@ But first, some links to various Node files:
 
      you build.
 
-   * Implements `TextNode` \(see above\) to create a Rectangle Node in basic grey
+   * Implements [Text Node](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Node/NodeAbstracts/TextNode.ts) \(see above\) to create a Rectangle Node in basic grey
 
      colors
 
@@ -26,11 +26,11 @@ But first, some links to various Node files:
 
 Feel free to check the links out to get a basic idea of some of the Nodes provided by Psiagram. They will be referenced later on.
 
-The base Node takes care of a lot of the internal-use scenarios \(example: the `getElement` method is defined already, so that Paper can call it to get the Node group, which is also pre-defined\). However, some of the functionality must be implemented in order for your custom Node to work. The following are the methods and interfaces within the Node API.
+The [Base Node](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Node/BaseNode.ts) takes care of a lot of the internal-use scenarios \(example: the `getElement` method is defined already, so that Paper can call it to get the Node group, which is also pre-defined\). However, some of the functionality must be implemented in order for your custom Node to work. The following are the methods and interfaces within the Node API.
 
 ## Base Node Initialization Properties
 
-The properties of the base Node defined in TypeScript are:
+The properties of the [Base Node](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Node/BaseNode.ts) defined in TypeScript are:
 
 ```typescript
 export interface IBaseNodeProperties {
@@ -43,7 +43,7 @@ export interface IBaseNodeProperties {
 
 The `id`, `gridSize`, `uniqueId` and `paper` properties are given by Paper to every Node. As you can see, there isn't much here to define the look and feel of the Node. This only serves as a foundation, and provides definitions for the two properties that are passed in from the Paper instance.
 
-See the `Text Node` to see how `IBaseNodeProperties` is extended to allow for more properties.
+See the [Text Node](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Node/NodeAbstracts/TextNode.ts) to see how `IBaseNodeProperties` is extended to allow for more properties.
 
 ## Base Node Class Properties
 
@@ -54,15 +54,15 @@ protected props: P;
 private _group: SVGElement;
 ```
 
-`P` represents the props given to the base Node or extending class. These props **must** extend `IBaseNodeProperties` - i.e. they must include `id` and `gridSize`.
+`P` represents the props given to the [Base Node](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Node/BaseNode.ts) or extending class. These props **must** extend `IBaseNodeProperties` - i.e. they must include `id` and `gridSize`.
 
-Group is kept private, and should not be touched by any classes extending the base Node. However, `props` is to be used for storing any passed-in props, and is accessible from all extending classes.
+Group is kept private, and should not be touched by any classes extending the [Base Node](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Node/BaseNode.ts). However, `props` is to be used for storing any passed-in props, and is accessible from all extending classes.
 
-Check out how `Text Node` extends the constructor of `BaseNode` to set defaults for certain props.
+Check out how [Text Node](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Node/NodeAbstracts/TextNode.ts) extends the constructor of [Base Node](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Node/BaseNode.ts) to set defaults for certain props.
 
 ## Base Node Class Methods
 
-There are multiple methods within the base Node. Many of these should not be touched, or should only be extended if needed.
+There are multiple methods within the [Base Node](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Node/BaseNode.ts). Many of these should not be touched, or should only be extended if needed.
 
 ### constructor
 
@@ -70,7 +70,7 @@ There are multiple methods within the base Node. Many of these should not be tou
 constructor(props: P);
 ```
 
-Once again, `P` represents the props given to the base Node or extending class. The constructor is where you initialize any of the props passed into the extending class. All of the base Node props are already taken care of, so you only need to worry about the new ones. For example, here is the constructor taken from `TextNode`:
+Once again, `P` represents the props given to the [Base Node](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Node/BaseNode.ts) or extending class. The constructor is where you initialize any of the props passed into the extending class. All of the [Base Node](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Node/BaseNode.ts) props are already taken care of, so you only need to worry about the new ones. For example, here is the constructor taken from [Text Node](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Node/NodeAbstracts/TextNode.ts):
 
 ```typescript
 constructor(props: P) {
@@ -102,7 +102,7 @@ initialize(): void;
 
 > The initialize method **must** be overwritten.
 
-Initialize is called when the Node is being mounted into the DOM. You can build visual SVG components and add them to the group using `this.addToGroup(element)`. This function is only called once, so any changes in the future must be done through setters. Here's `TextNode`'s initialize function as an example:
+Initialize is called when the Node is being mounted into the DOM. You can build visual SVG components and add them to the group using `this.addToGroup(element)`. This function is only called once, so any changes in the future must be done through setters. Here's [Text Node's](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Node/NodeAbstracts/TextNode.ts) initialize function as an example:
 
 ```typescript
 public initialize(): void {
@@ -144,7 +144,7 @@ get width(): number;
 
 External methods need to call `ThisNode.width` in order to calculate various things, and it's not as straightforward as getting it from props \(ex: your component is a circle that takes only radius, so get width must return 2 \* radius\).
 
-For example, here is the width getter in `Rectangle`:
+For example, here is the width getter in [Rectangle](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Node/NodeLibrary/Rectangle.ts):
 
 ```typescript
 get width(): number {
@@ -160,7 +160,7 @@ set width(width: number);
 
 You may also wish to adjust the width of this component, and in doing so, you want those changes to be reflected in the DOM automatically. All of the manipulations must be wrapped in setters so updating the DOM is as easy as This.Node.width = 200;
 
-For example, here is the width setter in `Rectangle`:
+For example, here is the width setter in [Rectangle](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Node/NodeLibrary/Rectangle.ts):
 
 ```typescript
 set width(width: number) {
@@ -203,7 +203,7 @@ get height(): number;
 
 External methods need to call `ThisNode.height` in order to calculate various things, and it's not as straightforward as getting it from props \(ex: your component is a circle that takes only radius, so get height must return 2 \* radius\).
 
-For example, here is the height getter in `Rectangle`:
+For example, here is the height getter in [Rectangle](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Node/NodeLibrary/Rectangle.ts):
 
 ```typescript
 get height(): number {
@@ -219,7 +219,7 @@ set height(height: number);
 
 You may also wish to adjust the height of this component, and in doing so, you want those changes to be reflected in the DOM automatically. All of the manipulations must be wrapped in setters so updating the DOM is as easy as This.Node.height = 200;
 
-For example, here is the height setter in `Rectangle`:
+For example, here is the height setter in [Rectangle](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Node/NodeLibrary/Rectangle.ts):
 
 ```typescript
 set height(height: number) {

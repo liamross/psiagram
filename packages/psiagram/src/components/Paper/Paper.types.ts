@@ -39,18 +39,16 @@ export interface IEdgeComponentMap {
   [key: string]: typeof BaseEdge;
 }
 
-export declare type paperEventType =
-  // Node
-  | 'add-node'
-  | 'move-node'
-  | 'remove-node'
-  // Edge
-  | 'add-edge'
-  | 'move-edge'
-  | 'remove-edge'
-  // Paper
-  | 'paper-init'
-  | 'update-active-item';
+export enum PaperEventType {
+  AddNode = 'add-node',
+  MoveNode = 'move-node',
+  RemoveNode = 'remove-node',
+  AddEdge = 'add-edge',
+  MoveEdge = 'move-edge',
+  RemoveEdge = 'remove-edge',
+  PaperInit = 'paper-init',
+  UpdateActiveItem = 'update-active-item',
+}
 
 // =============================================================================
 // Active Item
@@ -58,14 +56,8 @@ export declare type paperEventType =
 export interface IActiveItem {
   elementType: ElementType;
   id: string;
-  paperItemState: PaperItemState;
-  [key: string]: string;
-}
-
-export enum PaperItemState {
-  Moving = 'moving',
-  Selected = 'selected',
-  Default = 'default',
+  isSelected: boolean;
+  [key: string]: any;
 }
 
 // =============================================================================
@@ -114,4 +106,4 @@ export declare class PaperEdge extends BaseEdge<IBaseEdgeProperties> {
   public coords: ICoordinates[];
 }
 
-export declare type edgeEndPoint = { id: string } | ICoordinates;
+export type edgeEndPoint = { id: string } | ICoordinates;

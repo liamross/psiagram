@@ -5,20 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { Paper } from '../Paper/Paper.base';
-
-export interface IPaperEventProperties {
-  /**
-   * Instance of Paper class that created the event. This is useful for
-   * calling any paper methods from the listeners.
-   */
-  paper: Paper;
+export interface IPaperEventProperties<T, D> {
   /**
    * Target of the event. In many cases this will be the item that will be
    * actioned on by the default action once all listeners have run.
-   * @default null;
    */
-  target?: any;
+  target?: T;
   /**
    * If canPropagate is true, event will continue to propagate to any remaining
    * listeners. This can be prevented permanently by calling stopPropagation.
@@ -27,13 +19,11 @@ export interface IPaperEventProperties {
   canPropagate?: boolean;
   /**
    * An object to provide any additional information from the event.
-   * @default {};
    */
-  data?: { [key: string]: any };
+  data?: D;
   /**
    * The default action to invoke if all the listeners complete, or
    * defaultAction is called on the event.
-   * @default null;
    */
-  defaultAction?: (() => void);
+  defaultAction?: ((data: D) => void);
 }

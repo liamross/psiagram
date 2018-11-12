@@ -11,6 +11,7 @@ import {
   IPluginProperties,
   createSVGWithAttributes,
   setSVGAttribute,
+  PaperEventType,
 } from 'psiagram';
 
 export interface IGridProperties {
@@ -42,7 +43,7 @@ export class Grid implements PsiagramPlugin {
     this._gridSize = properties.attributes.gridSize;
     this._uniqueId = properties.attributes.uniqueId;
 
-    paper.addListener('paper-init', this._mountGrid);
+    paper.addListener(PaperEventType.PaperInit, this._mountGrid);
   }
 
   protected _mountGrid = () => {

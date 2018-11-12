@@ -14,16 +14,16 @@ But first, some links to various Edge files:
    * Provides an extended Edge that renders a black arrow
    * Functional as is \(does not need to be extended\)
 3. [Text Line](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Edge/EdgeLibrary/TextLine.ts)
-   * Extends `Line` to additionally render a title for the Edge
+   * Extends [Line](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Edge/EdgeLibrary/Line.ts) \(see above\) to additionally render a title for the Edge
    * Functional as is \(does not need to be extended\)
 
 Feel free to check the links out to get a basic idea of some of the Edges provided by Psiagram. They will be referenced later on.
 
-The base Edge takes care of a lot of the internal-use scenarios \(example: the `getElement` method is defined already, so that Paper can call it to get the Edge group, which is also pre-defined\). However, some of the functionality must be implemented in order for your custom Edge to work. The following are the methods and interfaces within the Edge API.
+The [Base Edge](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Edge/BaseEdge.ts) takes care of a lot of the internal-use scenarios \(example: the `getElement` method is defined already, so that Paper can call it to get the Edge group, which is also pre-defined\). However, some of the functionality must be implemented in order for your custom Edge to work. The following are the methods and interfaces within the Edge API.
 
 ## Base Edge Initialization Properties
 
-The properties of the base Edge defined in TypeScript are:
+The properties of the [Base Edge](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Edge/BaseEdge.ts) defined in TypeScript are:
 
 ```typescript
 export interface IBaseEdgeProperties {
@@ -36,7 +36,7 @@ export interface IBaseEdgeProperties {
 
 The `id`, `gridSize`, `uniqueId` and `paper` properties are given by Paper to every Edge. As you can see, there isn't much here to define the look and feel of the Edge. This only serves as a foundation, and provides definitions for the two properties that are passed in from the Paper instance.
 
-See the `TextLine` to see how `IBaseEdgeProperties` is extended to allow for more properties.
+See the [Text Line](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Edge/EdgeLibrary/TextLine.ts) to see how `IBaseEdgeProperties` is extended to allow for more properties.
 
 ## Base Edge Class Properties
 
@@ -47,15 +47,15 @@ protected props: P;
 private _group: SVGElement;
 ```
 
-`P` represents the props given to the base Edge or extending class. These props **must** extend `IBaseEdgeProperties` - i.e. they must include `id` and `gridSize`.
+`P` represents the props given to the [Base Edge](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Edge/BaseEdge.ts) or extending class. These props **must** extend `IBaseEdgeProperties` - i.e. they must include `id` and `gridSize`.
 
-Group is kept private, and should **not** be touched by any classes extending the base Edge. However, `props` is to be used for storing any passed-in props, and is accessible from all extending classes.
+Group is kept private, and should **not** be touched by any classes extending the [Base Edge](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Edge/BaseEdge.ts). However, `props` is to be used for storing any passed-in props, and is accessible from all extending classes.
 
-Check out how `Line` extends the constructor of `BaseEdge` to set defaults for certain props.
+Check out how [Line](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Edge/EdgeLibrary/Line.ts) extends the constructor of [Base Edge](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Edge/BaseEdge.ts) to set defaults for certain props.
 
 ## Base Edge Class Methods
 
-There are multiple methods within the base Edge. Many of these should not be touched, or should only be extended if needed.
+There are multiple methods within the [Base Edge](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Edge/BaseEdge.ts). Many of these should not be touched, or should only be extended if needed.
 
 ### constructor
 
@@ -63,7 +63,7 @@ There are multiple methods within the base Edge. Many of these should not be tou
 constructor(props: P);
 ```
 
-Once again, `P` represents the props given to the base Edge or extending class. The constructor is where you initialize any of the props passed into the extending class. All of the base Edge props are already taken care of, so you only need to worry about the new ones. For example, here is the constructor taken from `Line`:
+Once again, `P` represents the props given to the [Base Edge](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Edge/BaseEdge.ts) or extending class. The constructor is where you initialize any of the props passed into the extending class. All of the [Base Edge](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Edge/BaseEdge.ts) props are already taken care of, so you only need to worry about the new ones. For example, here is the constructor taken from [Line](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Edge/EdgeLibrary/Line.ts):
 
 ```typescript
 constructor(props: P) {
@@ -96,7 +96,7 @@ initialize(): void;
 
 > The initialize method **must** be overwritten.
 
-Initialize is called when the Edge is being mounted into the DOM. You can build visual SVG components and add them to the group using `this.addToGroup(element)`. This function is only called once, so any changes in the future must be done through setters. Here's `Line`'s initialize function as an example:
+Initialize is called when the Edge is being mounted into the DOM. You can build visual SVG components and add them to the group using `this.addToGroup(element)`. This function is only called once, so any changes in the future must be done through setters. Here's [Line's](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Edge/EdgeLibrary/Line.ts) initialize function as an example:
 
 ```typescript
 public initialize(): void {
@@ -166,7 +166,7 @@ getCoordinates(): ICoordinates[];
 
 External methods need to call `ThisEdge.getCoordinates()` in order to get the real Edge coordinates. Only the Edge instance knows the true coordinates, as it may choose to manipulate them internally regardless of the input coordinates. Any implementations of this method must return the true coordinates of the Edge.
 
-For example, here is the `getCoordinates` implementation in `Line`:
+For example, here is the `getCoordinates` implementation in [Line](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Edge/EdgeLibrary/Line.ts):
 
 ```typescript
 public getCoordinates(): ICoordinates[] {
@@ -184,7 +184,7 @@ setCoordinates(coordinates: ICoordinates[]): void;
 
 External methods need to call `ThisEdge.setCoordinates()` in order to provide potential coordinates to the Edge. Once these are finalized, they should be stored within the Edge in order to be easily retrieved using `getCoordinates`.
 
-For example, here is the `setCoordinates` implementation in `Line`:
+For example, here is the `setCoordinates` implementation in [Line](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Edge/EdgeLibrary/Line.ts):
 
 ```typescript
 public setCoordinates(coordinates: ICoordinates[]): void {

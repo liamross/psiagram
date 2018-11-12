@@ -9,7 +9,6 @@ import {
   Paper,
   getElementType,
   ElementType,
-  PaperItemState,
   roundToNearest,
   PsiagramPlugin,
   ICoordinates,
@@ -98,8 +97,9 @@ export class MouseEvents implements PsiagramPlugin {
       // Set clicked node as moving item.
       this._paperInstance.updateActiveItem({
         id,
-        paperItemState: PaperItemState.Moving,
+        isMoving: true,
         elementType: ElementType.Node,
+        isSelected: false,
       });
       // Store initial mouse coordinates.
       this._initialMouseCoords = {
@@ -133,8 +133,8 @@ export class MouseEvents implements PsiagramPlugin {
 
     if (
       activeItem &&
+      activeItem.isMoving &&
       activeItem.elementType === ElementType.Node &&
-      activeItem.paperItemState === PaperItemState.Moving &&
       this._initialMouseCoords &&
       this._initialPaperCoords &&
       this._paperInstance
@@ -149,6 +149,7 @@ export class MouseEvents implements PsiagramPlugin {
       // Find new block coordinates.
       const blockX = this._initialPaperCoords.x - roundedMouseDeltaX;
       const blockY = this._initialPaperCoords.y - roundedMouseDeltaY;
+      // Set coordinates.
       const node = this._paperInstance.getNode(id);
       node.coords = { x: blockX, y: blockY };
     } else {
@@ -168,14 +169,15 @@ export class MouseEvents implements PsiagramPlugin {
 
     if (
       activeItem &&
+      activeItem.isMoving &&
       activeItem.elementType === ElementType.Node &&
-      activeItem.paperItemState === PaperItemState.Moving &&
       this._paperInstance
     ) {
       // Set active node to selected state.
       this._paperInstance.updateActiveItem({
         ...activeItem,
-        paperItemState: PaperItemState.Selected,
+        isMoving: false,
+        isSelected: true,
       });
     } else {
       throw new PaperError(

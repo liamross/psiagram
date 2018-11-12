@@ -17,7 +17,7 @@ import {
   IPaperInputEdge,
   edgeEndPoint,
   PaperEdge,
-  paperEventType,
+  PaperEventType,
 } from './Paper.types';
 import { PaperEvent } from '../PaperEvent';
 import {
@@ -169,8 +169,7 @@ export class Paper {
     }
 
     // Fire paper init event.
-    const evt = new PaperEvent('paper-init', { paper: this });
-    this._fireEvent(evt);
+    this._fireEvent(new PaperEvent(PaperEventType.PaperInit, this));
   }
 
   /**
@@ -210,21 +209,9 @@ export class Paper {
       // Set proxies to allow direct get and set coordinates on each Node, while
       // still having it trigger within the Paper (where coords are stored).
       Object.defineProperties(instance, {
-        _getNodeCoordsProxy: {
-          value: this._getNodeCoords,
-          configurable: true,
-        },
-        _setNodeCoordsProxy: {
-          value: this._setNodeCoords,
-          configurable: true,
-        },
         coords: {
-          get() {
-            return this._getNodeCoordsProxy(this.props.id);
-          },
-          set(coords: ICoordinates) {
-            this._setNodeCoordsProxy(this.props.id, coords);
-          },
+          get: () => this._getNodeCoords(node.id),
+          set: (coords: ICoordinates) => this._setNodeCoords(node.id, coords),
           configurable: true,
         },
       });
@@ -238,34 +225,31 @@ export class Paper {
       const roundedX = roundToNearest(node.coords.x, this._gridSize);
       const roundedY = roundToNearest(node.coords.y, this._gridSize);
 
-      const evt = new PaperEvent('add-node', {
-        paper: this,
-        target: newNode,
-        data: { roundedX, roundedY },
-        defaultAction: () => {
-          this._nodes[node.id] = newNode;
-          const ref = this._nodes[node.id].instance.getElement();
-
-          if (ref) {
-            setSVGAttribute(
-              ref,
-              'transform',
-              `translate(${roundedX} ${roundedY})`,
-            );
-
-            this._paper.appendChild(ref);
-          } else {
-            throw new PaperError(
-              'E_INV_ELEM',
-              'Invalid element returned from Node',
-              'Paper.base.ts',
-              'addNode',
-            );
-          }
-        },
-      });
-
-      this._fireEvent(evt);
+      this._fireEvent(
+        new PaperEvent(PaperEventType.AddNode, this, {
+          target: newNode,
+          data: { x: roundedX, y: roundedY },
+          defaultAction: data => {
+            this._nodes[node.id] = newNode;
+            const ref = this._nodes[node.id].instance.getElement();
+            if (ref) {
+              setSVGAttribute(
+                ref,
+                'transform',
+                `translate(${data.x} ${data.y})`,
+              );
+              this._paper.appendChild(ref);
+            } else {
+              throw new PaperError(
+                'E_INV_ELEM',
+                'Invalid element returned from Node',
+                'Paper.base.ts',
+                'addNode',
+              );
+            }
+          },
+        }),
+      );
     }
   }
 
@@ -294,33 +278,30 @@ export class Paper {
    */
   public removeNode(id: string): void {
     if (this._nodes.hasOwnProperty(id)) {
-      const evt = new PaperEvent('remove-node', {
-        paper: this,
-        target: this._nodes[id],
-        defaultAction: () => {
-          // Fire node teardown.
-          this._nodes[id].instance.teardown();
+      this._fireEvent(
+        new PaperEvent(PaperEventType.RemoveNode, this, {
+          target: this._nodes[id],
+          defaultAction: () => {
+            this._nodes[id].instance.teardown();
 
-          // Remove all edges that use node as end point.
-          Object.keys(this._edges).forEach(edgeId => {
-            const edge = this._edges[edgeId];
-            if (
-              (edge.source.hasOwnProperty('id') &&
-                (edge.source as { id: string }).id === id) ||
-              (edge.target.hasOwnProperty('id') &&
-                (edge.target as { id: string }).id === id)
-            ) {
-              this.removeEdge(edgeId);
-            }
-          });
+            // Remove all edges that use node as end point.
+            Object.keys(this._edges).forEach(edgeId => {
+              const edge = this._edges[edgeId];
+              if (
+                (edge.source.hasOwnProperty('id') &&
+                  (edge.source as { id: string }).id === id) ||
+                (edge.target.hasOwnProperty('id') &&
+                  (edge.target as { id: string }).id === id)
+              ) {
+                this.removeEdge(edgeId);
+              }
+            });
 
-          // Remove node.
-          this._nodes[id].instance.getElement().remove();
-          delete this._nodes[id];
-        },
-      });
-
-      this._fireEvent(evt);
+            this._nodes[id].instance.getElement().remove();
+            delete this._nodes[id];
+          },
+        }),
+      );
     } else {
       throw new PaperError(
         'E_NO_ID',
@@ -361,55 +342,19 @@ export class Paper {
       // coordinates on each Edge, while still having it trigger within the
       // Paper (where source, target and coords are stored).
       Object.defineProperties(instance, {
-        _getEdgeSourceProxy: {
-          value: this._getEdgeSource,
-          configurable: true,
-        },
-        _setEdgeSourceProxy: {
-          value: this._setEdgeSource,
-          configurable: true,
-        },
-        _getEdgeTargetProxy: {
-          value: this._getEdgeTarget,
-          configurable: true,
-        },
-        _setEdgeTargetProxy: {
-          value: this._setEdgeTarget,
-          configurable: true,
-        },
-        _getEdgeCoordsProxy: {
-          value: this._getEdgeCoords,
-          configurable: true,
-        },
-        _setEdgeCoordsProxy: {
-          value: this._setEdgeCoords,
-          configurable: true,
-        },
         source: {
-          get() {
-            return this._getEdgeSourceProxy(this.props.id);
-          },
-          set(source: edgeEndPoint) {
-            this._setEdgeSourceProxy(this.props.id, source);
-          },
+          get: () => this._getEdgeSource(edge.id),
+          set: (source: edgeEndPoint) => this._setEdgeSource(edge.id, source),
           configurable: true,
         },
         target: {
-          get() {
-            return this._getEdgeTargetProxy(this.props.id);
-          },
-          set(target: edgeEndPoint) {
-            this._setEdgeTargetProxy(this.props.id, target);
-          },
+          get: () => this._getEdgeTarget(edge.id),
+          set: (target: edgeEndPoint) => this._setEdgeTarget(edge.id, target),
           configurable: true,
         },
         coords: {
-          get() {
-            return this._getEdgeCoordsProxy(this.props.id);
-          },
-          set(coords: ICoordinates[]) {
-            this._setEdgeCoordsProxy(this.props.id, coords);
-          },
+          get: () => this._getEdgeCoords(edge.id),
+          set: (coords: ICoordinates[]) => this._setEdgeCoords(edge.id, coords),
           configurable: true,
         },
       });
@@ -433,18 +378,16 @@ export class Paper {
           instance: (instance as unknown) as PaperEdge,
         };
 
-        const evt = new PaperEvent('add-edge', {
-          paper: this,
-          target: newEdge,
-          defaultAction: () => {
-            this._edges[edge.id] = newEdge;
-
-            this._updateEdgeRoute(edge.id);
-            this._paper.insertBefore(ref, this._defs.nextSibling);
-          },
-        });
-
-        this._fireEvent(evt);
+        this._fireEvent(
+          new PaperEvent(PaperEventType.AddEdge, this, {
+            target: newEdge,
+            defaultAction: () => {
+              this._edges[edge.id] = newEdge;
+              this._updateEdgeRoute(edge.id);
+              this._paper.insertBefore(ref, this._defs.nextSibling);
+            },
+          }),
+        );
       } else {
         throw new PaperError(
           'E_INV_ELEM',
@@ -481,20 +424,16 @@ export class Paper {
    */
   public removeEdge(id: string): void {
     if (this._edges.hasOwnProperty(id)) {
-      const evt = new PaperEvent('remove-edge', {
-        paper: this,
-        target: this._edges[id],
-        defaultAction: () => {
-          // Fire edge teardown.
-          this._edges[id].instance.teardown();
-
-          // Remove edge.
-          this._edges[id].instance.getElement().remove();
-          delete this._edges[id];
-        },
-      });
-
-      this._fireEvent(evt);
+      this._fireEvent(
+        new PaperEvent(PaperEventType.RemoveEdge, this, {
+          target: this._edges[id],
+          defaultAction: () => {
+            this._edges[id].instance.teardown();
+            this._edges[id].instance.getElement().remove();
+            delete this._edges[id];
+          },
+        }),
+      );
     } else {
       throw new PaperError(
         'E_NO_ID',
@@ -527,16 +466,15 @@ export class Paper {
       return;
     }
 
-    const evt = new PaperEvent('update-active-item', {
-      paper: this,
-      target: activeItem || null,
-      data: { oldActiveItem },
-      defaultAction: () => {
-        this._activeItem = activeItem || null;
-      },
-    });
-
-    this._fireEvent(evt);
+    this._fireEvent(
+      new PaperEvent(PaperEventType.UpdateActiveItem, this, {
+        target: activeItem,
+        data: { activeItem, oldActiveItem },
+        defaultAction: data => {
+          this._activeItem = data.activeItem || null;
+        },
+      }),
+    );
   }
 
   /**
@@ -547,8 +485,8 @@ export class Paper {
    * @param listener The listener function triggered when type of event happens.
    */
   public addListener(
-    type: paperEventType,
-    listener: (evt: PaperEvent) => void,
+    type: PaperEventType,
+    listener: (evt: PaperEvent<any, any>) => void,
   ): void {
     if (this._listeners[type] === undefined) {
       this._listeners[type] = [];
@@ -566,8 +504,8 @@ export class Paper {
    * @param listener The listener function to remove.
    */
   public removeListener(
-    type: paperEventType,
-    listener: (evt: PaperEvent) => void,
+    type: PaperEventType,
+    listener: (evt: PaperEvent<any, any>) => void,
   ): void {
     if (this._listeners[type] !== undefined && this._listeners[type].length) {
       const listenerIndex = this._listeners[type].findIndex(
@@ -591,15 +529,12 @@ export class Paper {
    *
    * @param evt The event originating from the paper.
    */
-  public _fireEvent(evt: PaperEvent): void {
-    const type = evt.eventType;
-
-    if (Array.isArray(this._listeners[type]) && this._listeners[type].length) {
-      this._listeners[type].forEach(listener => {
+  public _fireEvent(evt: PaperEvent<any, any>): void {
+    if (Array.isArray(this._listeners[evt.eventType])) {
+      this._listeners[evt.eventType].forEach(listener => {
         if (evt.canPropagate) listener(evt);
       });
     }
-
     evt.defaultAction();
   }
 
@@ -642,9 +577,7 @@ export class Paper {
     const childDefs = this._defs.children;
     for (let i = childDefs.length - 1; i >= 0; i--) {
       const def = childDefs[i];
-      if (id === def.getAttribute('data-defs-id')) {
-        this._defs.removeChild(def);
-      }
+      if (id === def.getAttribute('data-defs-id')) this._defs.removeChild(def);
     }
   }
 
@@ -697,44 +630,50 @@ export class Paper {
           targetMidPoint = getNodeMidpoint(targetNode, this._gridSize);
         }
 
-        const evt = new PaperEvent('move-edge', {
-          paper: this,
-          target: edge,
-          data: {
-            nodes: { sourceNode, sourceMidPoint, targetNode, targetMidPoint },
-            points: { sourcePoint, targetPoint },
-          },
-          defaultAction: () => {
-            if (sourceNode) {
-              sourcePoint = getEdgeNodeIntersection(
-                sourceNode,
-                edge.coords[0] || targetMidPoint || targetPoint,
-                this._gridSize,
-              );
-            }
-            if (targetNode) {
-              targetPoint = getEdgeNodeIntersection(
-                targetNode,
-                edge.coords[edge.coords.length - 1] ||
-                  sourceMidPoint ||
-                  sourcePoint,
-                this._gridSize,
-                4,
-              );
-            }
+        this._fireEvent(
+          new PaperEvent(PaperEventType.MoveEdge, this, {
+            target: edge,
+            data: {
+              source: {
+                node: sourceNode,
+                midpoint: sourceMidPoint,
+                point: sourcePoint,
+              },
+              target: {
+                node: targetNode,
+                midpoint: targetMidPoint,
+                point: targetPoint,
+              },
+              coords: edge.coords,
+            },
+            defaultAction: ({ source, target, coords }) => {
+              if (source.node) {
+                source.point = getEdgeNodeIntersection(
+                  source.node,
+                  coords[0] || target.midpoint || target.point,
+                  this._gridSize,
+                );
+              }
+              if (target.node) {
+                target.point = getEdgeNodeIntersection(
+                  target.node,
+                  coords[coords.length - 1] || source.midpoint || source.point,
+                  this._gridSize,
+                  4,
+                );
+              }
 
-            edge.instance.setCoordinates([
-              sourcePoint as ICoordinates,
-              ...edge.coords.map(coordinate => ({
-                x: roundToNearest(coordinate.x, this._gridSize),
-                y: roundToNearest(coordinate.y, this._gridSize),
-              })),
-              targetPoint as ICoordinates,
-            ]);
-          },
-        });
-
-        this._fireEvent(evt);
+              edge.instance.setCoordinates([
+                source.point as ICoordinates,
+                ...coords.map(coordinate => ({
+                  x: roundToNearest(coordinate.x, this._gridSize),
+                  y: roundToNearest(coordinate.y, this._gridSize),
+                })),
+                target.point as ICoordinates,
+              ]);
+            },
+          }),
+        );
       } else {
         throw new PaperError(
           'E_NO_ID',
@@ -792,34 +731,33 @@ export class Paper {
       if (!areCoordsEqual(node.coords, newCoords)) {
         const oldCoords = { ...node.coords };
 
-        const evt = new PaperEvent('move-node', {
-          paper: this,
-          target: node,
-          data: { newCoords, oldCoords },
-          defaultAction: () => {
-            node.coords = newCoords;
+        this._fireEvent(
+          new PaperEvent(PaperEventType.MoveNode, this, {
+            target: node,
+            data: { coords: newCoords, oldCoords },
+            defaultAction: data => {
+              node.coords = data.coords;
 
-            setSVGAttribute(
-              node.instance.getElement(),
-              'transform',
-              `translate(${node.coords.x} ${node.coords.y})`,
-            );
+              setSVGAttribute(
+                node.instance.getElement(),
+                'transform',
+                `translate(${node.coords.x} ${node.coords.y})`,
+              );
 
-            Object.keys(this._edges).forEach(edgeId => {
-              const edge = this._edges[edgeId];
-              if (
-                (edge.source.hasOwnProperty('id') &&
-                  (edge.source as { id: string }).id === id) ||
-                (edge.target.hasOwnProperty('id') &&
-                  (edge.target as { id: string }).id === id)
-              ) {
-                this._updateEdgeRoute(edgeId);
-              }
-            });
-          },
-        });
-
-        this._fireEvent(evt);
+              Object.keys(this._edges).forEach(edgeId => {
+                const edge = this._edges[edgeId];
+                if (
+                  (edge.source.hasOwnProperty('id') &&
+                    (edge.source as { id: string }).id === id) ||
+                  (edge.target.hasOwnProperty('id') &&
+                    (edge.target as { id: string }).id === id)
+                ) {
+                  this._updateEdgeRoute(edgeId);
+                }
+              });
+            },
+          }),
+        );
       }
     } else {
       throw new PaperError(

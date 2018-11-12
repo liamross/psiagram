@@ -10,6 +10,7 @@ import { Rectangle } from '../components/Node';
 import {
   isNodeColliding,
   roundToNearest,
+  roundCoordsToNearest,
   getNodeMidpoint,
   getEdgeNodeIntersection,
   areCoordsEqual,
@@ -125,6 +126,21 @@ describe('Diagram Utilities', () => {
     it('returns minimum if num is lower and no interval is given', () => {
       expect(roundToNearest(10, undefined, 20)).toBe(20);
       expect(roundToNearest(-10, undefined, 20)).toBe(20);
+    });
+  });
+
+  describe('roundCoordsToNearest', () => {
+    it('rounds coordinates to the nearest grid size', () => {
+      // Rounds correctly
+      expect(roundCoordsToNearest({ x: 8, y: 8 }, 20)).toEqual({
+        x: 0,
+        y: 0,
+      });
+      // Rounds up
+      expect(roundCoordsToNearest({ x: 10, y: 10 }, 20)).toEqual({
+        x: 20,
+        y: 20,
+      });
     });
   });
 

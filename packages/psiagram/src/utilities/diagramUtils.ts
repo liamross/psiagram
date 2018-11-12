@@ -67,6 +67,19 @@ export const roundToNearest = (
 };
 
 /**
+ * Rounds a set of coordinates to the nearest grid.
+ * @param coords Set of coordinates.
+ * @param gridSize Optional. Size of grid.
+ */
+export const roundCoordsToNearest = (
+  coords: ICoordinates,
+  gridSize?: number,
+): ICoordinates => ({
+  x: roundToNearest(coords.x, gridSize),
+  y: roundToNearest(coords.y, gridSize),
+});
+
+/**
  * Find the coordinates of a node's midpoint.
  *
  * @param node The node to get midpoint of.

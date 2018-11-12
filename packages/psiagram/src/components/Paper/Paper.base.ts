@@ -31,6 +31,7 @@ import {
   getNodeMidpoint,
   getEdgeNodeIntersection,
   areCoordsEqual,
+  roundCoordsToNearest,
 } from '../../utilities';
 import { PaperError } from '../PaperError';
 import { ICoordinates } from '../../common';
@@ -602,10 +603,7 @@ export class Paper {
         sourceNode = this._nodes[source.id];
       } else {
         const source = edge.source as ICoordinates;
-        sourcePoint = {
-          x: roundToNearest(source.x, this._gridSize),
-          y: roundToNearest(source.y, this._gridSize),
-        };
+        sourcePoint = roundCoordsToNearest(source, this._gridSize);
       }
 
       if (edge.target.hasOwnProperty('id')) {
@@ -613,10 +611,7 @@ export class Paper {
         targetNode = this._nodes[target.id];
       } else {
         const target = edge.target as ICoordinates;
-        targetPoint = {
-          x: roundToNearest(target.x, this._gridSize),
-          y: roundToNearest(target.y, this._gridSize),
-        };
+        targetPoint = roundCoordsToNearest(target, this._gridSize);
       }
 
       if ((sourcePoint || sourceNode) && (targetPoint || targetNode)) {
@@ -665,10 +660,9 @@ export class Paper {
 
               edge.instance.setCoordinates([
                 source.point as ICoordinates,
-                ...coords.map(coordinate => ({
-                  x: roundToNearest(coordinate.x, this._gridSize),
-                  y: roundToNearest(coordinate.y, this._gridSize),
-                })),
+                ...coords.map(coordinate =>
+                  roundCoordsToNearest(coordinate, this._gridSize),
+                ),
                 target.point as ICoordinates,
               ]);
             },

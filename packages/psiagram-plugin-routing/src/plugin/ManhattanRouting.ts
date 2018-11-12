@@ -14,7 +14,6 @@ import {
   IPaperStoredEdge,
   IPluginProperties,
   PaperEvent,
-  getEdgeNodeIntersection,
 } from 'psiagram';
 
 export interface IManhattanRoutingProperties {
@@ -60,83 +59,61 @@ export class ManhattanRouting implements PsiagramPlugin {
     }
   }
 
-  protected _updateEdgeRoute = (evt: PaperEvent): void => {
-    const edge = evt.target as IPaperStoredEdge;
-    const {
-      nodes: { sourceNode, sourceMidPoint, targetNode, targetMidPoint },
-      points: { sourcePoint, targetPoint },
-    } = evt.data as {
-      nodes: {
-        sourceNode: IPaperStoredNode | null;
-        sourceMidPoint: ICoordinates | null;
-        targetNode: IPaperStoredNode | null;
-        targetMidPoint: ICoordinates | null;
-      };
-      points: {
-        sourcePoint: ICoordinates | null;
-        targetPoint: ICoordinates | null;
-      };
-    };
+  protected _updateEdgeRoute = (
+    evt: PaperEvent<
+      IPaperStoredEdge,
+      {
+        source: {
+          node: IPaperStoredNode | null;
+          midpoint: ICoordinates | null;
+          point: ICoordinates | null;
+        };
+        target: {
+          node: IPaperStoredNode | null;
+          midpoint: ICoordinates | null;
+          point: ICoordinates | null;
+        };
+        coords: ICoordinates[];
+      }
+    >,
+  ): void => {
+    const { source, target, coords } = evt.data;
 
-    let finalSourcePoint = sourcePoint;
-    let finalTargetPoint = targetPoint;
+    const initialCoordinates = [...coords];
 
     let prevDirection: Direction = Direction.Horizontal;
-    let fullCoordinates: ICoordinates[] = [];
+    let manhattanCoords: ICoordinates[] = [];
 
-    const sourceBox = this._getBoundingBox(sourceNode, sourcePoint);
-    const targetBox = this._getBoundingBox(targetNode, targetPoint);
+    const sourceBox = this._getBoundingBox(source.node, source.point);
+    const targetBox = this._getBoundingBox(target.node, target.point);
 
     // Get initial sub-points.
     const sourceSubPoints = this._getSubPoints(
-      (sourceMidPoint || sourcePoint) as ICoordinates,
-      edge.coords[0] || targetMidPoint || targetPoint,
+      (source.midpoint || source.point) as ICoordinates,
+      initialCoordinates[0] || target.midpoint || target.point,
       sourceBox,
-      edge.coords[0] ? null : targetBox,
+      initialCoordinates[0] ? null : targetBox,
       null,
     );
     prevDirection = sourceSubPoints.prevDirection;
-    fullCoordinates = sourceSubPoints.coords;
+    manhattanCoords = sourceSubPoints.coords;
 
     // Get sub-points for each coordinate.
-    edge.coords.forEach((coord, index) => {
+    initialCoordinates.forEach((coord, index) => {
       const subPoints = this._getSubPoints(
         coord,
-        edge.coords[index + 1] || targetMidPoint || targetPoint,
+        initialCoordinates[index + 1] || target.midpoint || target.point,
         null,
-        edge.coords[index + 1] ? null : targetBox,
+        initialCoordinates[index + 1] ? null : targetBox,
         prevDirection,
       );
       prevDirection = subPoints.prevDirection;
-      fullCoordinates = [...fullCoordinates, coord, ...subPoints.coords];
+      manhattanCoords = [...manhattanCoords, coord, ...subPoints.coords];
     });
 
-    if (sourceNode) {
-      finalSourcePoint = getEdgeNodeIntersection(
-        sourceNode,
-        fullCoordinates[0],
-        this._gridSize,
-      );
-    }
-    if (targetNode) {
-      finalTargetPoint = getEdgeNodeIntersection(
-        targetNode,
-        fullCoordinates[fullCoordinates.length - 1],
-        this._gridSize,
-        4,
-      );
-    }
-
-    edge.instance.setCoordinates([
-      finalSourcePoint as ICoordinates,
-      ...fullCoordinates.map(coordinate => ({
-        x: roundToNearest(coordinate.x, this._gridSize),
-        y: roundToNearest(coordinate.y, this._gridSize),
-      })),
-      finalTargetPoint as ICoordinates,
-    ]);
-
-    evt.preventDefault();
+    // Set new coords for data.
+    const data = evt.data;
+    data.coords = manhattanCoords;
   };
 
   /**

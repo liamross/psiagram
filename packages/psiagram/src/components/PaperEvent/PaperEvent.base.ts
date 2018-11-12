@@ -9,24 +9,29 @@ import { paperEventType } from '../Paper/Paper.types';
 import { Paper } from '../Paper/Paper.base';
 import { IPaperEventProperties } from './PaperEvent.types';
 
-export class PaperEvent {
+export class PaperEvent<T = undefined, D = undefined> {
   private _eventType: paperEventType;
   private _paper: Paper;
-  private _target: any;
-  private _defaultAction: (() => void) | null;
+
+  private _target: T | undefined;
   private _canPropagate: boolean;
-  private _data: { [key: string]: any };
+  private _data: D | undefined;
+  private _defaultAction: ((data: D) => void) | undefined;
 
   constructor(
     eventType: paperEventType,
-    { paper, target, canPropagate, data, defaultAction }: IPaperEventProperties,
+    paper: Paper,
+    paperEventProperties: IPaperEventProperties<T, D> = {},
   ) {
+    const { target, canPropagate, data, defaultAction } = paperEventProperties;
+
     this._eventType = eventType;
     this._paper = paper;
-    this._target = target || null;
-    this._canPropagate = canPropagate || true;
-    this._data = data || {};
-    this._defaultAction = defaultAction || null;
+
+    this._target = target;
+    this._canPropagate = canPropagate === undefined ? true : !!canPropagate;
+    this._data = data;
+    this._defaultAction = defaultAction;
   }
 
   /**
@@ -50,8 +55,8 @@ export class PaperEvent {
    * be done early by calling defaultAction, and can be prevented permanently by
    * calling preventDefault.
    */
-  get target(): any {
-    return this._target;
+  get target(): T {
+    return this._target as T;
   }
 
   /**
@@ -66,8 +71,8 @@ export class PaperEvent {
   /**
    * Get the data object. This contains any other data specific to the event.
    */
-  get data(): { [key: string]: any } {
-    return this._data;
+  get data(): D {
+    return this._data as D;
   }
 
   /**
@@ -78,10 +83,9 @@ export class PaperEvent {
    * is invoked.
    */
   public defaultAction(): void {
-    if (typeof this._defaultAction === 'function') {
-      this._defaultAction();
-    }
-    this._defaultAction = null;
+    const data = this._data as D;
+    if (this._defaultAction) this._defaultAction(data);
+    this._defaultAction = undefined;
   }
 
   /**
@@ -90,7 +94,7 @@ export class PaperEvent {
    * default action.
    */
   public preventDefault(): void {
-    this._defaultAction = null;
+    this._defaultAction = undefined;
   }
 
   /**

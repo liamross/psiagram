@@ -7,13 +7,13 @@
 
 import {
   Paper,
-  roundToNearest,
   PsiagramPlugin,
   ICoordinates,
   IPaperStoredNode,
   IPaperStoredEdge,
   IPluginProperties,
   PaperEvent,
+  PaperEventType,
 } from 'psiagram';
 
 export interface IManhattanRoutingProperties {
@@ -50,12 +50,18 @@ export class ManhattanRouting implements PsiagramPlugin {
     this._paperInstance = paper;
     this._gridSize = properties.attributes.gridSize;
 
-    this._paperInstance.addListener('move-edge', this._updateEdgeRoute);
+    this._paperInstance.addListener(
+      PaperEventType.MoveEdge,
+      this._updateEdgeRoute,
+    );
   }
 
   public teardown() {
     if (this._paperInstance) {
-      this._paperInstance.removeListener('move-edge', this._updateEdgeRoute);
+      this._paperInstance.removeListener(
+        PaperEventType.MoveEdge,
+        this._updateEdgeRoute,
+      );
     }
   }
 

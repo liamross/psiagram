@@ -17,7 +17,7 @@ import {
   IPaperInputEdge,
   edgeEndPoint,
   PaperEdge,
-  paperEventType,
+  PaperEventType,
 } from './Paper.types';
 import { PaperEvent } from '../PaperEvent';
 import {
@@ -169,7 +169,7 @@ export class Paper {
     }
 
     // Fire paper init event.
-    this._fireEvent(new PaperEvent('paper-init', this));
+    this._fireEvent(new PaperEvent(PaperEventType.PaperInit, this));
   }
 
   /**
@@ -226,7 +226,7 @@ export class Paper {
       const roundedY = roundToNearest(node.coords.y, this._gridSize);
 
       this._fireEvent(
-        new PaperEvent('add-node', this, {
+        new PaperEvent(PaperEventType.AddNode, this, {
           target: newNode,
           data: { x: roundedX, y: roundedY },
           defaultAction: data => {
@@ -279,7 +279,7 @@ export class Paper {
   public removeNode(id: string): void {
     if (this._nodes.hasOwnProperty(id)) {
       this._fireEvent(
-        new PaperEvent('remove-node', this, {
+        new PaperEvent(PaperEventType.RemoveNode, this, {
           target: this._nodes[id],
           defaultAction: () => {
             this._nodes[id].instance.teardown();
@@ -379,7 +379,7 @@ export class Paper {
         };
 
         this._fireEvent(
-          new PaperEvent('add-edge', this, {
+          new PaperEvent(PaperEventType.AddEdge, this, {
             target: newEdge,
             defaultAction: () => {
               this._edges[edge.id] = newEdge;
@@ -425,7 +425,7 @@ export class Paper {
   public removeEdge(id: string): void {
     if (this._edges.hasOwnProperty(id)) {
       this._fireEvent(
-        new PaperEvent('remove-edge', this, {
+        new PaperEvent(PaperEventType.RemoveEdge, this, {
           target: this._edges[id],
           defaultAction: () => {
             this._edges[id].instance.teardown();
@@ -482,7 +482,7 @@ export class Paper {
     }
 
     this._fireEvent(
-      new PaperEvent('update-active-item', this, {
+      new PaperEvent(PaperEventType.UpdateActiveItem, this, {
         target: activeItem,
         data: { activeItem, oldActiveItem },
         defaultAction: data => {
@@ -500,7 +500,7 @@ export class Paper {
    * @param listener The listener function triggered when type of event happens.
    */
   public addListener(
-    type: paperEventType,
+    type: PaperEventType,
     listener: (evt: PaperEvent<any, any>) => void,
   ): void {
     if (this._listeners[type] === undefined) {
@@ -519,7 +519,7 @@ export class Paper {
    * @param listener The listener function to remove.
    */
   public removeListener(
-    type: paperEventType,
+    type: PaperEventType,
     listener: (evt: PaperEvent<any, any>) => void,
   ): void {
     if (this._listeners[type] !== undefined && this._listeners[type].length) {
@@ -646,7 +646,7 @@ export class Paper {
         }
 
         this._fireEvent(
-          new PaperEvent('move-edge', this, {
+          new PaperEvent(PaperEventType.MoveEdge, this, {
             target: edge,
             data: {
               source: {
@@ -747,7 +747,7 @@ export class Paper {
         const oldCoords = { ...node.coords };
 
         this._fireEvent(
-          new PaperEvent('move-node', this, {
+          new PaperEvent(PaperEventType.MoveNode, this, {
             target: node,
             data: { coords: newCoords, oldCoords },
             defaultAction: data => {

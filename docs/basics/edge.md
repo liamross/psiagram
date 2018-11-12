@@ -42,7 +42,7 @@ This is the source from which the Edge extends. This has the type `edgeEndPoint`
 * edgeEndPoint:
 
   ```typescript
-  declare type edgeEndPoint = { id: string } | ICoordinates;
+  type edgeEndPoint = { id: string } | ICoordinates;
   ```
 
 * iCoordinates:

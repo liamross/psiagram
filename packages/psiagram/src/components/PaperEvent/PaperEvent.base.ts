@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { paperEventType } from '../Paper/Paper.types';
+import { PaperEventType } from '../Paper/Paper.types';
 import { Paper } from '../Paper/Paper.base';
 import { IPaperEventProperties } from './PaperEvent.types';
 
 export class PaperEvent<T = undefined, D = undefined> {
-  private _eventType: paperEventType;
+  private _eventType: PaperEventType;
   private _paper: Paper;
 
   private _target: T | undefined;
@@ -19,7 +19,7 @@ export class PaperEvent<T = undefined, D = undefined> {
   private _defaultAction: ((data: D) => void) | undefined;
 
   constructor(
-    eventType: paperEventType,
+    eventType: PaperEventType,
     paper: Paper,
     paperEventProperties: IPaperEventProperties<T, D> = {},
   ) {
@@ -37,7 +37,7 @@ export class PaperEvent<T = undefined, D = undefined> {
   /**
    * Get the paper event type string.
    */
-  get eventType(): paperEventType {
+  get eventType(): PaperEventType {
     return this._eventType;
   }
 

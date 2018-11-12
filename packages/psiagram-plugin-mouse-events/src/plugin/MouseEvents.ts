@@ -197,8 +197,9 @@ export class MouseEvents implements PsiagramPlugin {
       // Set clicked edge as moving item.
       this._paperInstance.updateActiveItem({
         id,
-        paperItemState: PaperItemState.Moving,
+        isMoving: true,
         elementType: ElementType.Edge,
+        isSelected: false,
       });
       // Store initial mouse coordinates.
       this._initialMouseCoords = {

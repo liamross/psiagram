@@ -18,40 +18,6 @@ export type PaperEventProperties<T extends PaperEventType> =
       : { data: PaperEventData<T> });
 
 // prettier-ignore
-// export type PaperEventProperties<T> =
-//   // Paper
-//   T extends PaperEventType.PaperInit ? undefined :
-//   // Node
-//   T extends PaperEventType.AddNode ? {
-//     target: PaperEventTarget<T>;
-//     data: PaperEventData<T>;
-//     defaultAction: ((data: PaperEventData<T>) => void) } :
-//   T extends PaperEventType.MoveNode ? {
-//     target: PaperEventTarget<T>;
-//     data: PaperEventData<T>;
-//     defaultAction: ((data: PaperEventData<T>) => void) } :
-//   T extends PaperEventType.RemoveNode ? {
-//     target: PaperEventTarget<T>;
-//     defaultAction: (() => void) } :
-//   // Edge
-//   T extends PaperEventType.AddEdge ? {
-//     target: PaperEventTarget<T>;
-//     defaultAction: (() => void) } :
-//   T extends PaperEventType.MoveEdge ? {
-//     target: PaperEventTarget<T>;
-//     data: PaperEventData<T>;
-//     defaultAction: ((data: PaperEventData<T>) => void) } :
-//   T extends PaperEventType.RemoveEdge ? {
-//     target: PaperEventTarget<T>;
-//     defaultAction: (() => void) } :
-//   // Active Item
-//   T extends PaperEventType.UpdateActiveItem ? {
-//     target: PaperEventTarget<T>;
-//     data: PaperEventData<T>;
-//     defaultAction: ((data: PaperEventData<T>) => void) } :
-//   never;
-
-// prettier-ignore
 export type PaperEventTarget<T> =
   // Paper
   T extends PaperEventType.PaperInit ? undefined :

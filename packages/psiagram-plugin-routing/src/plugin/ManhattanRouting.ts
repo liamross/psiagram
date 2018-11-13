@@ -66,22 +66,7 @@ export class ManhattanRouting implements PsiagramPlugin {
   }
 
   protected _updateEdgeRoute = (
-    evt: PaperEvent<
-      IPaperStoredEdge,
-      {
-        source: {
-          node: IPaperStoredNode | null;
-          midpoint: ICoordinates | null;
-          point: ICoordinates | null;
-        };
-        target: {
-          node: IPaperStoredNode | null;
-          midpoint: ICoordinates | null;
-          point: ICoordinates | null;
-        };
-        coords: ICoordinates[];
-      }
-    >,
+    evt: PaperEvent<PaperEventType.MoveEdge>,
   ): void => {
     const { source, target, coords } = evt.data;
 

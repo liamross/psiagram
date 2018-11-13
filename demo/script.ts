@@ -189,7 +189,7 @@ function removeNode() {
  */
 function addListeners() {
   if (myPaper) {
-    function eventListener(evt: PaperEvent) {
+    function eventListener(evt: PaperEvent<any>) {
       console.log({
         EVENT: evt.eventType
           .replace(/-/g, ' ')
@@ -211,21 +211,15 @@ function addListeners() {
 
     // ENABLE LISTENERS AS NEEDED.
 
-    // Node listeners:
+    myPaper.addListener('add-node', eventListener);
+    myPaper.addListener('move-node', eventListener);
+    myPaper.addListener('remove-node', eventListener);
 
-    // myPaper.addListener('add-node', eventListener);
-    // myPaper.addListener('move-node', eventListener);
-    // myPaper.addListener('remove-node', eventListener);
+    myPaper.addListener('add-edge', eventListener);
+    myPaper.addListener('move-edge', eventListener);
+    myPaper.addListener('remove-edge', eventListener);
 
-    // Edge listeners:
-
-    // myPaper.addListener('add-edge', eventListener);
-    // myPaper.addListener('move-edge', eventListener);
-    // myPaper.addListener('remove-edge', eventListener);
-
-    // Paper listeners:
-
-    // myPaper.addListener('update-active-item', eventListener);
+    myPaper.addListener('update-active-item', eventListener);
   }
 }
 

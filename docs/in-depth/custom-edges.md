@@ -94,7 +94,9 @@ constructor(props: P) {
 initialize(): void;
 ```
 
-> The initialize method **must** be overwritten.
+{% hint style="warning" %}
+The initialize method **must** be overwritten.
+{% endhint %}
 
 Initialize is called when the Edge is being mounted into the DOM. You can build visual SVG components and add them to the group using `this.addToGroup(element)`. This function is only called once, so any changes in the future must be done through setters. Here's [Line's](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Edge/EdgeLibrary/Line.ts) initialize function as an example:
 
@@ -158,7 +160,9 @@ Teardown is called when the Edge is being removed from the DOM. You can cause tr
 
 ### getCoordinates
 
-> The getCoordinates method **must** be overwritten.
+{% hint style="warning" %}
+The getCoordinates method **must** be overwritten.
+{% endhint %}
 
 ```typescript
 getCoordinates(): ICoordinates[];
@@ -176,13 +180,15 @@ public getCoordinates(): ICoordinates[] {
 
 ### setCoordinates
 
-> The setCoordinates method **must** be overwritten.
+{% hint style="warning" %}
+The setCoordinates method **must** be overwritten.
+{% endhint %}
 
 ```typescript
 setCoordinates(coordinates: ICoordinates[]): void;
 ```
 
-External methods need to call `ThisEdge.setCoordinates()` in order to provide potential coordinates to the Edge. Once these are finalized, they should be stored within the Edge in order to be easily retrieved using `getCoordinates`.
+External methods must call this in order to provide potential coordinates to the Edge. Once these are finalized, they should be stored within the Edge in order to be easily retrieved using [getCoordinates](custom-edges.md#getcoordinates).
 
 For example, here is the `setCoordinates` implementation in [Line](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Edge/EdgeLibrary/Line.ts):
 
@@ -235,9 +241,11 @@ public setCoordinates(coordinates: ICoordinates[]): void {
 getElement(): SVGElement;
 ```
 
-> **WARNING:** Do not modify this function unless you know what you're doing. It is used by the Paper to extract the entire Edge group, and breaking the functionality may cause all of Psiagram to work incorrectly.
+{% hint style="danger" %}
+Do not modify or overwrite this function unless you know what you're doing. It is used by the Paper to extract the entire Edge group, and breaking the functionality may cause all of Psiagram to work incorrectly.
+{% endhint %}
 
-This function will always return the Edge group. Any visual components for this Edge should be contained within the Edge group by adding them using this.addToGroup\(element\).
+This function will always return the Edge group. Any visual components for this Edge should be contained within the Edge group by adding them using [addToGroup](custom-edges.md#addtogroup).
 
 ### addToGroup
 
@@ -245,7 +253,9 @@ This function will always return the Edge group. Any visual components for this 
 addToGroup(element: SVGElement): void;
 ```
 
-> **WARNING:** Do not modify this function unless you know what you're doing. It should be used by all extending classes to insert SVG elements into the Edge group. Breaking the functionality may lead to incorrect rendering of the Edge.
+{% hint style="danger" %}
+Do not modify this function unless you know what you're doing. It should be used by all extending classes to insert SVG elements into the Edge group. Breaking the functionality may lead to incorrect rendering of the Edge.
+{% endhint %}
 
 This function allows you to easily append elements into the Edge group. Generally, it is used inside of initialize to add created elements to the Edge group.
 

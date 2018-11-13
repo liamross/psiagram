@@ -1,8 +1,6 @@
 # Grid Plugin
 
-| repository | npm |
-| :---: | :---: |
-| [psiagram-plugin-grid](https://github.com/liamross/psiagram/tree/master/packages/psiagram-plugin-grid) | [![NPM Version](https://badge.fury.io/js/psiagram-plugin-grid.svg)](https://www.npmjs.com/package/psiagram-plugin-grid) |
+[![NPM Version](https://badge.fury.io/js/psiagram-plugin-grid.svg)](https://www.npmjs.com/package/psiagram-plugin-grid)
 
 The Grid Plugin provides a background grid that matches the Paper's `gridSize` property.
 

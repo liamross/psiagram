@@ -1,6 +1,6 @@
 # Edge
 
-Edges **dictate flow** within Psiagram.  They can often be thought of as lines connecting the Nodes within a diagram. Edge classes detail all the rendering information for Edge lines rendered onto Paper, such as color and title. 
+Edges **dictate flow** within Psiagram. They can often be thought of as lines connecting the Nodes within a diagram. Edge classes detail all the rendering information for Edge lines rendered onto Paper, such as color and title.
 
 This section will address the input required to create an Edge within the Paper, and details the output Edge given by Paper.
 
@@ -99,9 +99,9 @@ While the Paper Input Edge is the input to the Paper, the Paper Edge is the outp
 
 However, there are three additional properties added to a Paper Edge.
 
-* **`source`** - The ID of the source Node, or a coordinate point.
-* **`target`** - The ID of the target Node, or a coordinate point.
-* **`coords`** - An array of additional coordinate points for the Edge to pass through.
+* `source` - The ID of the source Node, or a coordinate point.
+* `target` - The ID of the target Node, or a coordinate point.
+* `coords` - An array of additional coordinate points for the Edge to pass through.
 
 Of course, these are in addition to any properties defined by the custom Edge \(example: a `title` property or a `strokeWidth` property\).
 
@@ -129,11 +129,13 @@ yourEdge.coords = yourEdge.coords.concat([{ x: 20, y: 40 }]);
 
 Each of these changes will update in the DOM automatically, and will also fire a `move-edge` event. More detail on events can be found in the [events section](../in-depth/events.md).
 
-**Warning**: Because this uses getters and setters to wrap the DOM manipulation logic, you must re-assign the properties entirely. You **can't** do something like:
+{% hint style="warning" %}
+Because this uses getters and setters to wrap the DOM manipulation logic, you must re-assign the properties entirely. You **can't** do something like:
 
 ```typescript
 yourEdge.target.x = 50;
 ```
 
 This just changes the x-property of the object **without calling the set method**. Since the object itself **remains the same**, the set method for target **will not be triggered** and none of the DOM manipulation logic will fire. Notice that for `yourEdge.coords`, the array spread operator \(or concat\) was used when adding a new element to the end of the array rather than using push. This is so that a new array is assigned to coords in order to trigger the set method.
+{% endhint %}
 

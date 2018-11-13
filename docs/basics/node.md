@@ -112,11 +112,13 @@ yourNode.coords = { x: yourNode.coords.x, y: 120 };
 
 Here, we have kept the x-coordinate the same, but updated the y-coordinate to 120. This will update in the DOM automatically, and will also fire a `move-node` event. More detail on events can be found in the [events section](../in-depth/events.md).
 
-**Warning**: Because this uses getters and setters to wrap the DOM manipulation logic, you must re-assign `yourNode.coords` entirely. You **can't** do something like:
+{% hint style="warning" %}
+Because this uses getters and setters to wrap the DOM manipulation logic, you must re-assign `yourNode.coords` entirely. You **can't** do something like:
 
 ```typescript
 yourNode.coords.x = 50;
 ```
 
 This just changes the x-property of the object **without calling the set method**. Therefore, none of the wrapped DOM manipulation logic will fire. Since the object itself **remains the same**, the set method for coords **will not be triggered** and none of the DOM manipulation logic will fire.
+{% endhint %}
 

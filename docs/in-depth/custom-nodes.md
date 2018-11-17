@@ -100,7 +100,9 @@ constructor(props: P) {
 initialize(): void;
 ```
 
-> The initialize method **must** be overwritten.
+{% hint style="warning" %}
+The initialize method **must** be overwritten.
+{% endhint %}
 
 Initialize is called when the Node is being mounted into the DOM. You can build visual SVG components and add them to the group using `this.addToGroup(element)`. This function is only called once, so any changes in the future must be done through setters. Here's [Text Node's](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Node/NodeAbstracts/TextNode.ts) initialize function as an example:
 
@@ -134,7 +136,9 @@ Teardown is called when the Node is being removed from the DOM. You can cause tr
 
 ### width
 
-> Width get and set **must** be overwritten.
+{% hint style="warning" %}
+Width get and set **must** be overwritten.
+{% endhint %}
 
 #### get
 
@@ -158,7 +162,7 @@ get width(): number {
 set width(width: number);
 ```
 
-You may also wish to adjust the width of this component, and in doing so, you want those changes to be reflected in the DOM automatically. All of the manipulations must be wrapped in setters so updating the DOM is as easy as This.Node.width = 200;
+You may also wish to adjust the width of this component, and in doing so, you want those changes to be reflected in the DOM automatically. All of the manipulations must be wrapped in setters so updating the DOM is as easy as `ThisNode.width = 200`;
 
 For example, here is the width setter in [Rectangle](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Node/NodeLibrary/Rectangle.ts):
 
@@ -193,7 +197,9 @@ set width(width: number) {
 
 ### height
 
-> Height get and set **must** be overwritten.
+{% hint style="warning" %}
+Height get and set **must** be overwritten.
+{% endhint %}
 
 #### get
 
@@ -217,7 +223,7 @@ get height(): number {
 set height(height: number);
 ```
 
-You may also wish to adjust the height of this component, and in doing so, you want those changes to be reflected in the DOM automatically. All of the manipulations must be wrapped in setters so updating the DOM is as easy as This.Node.height = 200;
+You may also wish to adjust the height of this component, and in doing so, you want those changes to be reflected in the DOM automatically. All of the manipulations must be wrapped in setters so updating the DOM is as easy as `ThisNode.height = 200`;
 
 For example, here is the height setter in [Rectangle](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Node/NodeLibrary/Rectangle.ts):
 
@@ -255,9 +261,11 @@ set height(height: number) {
 getElement(): SVGElement;
 ```
 
-> **WARNING:** Do not modify this function unless you know what you're doing. It is used by the Paper to extract the entire Node group, and breaking the functionality may cause all of Psiagram to work incorrectly.
+{% hint style="danger" %}
+Do not modify or overwrite this function unless you know what you're doing. It is used by the Paper to extract the entire Node group, and breaking the functionality may cause all of Psiagram to work incorrectly.
+{% endhint %}
 
-This function will always return the Node group. Any visual components for this Node should be contained within the Node group by adding them using this.addToGroup\(element\).
+This function will always return the Node group. Any visual components for this Node should be contained within the Node group by adding them using [addToGroup](custom-nodes.md#addtogroup).
 
 ### addToGroup
 
@@ -265,7 +273,9 @@ This function will always return the Node group. Any visual components for this 
 addToGroup(element: SVGElement): void;
 ```
 
-> **WARNING:** Do not modify this function unless you know what you're doing. It should be used by all extending classes to insert SVG elements into the Node group. Breaking the functionality may lead to incorrect rendering of the Node.
+{% hint style="danger" %}
+Do not modify or overwrite this function unless you know what you're doing. It should be used by all extending classes to insert SVG elements into the Node group. Breaking the functionality may lead to incorrect rendering of the Node.
+{% endhint %}
 
-This function allows you to easily append elements into the Node group. Generally, it is used inside of initialize to add created elements to the Node group.
+This function allows you to easily append elements into the Node group. Generally, it is used inside of [initialize](custom-nodes.md#initialize) to add created elements to the Node group.
 

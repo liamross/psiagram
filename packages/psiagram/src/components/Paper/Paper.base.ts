@@ -31,6 +31,7 @@ import {
   getNodeMidpoint,
   getEdgeNodeIntersection,
   areCoordsEqual,
+  roundCoordsToNearest,
 } from '../../utilities';
 import { PaperError } from '../PaperError';
 import { ICoordinates } from '../../common';
@@ -457,7 +458,7 @@ export class Paper {
    * object with the workflow item type, id of the item, and the state you wish
    * to move the item to.
    *
-   * @param [activeItem] Optional. Active item object.
+   * @param activeItem Optional. Active item object.
    */
   public updateActiveItem(activeItem?: IActiveItem): void {
     const oldActiveItem = this._activeItem;
@@ -558,7 +559,7 @@ export class Paper {
    * Insert a new def into the defs element within Paper.
    *
    * @param def The def to insert.
-   * @param [id] Optional. An ID that can be used to remove the def.
+   * @param id Optional. An ID that can be used to remove the def.
    */
   public _insertPaperDef(def: SVGElement, id: string = ''): void {
     if (id) def.setAttribute('data-defs-id', id);
@@ -571,7 +572,7 @@ export class Paper {
    *
    * Remove a def from the defs element within Paper.
    *
-   * @param [id] Optional. The ID of the def to remove.
+   * @param id Optional. The ID of the def to remove.
    */
   public _removePaperDef(id: string): void {
     const childDefs = this._defs.children;
@@ -602,10 +603,7 @@ export class Paper {
         sourceNode = this._nodes[source.id];
       } else {
         const source = edge.source as ICoordinates;
-        sourcePoint = {
-          x: roundToNearest(source.x, this._gridSize),
-          y: roundToNearest(source.y, this._gridSize),
-        };
+        sourcePoint = roundCoordsToNearest(source, this._gridSize);
       }
 
       if (edge.target.hasOwnProperty('id')) {
@@ -613,10 +611,7 @@ export class Paper {
         targetNode = this._nodes[target.id];
       } else {
         const target = edge.target as ICoordinates;
-        targetPoint = {
-          x: roundToNearest(target.x, this._gridSize),
-          y: roundToNearest(target.y, this._gridSize),
-        };
+        targetPoint = roundCoordsToNearest(target, this._gridSize);
       }
 
       if ((sourcePoint || sourceNode) && (targetPoint || targetNode)) {
@@ -665,10 +660,9 @@ export class Paper {
 
               edge.instance.setCoordinates([
                 source.point as ICoordinates,
-                ...coords.map(coordinate => ({
-                  x: roundToNearest(coordinate.x, this._gridSize),
-                  y: roundToNearest(coordinate.y, this._gridSize),
-                })),
+                ...coords.map(coordinate =>
+                  roundCoordsToNearest(coordinate, this._gridSize),
+                ),
                 target.point as ICoordinates,
               ]);
             },

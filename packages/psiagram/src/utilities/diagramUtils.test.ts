@@ -5,11 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { IPaperStoredNode, PaperNode } from '../../components/Paper';
-import { Rectangle } from '../../components/Node';
+import { IPaperStoredNode, PaperNode } from '../components/Paper';
+import { Rectangle } from '../components/Node';
 import {
   isNodeColliding,
   roundToNearest,
+  roundCoordsToNearest,
   getNodeMidpoint,
   getEdgeNodeIntersection,
   areCoordsEqual,
@@ -19,7 +20,8 @@ import {
   pointAlongLine,
   closestPointAlongLine,
   distanceBetweenPoints,
-} from '../diagramUtils';
+  distanceFromLine,
+} from './diagramUtils';
 
 /** Helpers */
 
@@ -124,6 +126,21 @@ describe('Diagram Utilities', () => {
     it('returns minimum if num is lower and no interval is given', () => {
       expect(roundToNearest(10, undefined, 20)).toBe(20);
       expect(roundToNearest(-10, undefined, 20)).toBe(20);
+    });
+  });
+
+  describe('roundCoordsToNearest', () => {
+    it('rounds coordinates to the nearest grid size', () => {
+      // Rounds correctly
+      expect(roundCoordsToNearest({ x: 8, y: 8 }, 20)).toEqual({
+        x: 0,
+        y: 0,
+      });
+      // Rounds up
+      expect(roundCoordsToNearest({ x: 10, y: 10 }, 20)).toEqual({
+        x: 20,
+        y: 20,
+      });
     });
   });
 
@@ -319,6 +336,50 @@ describe('Diagram Utilities', () => {
       const point2 = { x: 1, y: 1 };
       const length = 5;
       expect(pointAlongLine(point1, point2, length)).toEqual({ x: 1, y: 1 });
+    });
+  });
+
+  describe('distanceFromLine', () => {
+    it('returns first endpoint if perpendicular', () => {
+      const linePoint1 = { x: 0, y: 0 };
+      const linePoint2 = { x: 5, y: 0 };
+      const point = { x: 0, y: 5 };
+      const result = distanceFromLine(linePoint1, linePoint2, point);
+      expect(result).toBe(5);
+    });
+
+    it('returns second endpoint if perpendicular', () => {
+      const linePoint1 = { x: 0, y: 0 };
+      const linePoint2 = { x: 5, y: 0 };
+      const point = { x: 5, y: 5 };
+      const result = distanceFromLine(linePoint1, linePoint2, point);
+      expect(result).toBe(5);
+    });
+
+    it('returns first endpoint if beyond endpoint', () => {
+      const linePoint1 = { x: 0, y: 0 };
+      const linePoint2 = { x: 5, y: 0 };
+      const point = { x: -10, y: -10 };
+      const distance = distanceBetweenPoints(linePoint1, point);
+      const result = distanceFromLine(linePoint1, linePoint2, point);
+      expect(result).toBe(distance);
+    });
+
+    it('returns second endpoint if beyond endpoint', () => {
+      const linePoint1 = { x: 0, y: 0 };
+      const linePoint2 = { x: 5, y: 0 };
+      const point = { x: 10, y: 10 };
+      const distance = distanceBetweenPoints(linePoint2, point);
+      const result = distanceFromLine(linePoint1, linePoint2, point);
+      expect(result).toBe(distance);
+    });
+
+    it('returns point along line and correct distance', () => {
+      const linePoint1 = { x: 0, y: 0 };
+      const linePoint2 = { x: 5, y: 0 };
+      const point = { x: 1, y: 10 };
+      const result = distanceFromLine(linePoint1, linePoint2, point);
+      expect(result).toBe(point.y);
     });
   });
 

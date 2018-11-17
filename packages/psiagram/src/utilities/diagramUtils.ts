@@ -67,6 +67,19 @@ export const roundToNearest = (
 };
 
 /**
+ * Rounds a set of coordinates to the nearest grid.
+ * @param coords Set of coordinates.
+ * @param gridSize Optional. Size of grid.
+ */
+export const roundCoordsToNearest = (
+  coords: ICoordinates,
+  gridSize?: number,
+): ICoordinates => ({
+  x: roundToNearest(coords.x, gridSize),
+  y: roundToNearest(coords.y, gridSize),
+});
+
+/**
  * Find the coordinates of a node's midpoint.
  *
  * @param node The node to get midpoint of.
@@ -95,8 +108,8 @@ export const getNodeMidpoint = (
  *
  * @param node Node with boundary to trim edge at.
  * @param nextPoint The next point closest to the node center.
- * @param [gridSize] Optional. The size of the grid to snap to.
- * @param [nodeOutline] Optional. Distance in px away from node to trim edge.
+ * @param gridSize Optional. The size of the grid to snap to.
+ * @param nodeOutline Optional. Distance in px away from node to trim edge.
  */
 export const getEdgeNodeIntersection = (
   node: IPaperStoredNode,
@@ -305,8 +318,57 @@ export const pointAlongLine = (
 };
 
 /**
+ * Returns the distance from a point to a line.
+ *
+ * @param linePoint1 First point of line.
+ * @param linePoint2 Second point of line.
+ * @param point Point to find distance and closest point along line for.
+ */
+export const distanceFromLine = (
+  linePoint1: ICoordinates,
+  linePoint2: ICoordinates,
+  point: ICoordinates,
+): number => {
+  const { x: x1, y: y1 } = linePoint1;
+  const { x: x2, y: y2 } = linePoint2;
+  const { x: x0, y: y0 } = point;
+
+  const line = distanceBetweenPoints(linePoint1, linePoint2);
+  const lineFrom1 = distanceBetweenPoints(linePoint1, point);
+  const lineFrom2 = distanceBetweenPoints(linePoint2, point);
+
+  // If angle from point one is greater or equal to 90 degrees, choose it.
+  const angleFrom1 = Math.acos(
+    (line ** 2 + lineFrom1 ** 2 - lineFrom2 ** 2) / (2 * line * lineFrom1),
+  );
+  if (angleFrom1 >= Math.PI / 2) {
+    return lineFrom1;
+  }
+
+  // If angle from point two is greater or equal to 90 degrees, choose it.
+  const angleFrom2 = Math.acos(
+    (line ** 2 + lineFrom2 ** 2 - lineFrom1 ** 2) / (2 * line * lineFrom2),
+  );
+  if (angleFrom2 >= Math.PI / 2) {
+    return lineFrom2;
+  }
+
+  // Find distance from point to line.
+  const numerator = Math.abs(
+    (y2 - y1) * x0 - (x2 - x1) * y0 + x2 * y1 - y2 * x1,
+  );
+  const denominator = Math.sqrt((y2 - y1) ** 2 + (x2 - x1) ** 2);
+  const distance = numerator / denominator;
+
+  return distance;
+};
+
+/**
  * Returns the distance of a point to the line, as well as the closest point
- * along the line.
+ * along the line. This is a beefed-up version of distanceFromLine, but will
+ * be slightly less efficient as it must also calculate the closest point if
+ * within the bounds of the line ends. If the closest point is not needed,
+ * use distanceFromLine.
  *
  * @param linePoint1 First point of line.
  * @param linePoint2 Second point of line.

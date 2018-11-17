@@ -6,7 +6,7 @@
  */
 
 import { IPaperStoredNode, PaperNode, ICoordinates, Rectangle } from 'psiagram';
-import { ManhattanRouting, IBoundingBox, Direction } from '../ManhattanRouting';
+import { ManhattanRouting, IBoundingBox, Direction } from './ManhattanRouting';
 
 let myRouting: ManhattanRouting = null;
 
@@ -26,6 +26,8 @@ const generateNode = (
     title: '',
     width,
     height,
+    uniqueId: '',
+    paper: null,
   }) as unknown;
   Object.defineProperty(newNode, 'coords', {
     value: { x, y },

@@ -10,6 +10,7 @@
   * [Custom Edges](in-depth/custom-edges.md)
   * [Active Item](in-depth/active-item.md)
   * [Events](in-depth/events.md)
+  * [Advanced Paper Methods](in-depth/advanced-paper-methods.md)
 * [Plugins](plugins/README.md)
   * [What Are Plugins](plugins/what-are-plugins.md)
   * [Grid Plugin](plugins/grid.md)

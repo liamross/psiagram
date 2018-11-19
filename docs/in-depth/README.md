@@ -8,4 +8,5 @@ Psiagram provides sophisticated tooling for building components \(Nodes and Edge
 * [Custom Edges](custom-edges.md)
 * [Active Item](active-item.md)
 * [Events](events.md)
+* [Advanced Paper Methods](advanced-paper-methods.md)
 

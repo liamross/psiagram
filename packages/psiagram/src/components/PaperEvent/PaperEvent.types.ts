@@ -7,7 +7,7 @@ import {
 import { ICoordinates } from '../../common';
 
 // prettier-ignore
-export type PaperEventProperties<T extends PaperEventType> =
+export type PaperEventProperties<T> =
   T extends PaperEventType.PaperInit ? undefined :
   { defaultAction: ((data: PaperEventData<T>) => void) }
     & (PaperEventTarget<T> extends undefined
@@ -31,7 +31,8 @@ export type PaperEventTarget<T> =
   T extends PaperEventType.RemoveEdge ? IPaperStoredEdge :
   // Active Item
   T extends PaperEventType.UpdateActiveItem ? IActiveItem | null :
-  never;
+  // Fallback
+  any;
 
 // prettier-ignore
 export type PaperEventData<T> =
@@ -49,7 +50,6 @@ export type PaperEventData<T> =
     coords: ICoordinates[] } :
   T extends PaperEventType.RemoveEdge ? undefined :
   // Active Item
-  T extends PaperEventType.UpdateActiveItem ? {
-    activeItem: IActiveItem | null;
-    oldActiveItem: IActiveItem | null } :
-  never;
+  T extends PaperEventType.UpdateActiveItem ? { activeItem: IActiveItem | null; oldActiveItem: IActiveItem | null } :
+  // Fallback
+  { [key: string]: any } | undefined;

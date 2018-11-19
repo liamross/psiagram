@@ -13,7 +13,7 @@ import {
   PaperEventData,
 } from './PaperEvent.types';
 
-export class PaperEvent<T extends PaperEventType> {
+export class PaperEvent<T> {
   private _eventType: PaperEventType;
   private _paper: Paper;
   private _canPropagate: boolean;

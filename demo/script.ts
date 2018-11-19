@@ -21,6 +21,7 @@ import {
   // Other
   PaperError,
   PaperEvent,
+  PaperEventType,
 } from 'psiagram';
 
 import { Grid } from 'psiagram-plugin-grid';
@@ -211,15 +212,15 @@ function addListeners() {
 
     // ENABLE LISTENERS AS NEEDED.
 
-    myPaper.addListener('add-node', eventListener);
-    myPaper.addListener('move-node', eventListener);
-    myPaper.addListener('remove-node', eventListener);
+    myPaper.addListener(PaperEventType.AddNode, eventListener);
+    myPaper.addListener(PaperEventType.MoveNode, eventListener);
+    myPaper.addListener(PaperEventType.RemoveNode, eventListener);
 
-    myPaper.addListener('add-edge', eventListener);
-    myPaper.addListener('move-edge', eventListener);
-    myPaper.addListener('remove-edge', eventListener);
+    myPaper.addListener(PaperEventType.AddEdge, eventListener);
+    myPaper.addListener(PaperEventType.MoveEdge, eventListener);
+    myPaper.addListener(PaperEventType.RemoveEdge, eventListener);
 
-    myPaper.addListener('update-active-item', eventListener);
+    myPaper.addListener(PaperEventType.UpdateActiveItem, eventListener);
   }
 }
 

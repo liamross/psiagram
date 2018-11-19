@@ -532,7 +532,7 @@ export class Paper {
    * **WARNING:** The underscore "_" denotes that this method should only be
    * used in plugins. Non-underscore methods should cover all other use cases.
    *
-   * Calls all listeners of a specific paper event type.
+   * Fires an event, calling all listeners for that event type.
    *
    * Order of operations:
    * 1. If listeners of evt.eventType exist begins looping through listeners.
@@ -540,7 +540,7 @@ export class Paper {
    * 3. After all listeners called, calls evt.defaultAction. If defaultAction
    *    has already been called by a listener, this does nothing.
    *
-   * @param evt The event originating from the paper.
+   * @param evt The event you wish to fire.
    */
   public _fireEvent(evt: PaperEvent<any>): void {
     if (Array.isArray(this._listeners[evt.eventType])) {

@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { IPaperProperties, PaperItemState } from '../Paper.types';
+import { IPaperProperties, PaperEventType } from '../Paper.types';
 import { Paper } from '../';
 import { Rectangle, BaseNode, IRectangleProperties } from '../../Node';
-import { Line, BaseEdge, TextLine, ITextLineProperties } from '../../Edge';
+import { BaseEdge, TextLine, ITextLineProperties } from '../../Edge';
 import { PaperEvent } from '../../PaperEvent';
 import { ElementType } from '../../../utilities';
 
@@ -105,23 +105,25 @@ describe('Listeners', () => {
     it('only adds equal listener callback once to same event type', () => {
       const testFunc = jest.fn();
 
-      myPaper.addListener('add-node', testFunc);
-      myPaper.addListener('add-node', testFunc);
+      myPaper.addListener(PaperEventType.AddNode, testFunc);
+      myPaper.addListener(PaperEventType.AddNode, testFunc);
 
       addNode();
 
       // A single call to the listener.
       expect(testFunc.mock.calls.length).toBe(1);
 
-      const paperRef = (testFunc.mock.calls[0][0] as PaperEvent).paper;
+      const paperRef = (testFunc.mock.calls[0][0] as PaperEvent<
+        PaperEventType.AddNode
+      >).paper;
 
       // Only one listener added to 'add-node'.
       // @ts-ignore
-      expect(paperRef._listeners['add-node'].length).toBe(1);
+      expect(paperRef._listeners[PaperEventType.AddNode].length).toBe(1);
 
       // The listener is testFunc.
       // @ts-ignore
-      expect(paperRef._listeners['add-node'][0]).toBe(testFunc);
+      expect(paperRef._listeners[PaperEventType.AddNode][0]).toBe(testFunc);
     });
   });
 
@@ -129,7 +131,7 @@ describe('Listeners', () => {
     it('can add valid listeners', () => {
       const testFunc = jest.fn();
 
-      myPaper.addListener('add-node', testFunc);
+      myPaper.addListener(PaperEventType.AddNode, testFunc);
 
       addNode();
 
@@ -139,8 +141,8 @@ describe('Listeners', () => {
     it('can remove listeners', () => {
       const testFunc = jest.fn();
 
-      myPaper.addListener('add-node', testFunc);
-      myPaper.removeListener('add-node', testFunc);
+      myPaper.addListener(PaperEventType.AddNode, testFunc);
+      myPaper.removeListener(PaperEventType.AddNode, testFunc);
 
       addNode();
 
@@ -152,7 +154,7 @@ describe('Listeners', () => {
     it('can add valid listeners', () => {
       const testFunc = jest.fn();
 
-      myPaper.addListener('move-node', testFunc);
+      myPaper.addListener(PaperEventType.MoveNode, testFunc);
 
       addNode();
 
@@ -165,7 +167,7 @@ describe('Listeners', () => {
     it("is not called if node doesn't move in grid", () => {
       const testFunc = jest.fn();
 
-      myPaper.addListener('move-node', testFunc);
+      myPaper.addListener(PaperEventType.MoveNode, testFunc);
 
       addNode();
 
@@ -178,8 +180,8 @@ describe('Listeners', () => {
     it('can remove listeners', () => {
       const testFunc = jest.fn();
 
-      myPaper.addListener('move-node', testFunc);
-      myPaper.removeListener('move-node', testFunc);
+      myPaper.addListener(PaperEventType.MoveNode, testFunc);
+      myPaper.removeListener(PaperEventType.MoveNode, testFunc);
 
       addNode();
 
@@ -194,7 +196,7 @@ describe('Listeners', () => {
     it('can add valid listeners', () => {
       const testFunc = jest.fn();
 
-      myPaper.addListener('remove-node', testFunc);
+      myPaper.addListener(PaperEventType.RemoveNode, testFunc);
 
       addNode();
 
@@ -206,8 +208,8 @@ describe('Listeners', () => {
     it('can remove listeners', () => {
       const testFunc = jest.fn();
 
-      myPaper.addListener('remove-node', testFunc);
-      myPaper.removeListener('remove-node', testFunc);
+      myPaper.addListener(PaperEventType.RemoveNode, testFunc);
+      myPaper.removeListener(PaperEventType.RemoveNode, testFunc);
 
       addNode();
 
@@ -221,7 +223,7 @@ describe('Listeners', () => {
     it('can add valid listeners', () => {
       const testFunc = jest.fn();
 
-      myPaper.addListener('add-edge', testFunc);
+      myPaper.addListener(PaperEventType.AddEdge, testFunc);
 
       addEdge();
 
@@ -231,8 +233,8 @@ describe('Listeners', () => {
     it('can remove listeners', () => {
       const testFunc = jest.fn();
 
-      myPaper.addListener('add-edge', testFunc);
-      myPaper.removeListener('add-edge', testFunc);
+      myPaper.addListener(PaperEventType.AddEdge, testFunc);
+      myPaper.removeListener(PaperEventType.AddEdge, testFunc);
 
       addEdge();
 
@@ -244,7 +246,7 @@ describe('Listeners', () => {
     it('can add valid listeners', () => {
       const testFunc = jest.fn();
 
-      myPaper.addListener('move-edge', testFunc);
+      myPaper.addListener(PaperEventType.MoveEdge, testFunc);
 
       addEdge();
 
@@ -257,8 +259,8 @@ describe('Listeners', () => {
     it('can remove listeners', () => {
       const testFunc = jest.fn();
 
-      myPaper.addListener('move-edge', testFunc);
-      myPaper.removeListener('move-edge', testFunc);
+      myPaper.addListener(PaperEventType.MoveEdge, testFunc);
+      myPaper.removeListener(PaperEventType.MoveEdge, testFunc);
 
       addEdge();
 
@@ -273,7 +275,7 @@ describe('Listeners', () => {
     it('can add valid listeners', () => {
       const testFunc = jest.fn();
 
-      myPaper.addListener('remove-edge', testFunc);
+      myPaper.addListener(PaperEventType.RemoveEdge, testFunc);
 
       addEdge();
 
@@ -285,8 +287,8 @@ describe('Listeners', () => {
     it('can remove listeners', () => {
       const testFunc = jest.fn();
 
-      myPaper.addListener('remove-edge', testFunc);
-      myPaper.removeListener('remove-edge', testFunc);
+      myPaper.addListener(PaperEventType.RemoveEdge, testFunc);
+      myPaper.removeListener(PaperEventType.RemoveEdge, testFunc);
 
       addEdge();
 
@@ -300,7 +302,7 @@ describe('Listeners', () => {
     it('can add valid listeners', () => {
       const testFunc = jest.fn();
 
-      myPaper.addListener('update-active-item', testFunc);
+      myPaper.addListener(PaperEventType.UpdateActiveItem, testFunc);
 
       myPaper.updateActiveItem({
         id: 'test-node',
@@ -314,7 +316,7 @@ describe('Listeners', () => {
     it('calls even if active item remains the same', () => {
       const testFunc = jest.fn();
 
-      myPaper.addListener('update-active-item', testFunc);
+      myPaper.addListener(PaperEventType.UpdateActiveItem, testFunc);
 
       myPaper.updateActiveItem({
         id: 'test-node',
@@ -336,7 +338,7 @@ describe('Listeners', () => {
     it('does not call if active item remains nothing', () => {
       const testFunc = jest.fn();
 
-      myPaper.addListener('update-active-item', testFunc);
+      myPaper.addListener(PaperEventType.UpdateActiveItem, testFunc);
 
       myPaper.updateActiveItem();
 
@@ -346,8 +348,8 @@ describe('Listeners', () => {
     it('can remove listeners', () => {
       const testFunc = jest.fn();
 
-      myPaper.addListener('update-active-item', testFunc);
-      myPaper.removeListener('update-active-item', testFunc);
+      myPaper.addListener(PaperEventType.UpdateActiveItem, testFunc);
+      myPaper.removeListener(PaperEventType.UpdateActiveItem, testFunc);
 
       myPaper.updateActiveItem();
 
@@ -361,7 +363,7 @@ describe('Listeners', () => {
 
       function TestPlugin() {} // tslint:disable-line
       TestPlugin.prototype.initialize = (paper: Paper) => {
-        paper.addListener('paper-init', testFunc);
+        paper.addListener(PaperEventType.PaperInit, testFunc);
       };
 
       const _ = new Paper({

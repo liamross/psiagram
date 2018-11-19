@@ -43,7 +43,7 @@ export class Paper {
   private _edges: { [key: string]: IPaperStoredEdge };
   private _edgeComponentMap: IEdgeComponentMap | null;
   private _activeItem: IActiveItem | null;
-  private _listeners: { [key: string]: Array<(evt: PaperEvent) => void> };
+  private _listeners: { [key: string]: Array<(evt: PaperEvent<any>) => void> };
   private _gridSize: number;
   private _uniqueId: string;
   private _paper: SVGElement;
@@ -169,7 +169,9 @@ export class Paper {
     }
 
     // Fire paper init event.
-    this._fireEvent(new PaperEvent(PaperEventType.PaperInit, this));
+    this._fireEvent(
+      new PaperEvent<PaperEventType.PaperInit>(PaperEventType.PaperInit, this),
+    );
   }
 
   /**
@@ -226,7 +228,7 @@ export class Paper {
       const roundedY = roundToNearest(node.coords.y, this._gridSize);
 
       this._fireEvent(
-        new PaperEvent(PaperEventType.AddNode, this, {
+        new PaperEvent<PaperEventType.AddNode>(PaperEventType.AddNode, this, {
           target: newNode,
           data: { x: roundedX, y: roundedY },
           defaultAction: data => {
@@ -279,28 +281,32 @@ export class Paper {
   public removeNode(id: string): void {
     if (this._nodes.hasOwnProperty(id)) {
       this._fireEvent(
-        new PaperEvent(PaperEventType.RemoveNode, this, {
-          target: this._nodes[id],
-          defaultAction: () => {
-            this._nodes[id].instance.teardown();
+        new PaperEvent<PaperEventType.RemoveNode>(
+          PaperEventType.RemoveNode,
+          this,
+          {
+            target: this._nodes[id],
+            defaultAction: () => {
+              this._nodes[id].instance.teardown();
 
-            // Remove all edges that use node as end point.
-            Object.keys(this._edges).forEach(edgeId => {
-              const edge = this._edges[edgeId];
-              if (
-                (edge.source.hasOwnProperty('id') &&
-                  (edge.source as { id: string }).id === id) ||
-                (edge.target.hasOwnProperty('id') &&
-                  (edge.target as { id: string }).id === id)
-              ) {
-                this.removeEdge(edgeId);
-              }
-            });
+              // Remove all edges that use node as end point.
+              Object.keys(this._edges).forEach(edgeId => {
+                const edge = this._edges[edgeId];
+                if (
+                  (edge.source.hasOwnProperty('id') &&
+                    (edge.source as { id: string }).id === id) ||
+                  (edge.target.hasOwnProperty('id') &&
+                    (edge.target as { id: string }).id === id)
+                ) {
+                  this.removeEdge(edgeId);
+                }
+              });
 
-            this._nodes[id].instance.getElement().remove();
-            delete this._nodes[id];
+              this._nodes[id].instance.getElement().remove();
+              delete this._nodes[id];
+            },
           },
-        }),
+        ),
       );
     } else {
       throw new PaperError(
@@ -379,7 +385,7 @@ export class Paper {
         };
 
         this._fireEvent(
-          new PaperEvent(PaperEventType.AddEdge, this, {
+          new PaperEvent<PaperEventType.AddEdge>(PaperEventType.AddEdge, this, {
             target: newEdge,
             defaultAction: () => {
               this._edges[edge.id] = newEdge;
@@ -425,14 +431,18 @@ export class Paper {
   public removeEdge(id: string): void {
     if (this._edges.hasOwnProperty(id)) {
       this._fireEvent(
-        new PaperEvent(PaperEventType.RemoveEdge, this, {
-          target: this._edges[id],
-          defaultAction: () => {
-            this._edges[id].instance.teardown();
-            this._edges[id].instance.getElement().remove();
-            delete this._edges[id];
+        new PaperEvent<PaperEventType.RemoveEdge>(
+          PaperEventType.RemoveEdge,
+          this,
+          {
+            target: this._edges[id],
+            defaultAction: () => {
+              this._edges[id].instance.teardown();
+              this._edges[id].instance.getElement().remove();
+              delete this._edges[id];
+            },
           },
-        }),
+        ),
       );
     } else {
       throw new PaperError(
@@ -461,19 +471,22 @@ export class Paper {
    */
   public updateActiveItem(activeItem?: IActiveItem): void {
     const oldActiveItem = this._activeItem;
-
     if (activeItem == null && oldActiveItem === null) {
       return;
     }
-
+    const activeOrNull = activeItem || null;
     this._fireEvent(
-      new PaperEvent(PaperEventType.UpdateActiveItem, this, {
-        target: activeItem,
-        data: { activeItem, oldActiveItem },
-        defaultAction: data => {
-          this._activeItem = data.activeItem || null;
+      new PaperEvent<PaperEventType.UpdateActiveItem>(
+        PaperEventType.UpdateActiveItem,
+        this,
+        {
+          target: activeOrNull,
+          data: { activeItem: activeOrNull, oldActiveItem },
+          defaultAction: data => {
+            this._activeItem = data.activeItem;
+          },
         },
-      }),
+      ),
     );
   }
 
@@ -486,7 +499,7 @@ export class Paper {
    */
   public addListener(
     type: PaperEventType,
-    listener: (evt: PaperEvent<any, any>) => void,
+    listener: (evt: PaperEvent<any>) => void,
   ): void {
     if (this._listeners[type] === undefined) {
       this._listeners[type] = [];
@@ -505,7 +518,7 @@ export class Paper {
    */
   public removeListener(
     type: PaperEventType,
-    listener: (evt: PaperEvent<any, any>) => void,
+    listener: (evt: PaperEvent<any>) => void,
   ): void {
     if (this._listeners[type] !== undefined && this._listeners[type].length) {
       const listenerIndex = this._listeners[type].findIndex(
@@ -529,7 +542,7 @@ export class Paper {
    *
    * @param evt The event originating from the paper.
    */
-  public _fireEvent(evt: PaperEvent<any, any>): void {
+  public _fireEvent(evt: PaperEvent<any>): void {
     if (Array.isArray(this._listeners[evt.eventType])) {
       this._listeners[evt.eventType].forEach(listener => {
         if (evt.canPropagate) listener(evt);
@@ -631,48 +644,54 @@ export class Paper {
         }
 
         this._fireEvent(
-          new PaperEvent(PaperEventType.MoveEdge, this, {
-            target: edge,
-            data: {
-              source: {
-                node: sourceNode,
-                midpoint: sourceMidPoint,
-                point: sourcePoint,
+          new PaperEvent<PaperEventType.MoveEdge>(
+            PaperEventType.MoveEdge,
+            this,
+            {
+              target: edge,
+              data: {
+                source: {
+                  node: sourceNode,
+                  midpoint: sourceMidPoint,
+                  point: sourcePoint,
+                },
+                target: {
+                  node: targetNode,
+                  midpoint: targetMidPoint,
+                  point: targetPoint,
+                },
+                coords: edge.coords,
               },
-              target: {
-                node: targetNode,
-                midpoint: targetMidPoint,
-                point: targetPoint,
-              },
-              coords: edge.coords,
-            },
-            defaultAction: ({ source, target, coords }) => {
-              if (source.node) {
-                source.point = getEdgeNodeIntersection(
-                  source.node,
-                  coords[0] || target.midpoint || target.point,
-                  this._gridSize,
-                );
-              }
-              if (target.node) {
-                target.point = getEdgeNodeIntersection(
-                  target.node,
-                  coords[coords.length - 1] || source.midpoint || source.point,
-                  this._gridSize,
-                  4,
-                );
-              }
+              defaultAction: ({ source, target, coords }) => {
+                if (source.node) {
+                  source.point = getEdgeNodeIntersection(
+                    source.node,
+                    coords[0] || target.midpoint || target.point,
+                    this._gridSize,
+                  );
+                }
+                if (target.node) {
+                  target.point = getEdgeNodeIntersection(
+                    target.node,
+                    coords[coords.length - 1] ||
+                      source.midpoint ||
+                      source.point,
+                    this._gridSize,
+                    4,
+                  );
+                }
 
-              edge.instance.setCoordinates([
-                source.point as ICoordinates,
-                ...coords.map(coordinate => ({
-                  x: roundToNearest(coordinate.x, this._gridSize),
-                  y: roundToNearest(coordinate.y, this._gridSize),
-                })),
-                target.point as ICoordinates,
-              ]);
+                edge.instance.setCoordinates([
+                  source.point as ICoordinates,
+                  ...coords.map(coordinate => ({
+                    x: roundToNearest(coordinate.x, this._gridSize),
+                    y: roundToNearest(coordinate.y, this._gridSize),
+                  })),
+                  target.point as ICoordinates,
+                ]);
+              },
             },
-          }),
+          ),
         );
       } else {
         throw new PaperError(
@@ -732,31 +751,35 @@ export class Paper {
         const oldCoords = { ...node.coords };
 
         this._fireEvent(
-          new PaperEvent(PaperEventType.MoveNode, this, {
-            target: node,
-            data: { coords: newCoords, oldCoords },
-            defaultAction: data => {
-              node.coords = data.coords;
+          new PaperEvent<PaperEventType.MoveNode>(
+            PaperEventType.MoveNode,
+            this,
+            {
+              target: node,
+              data: { coords: newCoords, oldCoords },
+              defaultAction: data => {
+                node.coords = data.coords;
 
-              setSVGAttribute(
-                node.instance.getElement(),
-                'transform',
-                `translate(${node.coords.x} ${node.coords.y})`,
-              );
+                setSVGAttribute(
+                  node.instance.getElement(),
+                  'transform',
+                  `translate(${node.coords.x} ${node.coords.y})`,
+                );
 
-              Object.keys(this._edges).forEach(edgeId => {
-                const edge = this._edges[edgeId];
-                if (
-                  (edge.source.hasOwnProperty('id') &&
-                    (edge.source as { id: string }).id === id) ||
-                  (edge.target.hasOwnProperty('id') &&
-                    (edge.target as { id: string }).id === id)
-                ) {
-                  this._updateEdgeRoute(edgeId);
-                }
-              });
+                Object.keys(this._edges).forEach(edgeId => {
+                  const edge = this._edges[edgeId];
+                  if (
+                    (edge.source.hasOwnProperty('id') &&
+                      (edge.source as { id: string }).id === id) ||
+                    (edge.target.hasOwnProperty('id') &&
+                      (edge.target as { id: string }).id === id)
+                  ) {
+                    this._updateEdgeRoute(edgeId);
+                  }
+                });
+              },
             },
-          }),
+          ),
         );
       }
     } else {

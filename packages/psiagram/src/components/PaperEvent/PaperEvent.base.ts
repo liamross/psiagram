@@ -14,7 +14,7 @@ import {
 } from './PaperEvent.types';
 
 export class PaperEvent<T> {
-  private _eventType: PaperEventType;
+  private _eventType: PaperEventType | string;
   private _paper: Paper;
   private _canPropagate: boolean;
 
@@ -23,7 +23,7 @@ export class PaperEvent<T> {
   private _defaultAction: ((data: PaperEventData<T>) => void) | undefined;
 
   constructor(
-    eventType: PaperEventType,
+    eventType: PaperEventType | string,
     paper: Paper,
     paperEventProperties?: PaperEventProperties<T>,
   ) {
@@ -42,7 +42,7 @@ export class PaperEvent<T> {
   /**
    * Get the paper event type string.
    */
-  get eventType(): PaperEventType {
+  get eventType(): PaperEventType | string {
     return this._eventType;
   }
 

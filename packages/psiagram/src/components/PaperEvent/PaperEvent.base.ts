@@ -65,15 +65,6 @@ export class PaperEvent<T> {
   }
 
   /**
-   * Get boolean canPropagate. If canPropagate is true, event will continue to
-   * propagate to any remaining listeners. Propagation can be stopped by
-   * calling stopPropagation.
-   */
-  get canPropagate(): boolean {
-    return this._canPropagate;
-  }
-
-  /**
    * Get the data object. This contains any other data specific to the event.
    */
   get data(): PaperEventData<T> {

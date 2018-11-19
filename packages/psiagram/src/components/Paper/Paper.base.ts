@@ -545,7 +545,12 @@ export class Paper {
   public _fireEvent(evt: PaperEvent<any>): void {
     if (Array.isArray(this._listeners[evt.eventType])) {
       this._listeners[evt.eventType].forEach(listener => {
-        if (evt.canPropagate) listener(evt);
+        // We are going to do a bad thing here and check a private property.
+        // Eventually we may move all of the event firing logic into the actual
+        // event, but for now, we need to see if it can still propagate without
+        // opening up _canPropagate to public use.
+        // @ts-ignore
+        if (evt._canPropagate) listener(evt);
       });
     }
     evt.defaultAction();
@@ -584,7 +589,7 @@ export class Paper {
    *
    * Remove a def from the defs element within Paper.
    *
-   * @param [id] Optional. The ID of the def to remove.
+   * @param id The ID of the def to remove.
    */
   public _removePaperDef(id: string): void {
     const childDefs = this._defs.children;

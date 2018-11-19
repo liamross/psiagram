@@ -196,7 +196,6 @@ function addListeners() {
           .replace(/-/g, ' ')
           .replace(/^\w/, c => c.toUpperCase()),
         PROPERTIES: {
-          canPropagate: evt.canPropagate,
           data: evt.data,
           eventType: evt.eventType,
           paper: evt.paper,

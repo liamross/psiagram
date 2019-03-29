@@ -29,6 +29,12 @@
   </a>
 </p>
 
+<p align="center">
+  <a href="https://codesandbox.io/s/qzwk05zx4j" target="_blank">
+    CodeSandbox Demo
+  </a>
+</p>
+
 ---
 
 Psiagram is a framework that enables anyone to build complex and interactive

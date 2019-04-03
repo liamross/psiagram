@@ -6,12 +6,14 @@
  */
 
 import {
-  IPaperInputNode,
   IPaperInputEdge,
-  Paper,
-  IPaperStoredNode,
+  IPaperInputNode,
   IPaperStoredEdge,
+  IPaperStoredNode,
+  Paper,
 } from '../components/Paper';
+
+// TODO: readonly?
 
 export interface IPluginProperties {
   width: number;

@@ -1,0 +1,10 @@
+proseWrap: always
+singleQuote: true
+trailingComma: all
+overrides:
+  - files: '*.ts'
+    options:
+      printWidth: 120
+  - files: '*.tsx'
+    options:
+      printWidth: 120

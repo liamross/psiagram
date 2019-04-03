@@ -6,10 +6,7 @@
  */
 
 import { BaseNode, IBaseNodeProperties } from '../BaseNode';
-import {
-  createSVGWithAttributes,
-  setBatchSVGAttribute,
-} from '../../../utilities';
+import { createSVGWithAttributes, setBatchSVGAttribute } from '../../../utilities';
 import { PaperError } from '../../PaperError';
 
 export interface ITextNodeProperties extends IBaseNodeProperties {
@@ -76,12 +73,7 @@ export class TextNode<P extends ITextNodeProperties> extends BaseNode<P> {
       this.props.title = title;
       this._text.textContent = title;
     } else {
-      throw new PaperError(
-        'E_NO_ELEM',
-        `No text exists for Node ID: ${this.props.id}`,
-        'TextNode.ts',
-        'set title',
-      );
+      throw new PaperError('E_NO_ELEM', `No text exists for Node ID: ${this.props.id}`, 'TextNode.ts', 'set title');
     }
   }
 }

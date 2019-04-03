@@ -5,13 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {
-  IPaperInputEdge,
-  IPaperInputNode,
-  IPaperStoredEdge,
-  IPaperStoredNode,
-  Paper,
-} from '../components/Paper';
+import { IPaperInputEdge, IPaperInputNode, IPaperStoredEdge, IPaperStoredNode, Paper } from '../components/Paper';
 
 // TODO: readonly?
 

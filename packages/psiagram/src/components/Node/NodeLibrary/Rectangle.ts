@@ -6,11 +6,7 @@
  */
 
 import { TextNode, ITextNodeProperties } from '../NodeAbstracts/TextNode';
-import {
-  roundToNearest,
-  createSVGWithAttributes,
-  setSVGAttribute,
-} from '../../../utilities';
+import { roundToNearest, createSVGWithAttributes, setSVGAttribute } from '../../../utilities';
 import { PaperError } from '../../PaperError';
 
 export interface IRectangleProperties extends ITextNodeProperties {
@@ -42,14 +38,7 @@ export class Rectangle<P extends IRectangleProperties> extends TextNode<P> {
   }
 
   public initialize(): void {
-    const {
-      id,
-      width,
-      height,
-      fillColor,
-      strokeColor,
-      strokeWidth,
-    } = this.props;
+    const { id, width, height, fillColor, strokeColor, strokeWidth } = this.props;
 
     this._shape = createSVGWithAttributes('rect', {
       id: id + '_shape',
@@ -76,12 +65,7 @@ export class Rectangle<P extends IRectangleProperties> extends TextNode<P> {
       setSVGAttribute(this._shape, 'width', width);
       this.updateTextPosition();
     } else {
-      throw new PaperError(
-        'E_NO_ELEM',
-        `No shape exists for Node ID: ${this.props.id}`,
-        'Rectangle.ts',
-        'set width',
-      );
+      throw new PaperError('E_NO_ELEM', `No shape exists for Node ID: ${this.props.id}`, 'Rectangle.ts', 'set width');
     }
   }
 
@@ -96,12 +80,7 @@ export class Rectangle<P extends IRectangleProperties> extends TextNode<P> {
       setSVGAttribute(this._shape, 'height', height);
       this.updateTextPosition();
     } else {
-      throw new PaperError(
-        'E_NO_ELEM',
-        `No shape exists for Node ID: ${this.props.id}`,
-        'Rectangle.ts',
-        'set height',
-      );
+      throw new PaperError('E_NO_ELEM', `No shape exists for Node ID: ${this.props.id}`, 'Rectangle.ts', 'set height');
     }
   }
 }

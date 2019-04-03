@@ -62,10 +62,7 @@ export class MouseEvents implements PsiagramPlugin {
 
   public teardown(): void {
     if (this._paperWrapper) {
-      this._paperWrapper.removeEventListener(
-        'mousedown',
-        this._handleMouseDown,
-      );
+      this._paperWrapper.removeEventListener('mousedown', this._handleMouseDown);
     }
   }
 
@@ -116,19 +113,12 @@ export class MouseEvents implements PsiagramPlugin {
       document.addEventListener('mousemove', this._handleNodeMouseMove);
       document.addEventListener('mouseup', this._handleNodeMouseUp);
     } else {
-      throw new PaperError(
-        'E_NO_ID',
-        `Node with id ${id} does not exist.`,
-        'MouseEvents.ts',
-        '_handleNodeMouseDown',
-      );
+      throw new PaperError('E_NO_ID', `Node with id ${id} does not exist.`, 'MouseEvents.ts', '_handleNodeMouseDown');
     }
   }
 
   private _handleNodeMouseMove = (evt: MouseEvent): void => {
-    const activeItem = this._paperInstance
-      ? this._paperInstance.getActiveItem()
-      : null;
+    const activeItem = this._paperInstance ? this._paperInstance.getActiveItem() : null;
 
     if (
       activeItem &&
@@ -162,16 +152,9 @@ export class MouseEvents implements PsiagramPlugin {
   };
 
   private _handleNodeMouseUp = (): void => {
-    const activeItem = this._paperInstance
-      ? this._paperInstance.getActiveItem()
-      : null;
+    const activeItem = this._paperInstance ? this._paperInstance.getActiveItem() : null;
 
-    if (
-      activeItem &&
-      activeItem.isMoving &&
-      activeItem.elementType === ElementType.Node &&
-      this._paperInstance
-    ) {
+    if (activeItem && activeItem.isMoving && activeItem.elementType === ElementType.Node && this._paperInstance) {
       // Set active node to selected state.
       this._paperInstance.updateActiveItem({
         ...activeItem,

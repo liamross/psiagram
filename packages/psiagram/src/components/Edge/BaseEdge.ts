@@ -6,11 +6,7 @@
  */
 
 import { Paper } from '../Paper';
-import {
-  createSVGWithAttributes,
-  setElementType,
-  ElementType,
-} from '../../utilities';
+import { createSVGWithAttributes, setElementType, ElementType } from '../../utilities';
 import { ICoordinates } from '../../common';
 
 export interface IBaseEdgeProperties {

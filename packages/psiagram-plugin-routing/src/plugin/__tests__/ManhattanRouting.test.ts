@@ -12,14 +12,7 @@ let myRouting: ManhattanRouting = null;
 
 /** Helpers */
 
-const generateNode = (
-  id: string,
-  x = 0,
-  y = 0,
-  width = 80,
-  height = 80,
-  gridSize = 0,
-): IPaperStoredNode => {
+const generateNode = (id: string, x = 0, y = 0, width = 80, height = 80, gridSize = 0): IPaperStoredNode => {
   const newNode = new Rectangle({
     id,
     gridSize,
@@ -69,13 +62,7 @@ const generateSubPoints = (
     : null;
 
   // @ts-ignore
-  return myRouting._getSubPoints(
-    sourcePoint,
-    targetPoint,
-    sourceBox,
-    targetBox,
-    prevDirection,
-  );
+  return myRouting._getSubPoints(sourcePoint, targetPoint, sourceBox, targetBox, prevDirection);
 };
 
 /** Tests */
@@ -104,11 +91,7 @@ describe('Manhattan Routing', () => {
 
     it('generates a bounding box one grid length around point.', () => {
       // @ts-ignore
-      const boundingBox = myRouting._getBoundingBox(
-        null,
-        { x: 200, y: 100 },
-        20,
-      );
+      const boundingBox = myRouting._getBoundingBox(null, { x: 200, y: 100 }, 20);
       expect(boundingBox).toMatchObject({
         top: 80,
         bottom: 120,
@@ -193,12 +176,7 @@ describe('Manhattan Routing', () => {
       it('exits horizontally if target is within y-range of sourceBox', () => {
         const sourcePoint: ICoordinates = { x: 100, y: 100 };
         const targetPoint: ICoordinates = { x: 200, y: 120 };
-        const subPoints = generateSubPoints(
-          sourcePoint,
-          targetPoint,
-          true,
-          false,
-        );
+        const subPoints = generateSubPoints(sourcePoint, targetPoint, true, false);
         expect(subPoints.coords.length).toBe(1);
         expect(subPoints.coords[0]).toMatchObject({ x: 200, y: 100 });
       });
@@ -206,12 +184,7 @@ describe('Manhattan Routing', () => {
       it('exits vertically otherwise', () => {
         const sourcePoint: ICoordinates = { x: 100, y: 100 };
         const targetPoint: ICoordinates = { x: 200, y: 200 };
-        const subPoints = generateSubPoints(
-          sourcePoint,
-          targetPoint,
-          true,
-          false,
-        );
+        const subPoints = generateSubPoints(sourcePoint, targetPoint, true, false);
         expect(subPoints.coords.length).toBe(1);
         expect(subPoints.coords[0]).toMatchObject({ x: 100, y: 200 });
       });
@@ -222,13 +195,7 @@ describe('Manhattan Routing', () => {
         it('exits horizontally if previous direction was horizontal', () => {
           const sourcePoint: ICoordinates = { x: 100, y: 100 };
           const targetPoint: ICoordinates = { x: 200, y: 120 };
-          const subPoints = generateSubPoints(
-            sourcePoint,
-            targetPoint,
-            false,
-            false,
-            Direction.Horizontal,
-          );
+          const subPoints = generateSubPoints(sourcePoint, targetPoint, false, false, Direction.Horizontal);
           expect(subPoints.coords.length).toBe(1);
           expect(subPoints.coords[0]).toMatchObject({ x: 200, y: 100 });
         });
@@ -236,13 +203,7 @@ describe('Manhattan Routing', () => {
         it('exits vertically if previous direction was vertical', () => {
           const sourcePoint: ICoordinates = { x: 100, y: 100 };
           const targetPoint: ICoordinates = { x: 200, y: 200 };
-          const subPoints = generateSubPoints(
-            sourcePoint,
-            targetPoint,
-            false,
-            false,
-            Direction.Vertical,
-          );
+          const subPoints = generateSubPoints(sourcePoint, targetPoint, false, false, Direction.Vertical);
           expect(subPoints.coords.length).toBe(1);
           expect(subPoints.coords[0]).toMatchObject({ x: 100, y: 200 });
         });
@@ -251,12 +212,7 @@ describe('Manhattan Routing', () => {
       it('exits horizontally if there is no previous direction', () => {
         const sourcePoint: ICoordinates = { x: 100, y: 100 };
         const targetPoint: ICoordinates = { x: 200, y: 200 };
-        const subPoints = generateSubPoints(
-          sourcePoint,
-          targetPoint,
-          false,
-          false,
-        );
+        const subPoints = generateSubPoints(sourcePoint, targetPoint, false, false);
         expect(subPoints.coords.length).toBe(1);
         expect(subPoints.coords[0]).toMatchObject({ x: 200, y: 100 });
       });

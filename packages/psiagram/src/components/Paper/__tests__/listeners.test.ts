@@ -113,9 +113,7 @@ describe('Listeners', () => {
       // A single call to the listener.
       expect(testFunc.mock.calls.length).toBe(1);
 
-      const paperRef = (testFunc.mock.calls[0][0] as PaperEvent<
-        PaperEventType.AddNode
-      >).paper;
+      const paperRef = (testFunc.mock.calls[0][0] as PaperEvent<PaperEventType.AddNode>).paper;
 
       // Only one listener added to 'add-node'.
       // @ts-ignore

@@ -7,11 +7,7 @@
 
 import { PaperEventType } from '../Paper/Paper.types';
 import { Paper } from '../Paper/Paper.base';
-import {
-  PaperEventProperties,
-  PaperEventTarget,
-  PaperEventData,
-} from './PaperEvent.types';
+import { PaperEventProperties, PaperEventTarget, PaperEventData } from './PaperEvent.types';
 
 export class PaperEvent<T> {
   private _eventType: PaperEventType | string;
@@ -22,11 +18,7 @@ export class PaperEvent<T> {
   private _data: PaperEventData<T>;
   private _defaultAction: ((data: PaperEventData<T>) => void) | undefined;
 
-  constructor(
-    eventType: PaperEventType | string,
-    paper: Paper,
-    paperEventProperties?: PaperEventProperties<T>,
-  ) {
+  constructor(eventType: PaperEventType | string, paper: Paper, paperEventProperties?: PaperEventProperties<T>) {
     // @ts-ignore
     const { target, data, defaultAction } = paperEventProperties || {};
 

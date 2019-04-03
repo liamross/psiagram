@@ -23,14 +23,7 @@ import {
 
 /** Helpers */
 
-const generateNode = (
-  id: string,
-  x = 0,
-  y = 0,
-  width = 80,
-  height = 80,
-  gridSize = 0,
-): IPaperStoredNode => {
+const generateNode = (id: string, x = 0, y = 0, width = 80, height = 80, gridSize = 0): IPaperStoredNode => {
   const newNode = new Rectangle({
     id,
     gridSize,
@@ -150,11 +143,7 @@ describe('Diagram Utilities', () => {
 
     it('finds intersection with midpoint rounded to nearest grid', () => {
       const node1 = generateNode('1', 0, 0, 85, 85, 20);
-      const intersection = getEdgeNodeIntersection(
-        node1,
-        { x: 120, y: 40 },
-        20,
-      );
+      const intersection = getEdgeNodeIntersection(node1, { x: 120, y: 40 }, 20);
       expect(intersection).toMatchObject({ x: 80, y: 40 });
     });
 
@@ -172,23 +161,13 @@ describe('Diagram Utilities', () => {
 
     it('trims edge at node border plus outline if given', () => {
       const node1 = generateNode('1');
-      const intersection = getEdgeNodeIntersection(
-        node1,
-        { x: 40, y: 120 },
-        0,
-        10,
-      );
+      const intersection = getEdgeNodeIntersection(node1, { x: 40, y: 120 }, 0, 10);
       expect(intersection).toMatchObject({ x: 40, y: 90 });
     });
 
     it('reverts to midpoint if nextPoint is within border plus outline', () => {
       const node1 = generateNode('1');
-      const intersection = getEdgeNodeIntersection(
-        node1,
-        { x: 40, y: 85 },
-        0,
-        10,
-      );
+      const intersection = getEdgeNodeIntersection(node1, { x: 40, y: 85 }, 0, 10);
       expect(intersection).toMatchObject({ x: 40, y: 40 });
     });
 

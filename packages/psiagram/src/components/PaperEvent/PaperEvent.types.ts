@@ -1,9 +1,4 @@
-import {
-  PaperEventType,
-  IPaperStoredNode,
-  IPaperStoredEdge,
-  IActiveItem,
-} from '../Paper/Paper.types';
+import { PaperEventType, IPaperStoredNode, IPaperStoredEdge, IActiveItem } from '../Paper/Paper.types';
 import { ICoordinates } from '../../common';
 
 // prettier-ignore

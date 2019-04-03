@@ -22,12 +22,7 @@ export class PaperError extends Error {
    * @param [fileName] Optional. Name of file error originated in.
    * @param [issuingFunction] Optional. Name of function issuing error.
    */
-  constructor(
-    code: string,
-    message?: string,
-    fileName?: string,
-    issuingFunction?: string,
-  ) {
+  constructor(code: string, message?: string, fileName?: string, issuingFunction?: string) {
     super(message);
 
     this.name = 'PaperError';

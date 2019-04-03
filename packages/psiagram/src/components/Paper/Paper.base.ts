@@ -50,13 +50,7 @@ export class Paper {
   private _paperWrapper: HTMLElement;
   private _defs: SVGElement;
 
-  constructor({
-    width,
-    height,
-    plugins,
-    attributes,
-    initialConditions,
-  }: IPaperProperties) {
+  constructor({ width, height, plugins, attributes, initialConditions }: IPaperProperties) {
     attributes = attributes || {};
     this._gridSize = attributes.gridSize || 0;
     this._uniqueId = attributes.uniqueId || generateRandomString(4);
@@ -126,9 +120,7 @@ export class Paper {
       const allNodesMapped =
         initialConditions.nodeComponentMap &&
         initialConditions.nodes.every(
-          node =>
-            node.component in
-            (initialConditions.nodeComponentMap as INodeComponentMap),
+          node => node.component in (initialConditions.nodeComponentMap as INodeComponentMap),
         );
 
       if (!allNodesMapped) {
@@ -150,9 +142,7 @@ export class Paper {
       const allEdgesMapped =
         initialConditions.edgeComponentMap &&
         initialConditions.edges.every(
-          edge =>
-            edge.component in
-            (initialConditions.edgeComponentMap as IEdgeComponentMap),
+          edge => edge.component in (initialConditions.edgeComponentMap as IEdgeComponentMap),
         );
 
       if (!allEdgesMapped) {
@@ -169,9 +159,7 @@ export class Paper {
     }
 
     // Fire paper init event.
-    this._fireEvent(
-      new PaperEvent<PaperEventType.PaperInit>(PaperEventType.PaperInit, this),
-    );
+    this._fireEvent(new PaperEvent<PaperEventType.PaperInit>(PaperEventType.PaperInit, this));
   }
 
   /**
@@ -189,16 +177,9 @@ export class Paper {
    */
   public addNode(node: IPaperInputNode): void {
     if (this._nodes.hasOwnProperty(node.id)) {
-      throw new PaperError(
-        'E_DUP_ID',
-        `Node with id ${node.id} already exists.`,
-        'Paper.base.ts',
-        'addNode',
-      );
+      throw new PaperError('E_DUP_ID', `Node with id ${node.id} already exists.`, 'Paper.base.ts', 'addNode');
     } else {
-      const nodeComponent = (this._nodeComponentMap as INodeComponentMap)[
-        node.component
-      ];
+      const nodeComponent = (this._nodeComponentMap as INodeComponentMap)[node.component];
       const instance = new nodeComponent({
         ...node.properties,
         id: node.id,
@@ -235,19 +216,10 @@ export class Paper {
             this._nodes[node.id] = newNode;
             const ref = this._nodes[node.id].instance.getElement();
             if (ref) {
-              setSVGAttribute(
-                ref,
-                'transform',
-                `translate(${data.x} ${data.y})`,
-              );
+              setSVGAttribute(ref, 'transform', `translate(${data.x} ${data.y})`);
               this._paper.appendChild(ref);
             } else {
-              throw new PaperError(
-                'E_INV_ELEM',
-                'Invalid element returned from Node',
-                'Paper.base.ts',
-                'addNode',
-              );
+              throw new PaperError('E_INV_ELEM', 'Invalid element returned from Node', 'Paper.base.ts', 'addNode');
             }
           },
         }),
@@ -264,12 +236,7 @@ export class Paper {
     if (this._nodes.hasOwnProperty(id)) {
       return this._nodes[id].instance;
     } else {
-      throw new PaperError(
-        'E_NO_ID',
-        `Node with id ${id} does not exist.`,
-        'Paper.base.ts',
-        'getNode',
-      );
+      throw new PaperError('E_NO_ID', `Node with id ${id} does not exist.`, 'Paper.base.ts', 'getNode');
     }
   }
 
@@ -281,40 +248,29 @@ export class Paper {
   public removeNode(id: string): void {
     if (this._nodes.hasOwnProperty(id)) {
       this._fireEvent(
-        new PaperEvent<PaperEventType.RemoveNode>(
-          PaperEventType.RemoveNode,
-          this,
-          {
-            target: this._nodes[id],
-            defaultAction: () => {
-              this._nodes[id].instance.teardown();
+        new PaperEvent<PaperEventType.RemoveNode>(PaperEventType.RemoveNode, this, {
+          target: this._nodes[id],
+          defaultAction: () => {
+            this._nodes[id].instance.teardown();
 
-              // Remove all edges that use node as end point.
-              Object.keys(this._edges).forEach(edgeId => {
-                const edge = this._edges[edgeId];
-                if (
-                  (edge.source.hasOwnProperty('id') &&
-                    (edge.source as { id: string }).id === id) ||
-                  (edge.target.hasOwnProperty('id') &&
-                    (edge.target as { id: string }).id === id)
-                ) {
-                  this.removeEdge(edgeId);
-                }
-              });
+            // Remove all edges that use node as end point.
+            Object.keys(this._edges).forEach(edgeId => {
+              const edge = this._edges[edgeId];
+              if (
+                (edge.source.hasOwnProperty('id') && (edge.source as { id: string }).id === id) ||
+                (edge.target.hasOwnProperty('id') && (edge.target as { id: string }).id === id)
+              ) {
+                this.removeEdge(edgeId);
+              }
+            });
 
-              this._nodes[id].instance.getElement().remove();
-              delete this._nodes[id];
-            },
+            this._nodes[id].instance.getElement().remove();
+            delete this._nodes[id];
           },
-        ),
+        }),
       );
     } else {
-      throw new PaperError(
-        'E_NO_ID',
-        `Node with id ${id} does not exist.`,
-        'Paper.base.ts',
-        'removeNode',
-      );
+      throw new PaperError('E_NO_ID', `Node with id ${id} does not exist.`, 'Paper.base.ts', 'removeNode');
     }
   }
 
@@ -325,16 +281,9 @@ export class Paper {
    */
   public addEdge(edge: IPaperInputEdge): void {
     if (this._edges.hasOwnProperty(edge.id)) {
-      throw new PaperError(
-        'E_DUP_ID',
-        `Edge with id ${edge.id} already exists.`,
-        'Paper.base.ts',
-        'addEdge',
-      );
+      throw new PaperError('E_DUP_ID', `Edge with id ${edge.id} already exists.`, 'Paper.base.ts', 'addEdge');
     } else {
-      const edgeComponent = (this._edgeComponentMap as IEdgeComponentMap)[
-        edge.component
-      ];
+      const edgeComponent = (this._edgeComponentMap as IEdgeComponentMap)[edge.component];
       const instance = new edgeComponent({
         ...edge.properties,
         id: edge.id,
@@ -395,12 +344,7 @@ export class Paper {
           }),
         );
       } else {
-        throw new PaperError(
-          'E_INV_ELEM',
-          'Invalid element returned from edge',
-          'Paper.base.ts',
-          'addEdge',
-        );
+        throw new PaperError('E_INV_ELEM', 'Invalid element returned from edge', 'Paper.base.ts', 'addEdge');
       }
     }
   }
@@ -414,12 +358,7 @@ export class Paper {
     if (this._edges.hasOwnProperty(id)) {
       return this._edges[id].instance;
     } else {
-      throw new PaperError(
-        'E_NO_ID',
-        `Edge with id ${id} does not exist.`,
-        'Paper.base.ts',
-        'getEdge',
-      );
+      throw new PaperError('E_NO_ID', `Edge with id ${id} does not exist.`, 'Paper.base.ts', 'getEdge');
     }
   }
 
@@ -431,26 +370,17 @@ export class Paper {
   public removeEdge(id: string): void {
     if (this._edges.hasOwnProperty(id)) {
       this._fireEvent(
-        new PaperEvent<PaperEventType.RemoveEdge>(
-          PaperEventType.RemoveEdge,
-          this,
-          {
-            target: this._edges[id],
-            defaultAction: () => {
-              this._edges[id].instance.teardown();
-              this._edges[id].instance.getElement().remove();
-              delete this._edges[id];
-            },
+        new PaperEvent<PaperEventType.RemoveEdge>(PaperEventType.RemoveEdge, this, {
+          target: this._edges[id],
+          defaultAction: () => {
+            this._edges[id].instance.teardown();
+            this._edges[id].instance.getElement().remove();
+            delete this._edges[id];
           },
-        ),
+        }),
       );
     } else {
-      throw new PaperError(
-        'E_NO_ID',
-        `Edge with id ${id} does not exist.`,
-        'Paper.base.ts',
-        'removeEdge',
-      );
+      throw new PaperError('E_NO_ID', `Edge with id ${id} does not exist.`, 'Paper.base.ts', 'removeEdge');
     }
   }
 
@@ -476,17 +406,13 @@ export class Paper {
     }
     const activeOrNull = activeItem || null;
     this._fireEvent(
-      new PaperEvent<PaperEventType.UpdateActiveItem>(
-        PaperEventType.UpdateActiveItem,
-        this,
-        {
-          target: activeOrNull,
-          data: { activeItem: activeOrNull, oldActiveItem },
-          defaultAction: data => {
-            this._activeItem = data.activeItem;
-          },
+      new PaperEvent<PaperEventType.UpdateActiveItem>(PaperEventType.UpdateActiveItem, this, {
+        target: activeOrNull,
+        data: { activeItem: activeOrNull, oldActiveItem },
+        defaultAction: data => {
+          this._activeItem = data.activeItem;
         },
-      ),
+      }),
     );
   }
 
@@ -497,10 +423,7 @@ export class Paper {
    * @param type The type of listener to add.
    * @param listener The listener function triggered when type of event happens.
    */
-  public addListener(
-    type: PaperEventType,
-    listener: (evt: PaperEvent<any>) => void,
-  ): void {
+  public addListener(type: PaperEventType, listener: (evt: PaperEvent<any>) => void): void {
     if (this._listeners[type] === undefined) {
       this._listeners[type] = [];
     }
@@ -516,14 +439,9 @@ export class Paper {
    * @param type The type of listener to remove.
    * @param listener The listener function to remove.
    */
-  public removeListener(
-    type: PaperEventType,
-    listener: (evt: PaperEvent<any>) => void,
-  ): void {
+  public removeListener(type: PaperEventType, listener: (evt: PaperEvent<any>) => void): void {
     if (this._listeners[type] !== undefined && this._listeners[type].length) {
-      const listenerIndex = this._listeners[type].findIndex(
-        currentLis => currentLis === listener,
-      );
+      const listenerIndex = this._listeners[type].findIndex(currentLis => currentLis === listener);
       this._listeners[type].splice(listenerIndex, 1);
     }
   }
@@ -649,54 +567,48 @@ export class Paper {
         }
 
         this._fireEvent(
-          new PaperEvent<PaperEventType.MoveEdge>(
-            PaperEventType.MoveEdge,
-            this,
-            {
-              target: edge,
-              data: {
-                source: {
-                  node: sourceNode,
-                  midpoint: sourceMidPoint,
-                  point: sourcePoint,
-                },
-                target: {
-                  node: targetNode,
-                  midpoint: targetMidPoint,
-                  point: targetPoint,
-                },
-                coords: edge.coords,
+          new PaperEvent<PaperEventType.MoveEdge>(PaperEventType.MoveEdge, this, {
+            target: edge,
+            data: {
+              source: {
+                node: sourceNode,
+                midpoint: sourceMidPoint,
+                point: sourcePoint,
               },
-              defaultAction: ({ source, target, coords }) => {
-                if (source.node) {
-                  source.point = getEdgeNodeIntersection(
-                    source.node,
-                    coords[0] || target.midpoint || target.point,
-                    this._gridSize,
-                  );
-                }
-                if (target.node) {
-                  target.point = getEdgeNodeIntersection(
-                    target.node,
-                    coords[coords.length - 1] ||
-                      source.midpoint ||
-                      source.point,
-                    this._gridSize,
-                    4,
-                  );
-                }
-
-                edge.instance.setCoordinates([
-                  source.point as ICoordinates,
-                  ...coords.map(coordinate => ({
-                    x: roundToNearest(coordinate.x, this._gridSize),
-                    y: roundToNearest(coordinate.y, this._gridSize),
-                  })),
-                  target.point as ICoordinates,
-                ]);
+              target: {
+                node: targetNode,
+                midpoint: targetMidPoint,
+                point: targetPoint,
               },
+              coords: edge.coords,
             },
-          ),
+            defaultAction: ({ source, target, coords }) => {
+              if (source.node) {
+                source.point = getEdgeNodeIntersection(
+                  source.node,
+                  coords[0] || target.midpoint || target.point,
+                  this._gridSize,
+                );
+              }
+              if (target.node) {
+                target.point = getEdgeNodeIntersection(
+                  target.node,
+                  coords[coords.length - 1] || source.midpoint || source.point,
+                  this._gridSize,
+                  4,
+                );
+              }
+
+              edge.instance.setCoordinates([
+                source.point as ICoordinates,
+                ...coords.map(coordinate => ({
+                  x: roundToNearest(coordinate.x, this._gridSize),
+                  y: roundToNearest(coordinate.y, this._gridSize),
+                })),
+                target.point as ICoordinates,
+              ]);
+            },
+          }),
         );
       } else {
         throw new PaperError(
@@ -707,12 +619,7 @@ export class Paper {
         );
       }
     } else {
-      throw new PaperError(
-        'E_NO_ID',
-        `Edge with id ${id} does not exist.`,
-        'Paper.base.ts',
-        'updateEdgeRoute',
-      );
+      throw new PaperError('E_NO_ID', `Edge with id ${id} does not exist.`, 'Paper.base.ts', 'updateEdgeRoute');
     }
   }
 
@@ -726,12 +633,7 @@ export class Paper {
     if (this._nodes.hasOwnProperty(id)) {
       return this._nodes[id].coords;
     } else {
-      throw new PaperError(
-        'E_NO_ID',
-        `Node with id ${id} does not exist.`,
-        'Paper.base.ts',
-        '_getNodeCoords',
-      );
+      throw new PaperError('E_NO_ID', `Node with id ${id} does not exist.`, 'Paper.base.ts', '_getNodeCoords');
     }
   };
 
@@ -756,44 +658,29 @@ export class Paper {
         const oldCoords = { ...node.coords };
 
         this._fireEvent(
-          new PaperEvent<PaperEventType.MoveNode>(
-            PaperEventType.MoveNode,
-            this,
-            {
-              target: node,
-              data: { coords: newCoords, oldCoords },
-              defaultAction: data => {
-                node.coords = data.coords;
+          new PaperEvent<PaperEventType.MoveNode>(PaperEventType.MoveNode, this, {
+            target: node,
+            data: { coords: newCoords, oldCoords },
+            defaultAction: data => {
+              node.coords = data.coords;
 
-                setSVGAttribute(
-                  node.instance.getElement(),
-                  'transform',
-                  `translate(${node.coords.x} ${node.coords.y})`,
-                );
+              setSVGAttribute(node.instance.getElement(), 'transform', `translate(${node.coords.x} ${node.coords.y})`);
 
-                Object.keys(this._edges).forEach(edgeId => {
-                  const edge = this._edges[edgeId];
-                  if (
-                    (edge.source.hasOwnProperty('id') &&
-                      (edge.source as { id: string }).id === id) ||
-                    (edge.target.hasOwnProperty('id') &&
-                      (edge.target as { id: string }).id === id)
-                  ) {
-                    this._updateEdgeRoute(edgeId);
-                  }
-                });
-              },
+              Object.keys(this._edges).forEach(edgeId => {
+                const edge = this._edges[edgeId];
+                if (
+                  (edge.source.hasOwnProperty('id') && (edge.source as { id: string }).id === id) ||
+                  (edge.target.hasOwnProperty('id') && (edge.target as { id: string }).id === id)
+                ) {
+                  this._updateEdgeRoute(edgeId);
+                }
+              });
             },
-          ),
+          }),
         );
       }
     } else {
-      throw new PaperError(
-        'E_NO_ID',
-        `Node with id ${id} does not exist.`,
-        'Paper.base.ts',
-        '_setNodeCoords',
-      );
+      throw new PaperError('E_NO_ID', `Node with id ${id} does not exist.`, 'Paper.base.ts', '_setNodeCoords');
     }
   };
 
@@ -807,12 +694,7 @@ export class Paper {
     if (this._edges.hasOwnProperty(id)) {
       return this._edges[id].source;
     } else {
-      throw new PaperError(
-        'E_NO_ID',
-        `Edge with id ${id} does not exist.`,
-        'Paper.base.ts',
-        '_getEdgeSource',
-      );
+      throw new PaperError('E_NO_ID', `Edge with id ${id} does not exist.`, 'Paper.base.ts', '_getEdgeSource');
     }
   };
 
@@ -828,12 +710,7 @@ export class Paper {
       this._edges[id].source = newSource;
       this._updateEdgeRoute(id);
     } else {
-      throw new PaperError(
-        'E_NO_ID',
-        `Edge with id ${id} does not exist.`,
-        'Paper.base.ts',
-        '_setEdgeSource',
-      );
+      throw new PaperError('E_NO_ID', `Edge with id ${id} does not exist.`, 'Paper.base.ts', '_setEdgeSource');
     }
   };
 
@@ -847,12 +724,7 @@ export class Paper {
     if (this._edges.hasOwnProperty(id)) {
       return this._edges[id].target;
     } else {
-      throw new PaperError(
-        'E_NO_ID',
-        `Edge with id ${id} does not exist.`,
-        'Paper.base.ts',
-        '_getEdgeTarget',
-      );
+      throw new PaperError('E_NO_ID', `Edge with id ${id} does not exist.`, 'Paper.base.ts', '_getEdgeTarget');
     }
   };
 
@@ -868,12 +740,7 @@ export class Paper {
       this._edges[id].target = newTarget;
       this._updateEdgeRoute(id);
     } else {
-      throw new PaperError(
-        'E_NO_ID',
-        `Edge with id ${id} does not exist.`,
-        'Paper.base.ts',
-        '_setEdgeTarget',
-      );
+      throw new PaperError('E_NO_ID', `Edge with id ${id} does not exist.`, 'Paper.base.ts', '_setEdgeTarget');
     }
   };
 
@@ -887,12 +754,7 @@ export class Paper {
     if (this._edges.hasOwnProperty(id)) {
       return this._edges[id].coords;
     } else {
-      throw new PaperError(
-        'E_NO_ID',
-        `Edge with id ${id} does not exist.`,
-        'Paper.base.ts',
-        '_getEdgeCoords',
-      );
+      throw new PaperError('E_NO_ID', `Edge with id ${id} does not exist.`, 'Paper.base.ts', '_getEdgeCoords');
     }
   };
 
@@ -908,12 +770,7 @@ export class Paper {
       this._edges[id].coords = newCoords;
       this._updateEdgeRoute(id);
     } else {
-      throw new PaperError(
-        'E_NO_ID',
-        `Edge with id ${id} does not exist.`,
-        'Paper.base.ts',
-        '_setEdgeCoords',
-      );
+      throw new PaperError('E_NO_ID', `Edge with id ${id} does not exist.`, 'Paper.base.ts', '_setEdgeCoords');
     }
   };
 }

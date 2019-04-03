@@ -49,17 +49,10 @@ export const isNodeColliding = (
  * @param interval The size of the interval to round to.
  * @param minimum Lowest possible value. Will round up to interval if given.
  */
-export const roundToNearest = (
-  num: number,
-  interval: number = 0,
-  minimum: number = 0,
-): number => {
+export const roundToNearest = (num: number, interval: number = 0, minimum: number = 0): number => {
   if (interval) {
     return minimum
-      ? Math.max(
-          Math.round(num / interval) * interval,
-          Math.ceil(minimum / interval) * interval,
-        )
+      ? Math.max(Math.round(num / interval) * interval, Math.ceil(minimum / interval) * interval)
       : Math.round(num / interval) * interval;
   } else {
     return minimum ? Math.max(num, minimum) : num;
@@ -72,10 +65,7 @@ export const roundToNearest = (
  * @param node The node to get midpoint of.
  * @param gridSize The size of the grid to snap to.
  */
-export const getNodeMidpoint = (
-  node: IPaperStoredNode,
-  gridSize: number = 0,
-): ICoordinates => {
+export const getNodeMidpoint = (node: IPaperStoredNode, gridSize: number = 0): ICoordinates => {
   const { width, height } = getWidthHeight(node);
   return {
     x: roundToNearest(node.coords.x + width / 2, gridSize),
@@ -105,12 +95,7 @@ export const getEdgeNodeIntersection = (
   nodeOutline?: number,
 ): { x: number; y: number } => {
   const midPoint = getNodeMidpoint(node, gridSize);
-  const lineA = [
-    midPoint.x,
-    midPoint.y,
-    roundToNearest(nextPoint.x, gridSize),
-    roundToNearest(nextPoint.y, gridSize),
-  ];
+  const lineA = [midPoint.x, midPoint.y, roundToNearest(nextPoint.x, gridSize), roundToNearest(nextPoint.y, gridSize)];
 
   let { x: nx, y: ny } = node.coords;
   let { width: nw, height: nh } = getWidthHeight(node);
@@ -181,9 +166,7 @@ export function lineIntersect(
   if (denominator) {
     const ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denominator;
     const ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denominator;
-    return ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1
-      ? { x: x1 + ua * (x2 - x1), y: y1 + ua * (y2 - y1) }
-      : null;
+    return ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1 ? { x: x1 + ua * (x2 - x1), y: y1 + ua * (y2 - y1) } : null;
   }
   return null;
 }
@@ -194,10 +177,8 @@ export function lineIntersect(
  * @param coordsA First set of coordinates.
  * @param coordsB Second set of coordinates.
  */
-export const areCoordsEqual = (
-  coordsA: ICoordinates,
-  coordsB: ICoordinates,
-): boolean => coordsA.x === coordsB.x && coordsA.y === coordsB.y;
+export const areCoordsEqual = (coordsA: ICoordinates, coordsB: ICoordinates): boolean =>
+  coordsA.x === coordsB.x && coordsA.y === coordsB.y;
 
 /**
  * Generates a string of possible characters at a defined length.
@@ -205,10 +186,7 @@ export const areCoordsEqual = (
  * @param length The total length of the string.
  * @param useLowerCase Can include both upper and lowercase letters.
  */
-export const generateRandomString = (
-  length: number,
-  useLowerCase: boolean = false,
-) => {
+export const generateRandomString = (length: number, useLowerCase: boolean = false) => {
   let text = '';
 
   const possibleLetters = 'bcdghjklmnpqrstvwxyz';
@@ -217,9 +195,7 @@ export const generateRandomString = (
   if (useLowerCase) possibleChars += possibleLetters;
 
   for (let i = 0; i < length; i++) {
-    text += possibleChars.charAt(
-      Math.floor(Math.random() * possibleChars.length),
-    );
+    text += possibleChars.charAt(Math.floor(Math.random() * possibleChars.length));
   }
 
   return text;
@@ -241,21 +217,14 @@ export const getEdgeMidPoint = (coordinates: ICoordinates[]): ICoordinates => {
 
   while (length < half) {
     index++;
-    lengthSegment = distanceBetweenPoints(
-      coordinates[index - 1],
-      coordinates[index],
-    );
+    lengthSegment = distanceBetweenPoints(coordinates[index - 1], coordinates[index]);
     length += lengthSegment;
   }
 
   const lengthDif = length - half;
   const distanceFromPoint1 = lengthSegment - lengthDif;
 
-  return pointAlongLine(
-    coordinates[index - 1],
-    coordinates[index],
-    distanceFromPoint1,
-  );
+  return pointAlongLine(coordinates[index - 1], coordinates[index], distanceFromPoint1);
 };
 
 /**
@@ -277,10 +246,8 @@ export const edgeLength = (coordinates: ICoordinates[]): number => {
  * @param point1 Initial point.
  * @param point2 Second point.
  */
-export const distanceBetweenPoints = (
-  point1: ICoordinates,
-  point2: ICoordinates,
-): number => Math.hypot(point2.x - point1.x, point2.y - point1.y);
+export const distanceBetweenPoints = (point1: ICoordinates, point2: ICoordinates): number =>
+  Math.hypot(point2.x - point1.x, point2.y - point1.y);
 
 /**
  * Returns the coordinate of a point distance away from point1 towards point2.
@@ -290,11 +257,7 @@ export const distanceBetweenPoints = (
  * @param point2 End point of line.
  * @param distance Distance from point1 towards point2.
  */
-export const pointAlongLine = (
-  point1: ICoordinates,
-  point2: ICoordinates,
-  distance: number,
-): ICoordinates => {
+export const pointAlongLine = (point1: ICoordinates, point2: ICoordinates, distance: number): ICoordinates => {
   if (distance <= 0) return point1;
   const lengthHyp = distanceBetweenPoints(point1, point2);
   if (distance >= lengthHyp) return point2;
@@ -326,35 +289,25 @@ export const closestPointAlongLine = (
   const lineFrom2 = distanceBetweenPoints(linePoint2, point);
 
   // If angle from point one is greater or equal to 90 degrees, choose it.
-  const angleFrom1 = Math.acos(
-    (line ** 2 + lineFrom1 ** 2 - lineFrom2 ** 2) / (2 * line * lineFrom1),
-  );
+  const angleFrom1 = Math.acos((line ** 2 + lineFrom1 ** 2 - lineFrom2 ** 2) / (2 * line * lineFrom1));
   if (angleFrom1 >= Math.PI / 2) {
     return { distance: lineFrom1, point: linePoint1 };
   }
 
   // If angle from point two is greater or equal to 90 degrees, choose it.
-  const angleFrom2 = Math.acos(
-    (line ** 2 + lineFrom2 ** 2 - lineFrom1 ** 2) / (2 * line * lineFrom2),
-  );
+  const angleFrom2 = Math.acos((line ** 2 + lineFrom2 ** 2 - lineFrom1 ** 2) / (2 * line * lineFrom2));
   if (angleFrom2 >= Math.PI / 2) {
     return { distance: lineFrom2, point: linePoint2 };
   }
 
   // Find distance from point to line.
-  const numerator = Math.abs(
-    (y2 - y1) * x0 - (x2 - x1) * y0 + x2 * y1 - y2 * x1,
-  );
+  const numerator = Math.abs((y2 - y1) * x0 - (x2 - x1) * y0 + x2 * y1 - y2 * x1);
   const denominator = Math.sqrt((y2 - y1) ** 2 + (x2 - x1) ** 2);
   const distance = numerator / denominator;
 
   // Calculate the distance from line point one that an intersect would be.
   const angleC = Math.PI / 2 - angleFrom1;
-  const distanceFrom1 = Math.sqrt(
-    lineFrom1 ** 2 +
-      distance ** 2 -
-      2 * lineFrom1 * distance * Math.cos(angleC),
-  );
+  const distanceFrom1 = Math.sqrt(lineFrom1 ** 2 + distance ** 2 - 2 * lineFrom1 * distance * Math.cos(angleC));
 
   return {
     distance,

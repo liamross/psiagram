@@ -100,20 +100,13 @@ export class Line<P extends ILineProperties> extends BaseEdge<P> {
       const target = coordinates.pop() as ICoordinates;
 
       const dString = `M ${source.x} ${source.y} ${
-        coordinates.length
-          ? coordinates.map(point => `L ${point.x} ${point.y} `).join('')
-          : ''
+        coordinates.length ? coordinates.map(point => `L ${point.x} ${point.y} `).join('') : ''
       }L ${target.x} ${target.y}`;
 
       setSVGAttribute(this._clickZone, 'd', dString);
       setSVGAttribute(this._path, 'd', dString);
     } else {
-      throw new PaperError(
-        'E_NO_ELEM',
-        `No path exists for Edge ID: ${this.props.id}`,
-        'Edge.ts',
-        'coordinates',
-      );
+      throw new PaperError('E_NO_ELEM', `No path exists for Edge ID: ${this.props.id}`, 'Edge.ts', 'coordinates');
     }
   }
 

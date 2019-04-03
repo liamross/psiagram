@@ -40,34 +40,23 @@ export class ManhattanRouting implements PsiagramPlugin {
   constructor(manhattanRoutingProperties?: IManhattanRoutingProperties) {
     this._paperInstance = null;
     this._gridSize = 0;
-    this._minimumEdgeExtension =
-      (manhattanRoutingProperties &&
-        manhattanRoutingProperties.minimumEdgeExtension) ||
-      20;
+    this._minimumEdgeExtension = (manhattanRoutingProperties && manhattanRoutingProperties.minimumEdgeExtension) || 20;
   }
 
   public initialize(paper: Paper, properties: IPluginProperties): void {
     this._paperInstance = paper;
     this._gridSize = properties.attributes.gridSize;
 
-    this._paperInstance.addListener(
-      PaperEventType.MoveEdge,
-      this._updateEdgeRoute,
-    );
+    this._paperInstance.addListener(PaperEventType.MoveEdge, this._updateEdgeRoute);
   }
 
   public teardown() {
     if (this._paperInstance) {
-      this._paperInstance.removeListener(
-        PaperEventType.MoveEdge,
-        this._updateEdgeRoute,
-      );
+      this._paperInstance.removeListener(PaperEventType.MoveEdge, this._updateEdgeRoute);
     }
   }
 
-  protected _updateEdgeRoute = (
-    evt: PaperEvent<PaperEventType.MoveEdge>,
-  ): void => {
+  protected _updateEdgeRoute = (evt: PaperEvent<PaperEventType.MoveEdge>): void => {
     const { source, target, coords } = evt.data;
 
     const initialCoordinates = [...coords];
@@ -113,10 +102,7 @@ export class ManhattanRouting implements PsiagramPlugin {
    * @param node Optional. Node to get bounding box of.
    * @param point Optional. If no Node, then give a point to get bounding box.
    */
-  protected _getBoundingBox(
-    node: IPaperStoredNode | null,
-    point: ICoordinates | null,
-  ): IBoundingBox {
+  protected _getBoundingBox(node: IPaperStoredNode | null, point: ICoordinates | null): IBoundingBox {
     const bufferSize = Math.max(this._minimumEdgeExtension, this._gridSize);
     if (node) {
       return {
@@ -173,20 +159,14 @@ export class ManhattanRouting implements PsiagramPlugin {
           const maxY = Math.max(sourceBox.bottom, targetBox.bottom);
           return {
             prevDirection: Direction.Vertical,
-            coords: [
-              { x: sourcePoint.x, y: maxY },
-              { x: targetPoint.x, y: maxY },
-            ],
+            coords: [{ x: sourcePoint.x, y: maxY }, { x: targetPoint.x, y: maxY }],
           };
         }
         // Else exit from top and loop back.
         const minY = Math.min(sourceBox.top, targetBox.top);
         return {
           prevDirection: Direction.Vertical,
-          coords: [
-            { x: sourcePoint.x, y: minY },
-            { x: targetPoint.x, y: minY },
-          ],
+          coords: [{ x: sourcePoint.x, y: minY }, { x: targetPoint.x, y: minY }],
         };
       }
 
@@ -196,19 +176,13 @@ export class ManhattanRouting implements PsiagramPlugin {
         if (sourcePoint.y < targetPoint.y) {
           return {
             prevDirection: Direction.Vertical,
-            coords: [
-              { x: sourcePoint.x, y: sourceBox.bottom },
-              { x: targetPoint.x, y: sourceBox.bottom },
-            ],
+            coords: [{ x: sourcePoint.x, y: sourceBox.bottom }, { x: targetPoint.x, y: sourceBox.bottom }],
           };
         }
         // Else exit from top and zig-zag.
         return {
           prevDirection: Direction.Vertical,
-          coords: [
-            { x: sourcePoint.x, y: sourceBox.top },
-            { x: targetPoint.x, y: sourceBox.top },
-          ],
+          coords: [{ x: sourcePoint.x, y: sourceBox.top }, { x: targetPoint.x, y: sourceBox.top }],
         };
       }
 
@@ -218,19 +192,13 @@ export class ManhattanRouting implements PsiagramPlugin {
         if (sourcePoint.x < targetPoint.x) {
           return {
             prevDirection: Direction.Horizontal,
-            coords: [
-              { x: sourceBox.right, y: sourcePoint.y },
-              { x: sourceBox.right, y: targetPoint.y },
-            ],
+            coords: [{ x: sourceBox.right, y: sourcePoint.y }, { x: sourceBox.right, y: targetPoint.y }],
           };
         }
         // Else exit from left and zig-zag.
         return {
           prevDirection: Direction.Horizontal,
-          coords: [
-            { x: sourceBox.left, y: sourcePoint.y },
-            { x: sourceBox.left, y: targetPoint.y },
-          ],
+          coords: [{ x: sourceBox.left, y: sourcePoint.y }, { x: sourceBox.left, y: targetPoint.y }],
         };
       }
 

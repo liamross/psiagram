@@ -6,11 +6,7 @@
  */
 
 import { Line, ILineProperties } from './Line';
-import {
-  createSVGWithAttributes,
-  getEdgeMidPoint,
-  setBatchSVGAttribute,
-} from '../../../utilities';
+import { createSVGWithAttributes, getEdgeMidPoint, setBatchSVGAttribute } from '../../../utilities';
 import { ICoordinates } from '../../../common';
 
 export interface ITextLineProperties extends ILineProperties {

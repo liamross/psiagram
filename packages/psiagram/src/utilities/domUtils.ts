@@ -8,10 +8,7 @@
 /**
  * Creates and returns an element.
  */
-export const createElementWithAttributes = (
-  tag: string,
-  attributes: { [key: string]: any } = {},
-): HTMLElement => {
+export const createElementWithAttributes = (tag: string, attributes: { [key: string]: any } = {}): HTMLElement => {
   const el = document.createElement(tag);
   for (const key in attributes) {
     if (attributes.hasOwnProperty(key) && !(attributes[key] == null)) {
@@ -24,10 +21,7 @@ export const createElementWithAttributes = (
 /**
  * Creates and returns a namespace element.
  */
-export const createSVGWithAttributes = (
-  tag: string,
-  attributes: { [key: string]: any } = {},
-): SVGElement => {
+export const createSVGWithAttributes = (tag: string, attributes: { [key: string]: any } = {}): SVGElement => {
   const xmlns = 'http://www.w3.org/2000/svg';
   const ns = document.createElementNS(xmlns, tag);
   for (const key in attributes) {
@@ -38,26 +32,15 @@ export const createSVGWithAttributes = (
   return ns;
 };
 
-export const setElementAttribute = (
-  element: HTMLElement,
-  attribute: string,
-  value: any,
-): void => {
+export const setElementAttribute = (element: HTMLElement, attribute: string, value: any): void => {
   element.setAttribute(attribute, value);
 };
 
-export const setSVGAttribute = (
-  svgElement: SVGElement,
-  attribute: string,
-  value: any,
-): void => {
+export const setSVGAttribute = (svgElement: SVGElement, attribute: string, value: any): void => {
   svgElement.setAttributeNS('', attribute, value);
 };
 
-export const setBatchElementAttributes = (
-  element: HTMLElement,
-  attributes: { [key: string]: any },
-) => {
+export const setBatchElementAttributes = (element: HTMLElement, attributes: { [key: string]: any }) => {
   for (const attribute in attributes) {
     if (attributes.hasOwnProperty(attribute)) {
       setElementAttribute(element, attribute, attributes[attribute]);
@@ -65,10 +48,7 @@ export const setBatchElementAttributes = (
   }
 };
 
-export const setBatchSVGAttribute = (
-  svgElement: SVGElement,
-  attributes: { [key: string]: any },
-) => {
+export const setBatchSVGAttribute = (svgElement: SVGElement, attributes: { [key: string]: any }) => {
   for (const attribute in attributes) {
     if (attributes.hasOwnProperty(attribute)) {
       setSVGAttribute(svgElement, attribute, attributes[attribute]);

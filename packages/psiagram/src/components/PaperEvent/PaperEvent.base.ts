@@ -5,14 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { PaperEventType } from '../Paper/Paper.types';
 import { Paper } from '../Paper/Paper.base';
-import { PaperEventProperties, PaperEventTarget, PaperEventData } from './PaperEvent.types';
+import { PaperEventType } from '../Paper/Paper.types';
+import { PaperEventData, PaperEventProperties, PaperEventTarget } from './PaperEvent.types';
 
 export class PaperEvent<T> {
+  public canPropagate: boolean;
+
   private _eventType: PaperEventType | string;
   private _paper: Paper;
-  private _canPropagate: boolean;
 
   private _target: PaperEventTarget<T>;
   private _data: PaperEventData<T>;
@@ -22,9 +23,10 @@ export class PaperEvent<T> {
     // @ts-ignore
     const { target, data, defaultAction } = paperEventProperties || {};
 
+    this.canPropagate = true;
+
     this._eventType = eventType;
     this._paper = paper;
-    this._canPropagate = true;
 
     this._target = target;
     this._data = data;
@@ -91,6 +93,6 @@ export class PaperEvent<T> {
    * or preventDefault is called separately.
    */
   public stopPropagation(): void {
-    this._canPropagate = false;
+    this.canPropagate = false;
   }
 }

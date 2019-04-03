@@ -5,35 +5,35 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { ICoordinates } from '../../common';
 import {
-  IPaperStoredNode,
-  INodeComponentMap,
-  IPaperStoredEdge,
-  IEdgeComponentMap,
-  IActiveItem,
-  IPaperProperties,
-  IPaperInputNode,
-  PaperNode,
-  IPaperInputEdge,
-  edgeEndPoint,
-  PaperEdge,
-  PaperEventType,
-} from './Paper.types';
-import { PaperEvent } from '../PaperEvent';
-import {
-  generateRandomString,
-  roundToNearest,
-  createSVGWithAttributes,
-  setElementType,
-  ElementType,
-  createElementWithAttributes,
-  setSVGAttribute,
-  getNodeMidpoint,
-  getEdgeNodeIntersection,
   areCoordsEqual,
+  createElementWithAttributes,
+  createSVGWithAttributes,
+  ElementType,
+  generateRandomString,
+  getEdgeNodeIntersection,
+  getNodeMidpoint,
+  roundToNearest,
+  setElementType,
+  setSVGAttribute,
 } from '../../utilities';
 import { PaperError } from '../PaperError';
-import { ICoordinates } from '../../common';
+import { PaperEvent } from '../PaperEvent';
+import {
+  edgeEndPoint,
+  IActiveItem,
+  IEdgeComponentMap,
+  INodeComponentMap,
+  IPaperInputEdge,
+  IPaperInputNode,
+  IPaperProperties,
+  IPaperStoredEdge,
+  IPaperStoredNode,
+  PaperEdge,
+  PaperEventType,
+  PaperNode,
+} from './Paper.types';
 
 export class Paper {
   private _width: number;
@@ -466,9 +466,8 @@ export class Paper {
         // We are going to do a bad thing here and check a private property.
         // Eventually we may move all of the event firing logic into the actual
         // event, but for now, we need to see if it can still propagate without
-        // opening up _canPropagate to public use.
-        // @ts-ignore
-        if (evt._canPropagate) listener(evt);
+        // opening up canPropagate to public use.
+        if (evt.canPropagate) listener(evt);
       });
     }
     evt.defaultAction();

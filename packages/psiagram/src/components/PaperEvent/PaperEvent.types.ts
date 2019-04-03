@@ -1,16 +1,12 @@
-import { PaperEventType, IPaperStoredNode, IPaperStoredEdge, IActiveItem } from '../Paper/Paper.types';
 import { ICoordinates } from '../../common';
+import { IActiveItem, IPaperStoredEdge, IPaperStoredNode, PaperEventType } from '../Paper/Paper.types';
 
-// prettier-ignore
-export type PaperEventProperties<T> =
-  T extends PaperEventType.PaperInit ? undefined :
-  { defaultAction: ((data: PaperEventData<T>) => void) }
-    & (PaperEventTarget<T> extends undefined
+export type PaperEventProperties<T> = T extends PaperEventType.PaperInit
+  ? undefined
+  : { defaultAction: (data: PaperEventData<T>) => void } & (PaperEventTarget<T> extends undefined
       ? {}
-      : { target: PaperEventTarget<T> })
-    & (PaperEventData<T> extends undefined
-      ? {}
-      : { data: PaperEventData<T> });
+      : { target: PaperEventTarget<T> }) &
+      (PaperEventData<T> extends undefined ? {} : { data: PaperEventData<T> });
 
 // prettier-ignore
 export type PaperEventTarget<T> =

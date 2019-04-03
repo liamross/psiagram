@@ -4,6 +4,8 @@
 
 Psiagram \(/ˈ\(p\)sīəˌɡram/\) - a simple, feature-rich, and extensible diagram framework for JavaScript. It provides the foundation to build anything from simple workflows to complex interactive graphs with vast shape libraries.
 
+[CodeSandbox Demo](https://codesandbox.io/s/qzwk05zx4j)
+
 ## Simple
 
 **Psiagram is a dependency-free framework**, allowing easy integration in any front end, regardless of the technology stack. It wraps all complex DOM manipulation, which makes manipulating your diagrams as easy as setting properties.

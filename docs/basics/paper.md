@@ -65,7 +65,7 @@ An optional object where you can define attributes of the Paper. These are all *
 An optional object where you can define any initial Nodes or Edges to render onto Paper when it's initialized. In order to input these, object has the following **optional** properties:
 
 {% hint style="info" %}
-Psiagram only provides the base classes needed to begin building custom Nodes and Edges. Alone, the BaseNode class and Edge class will not render any visual components. You must extend these classes into your own [custom Nodes](../in-depth/custom-nodes.md) and [custom Edges](../in-depth/custom-edges.md).
+Psiagram only provides the base classes needed to begin building custom Nodes and Edges. Alone, the BaseNode class and BaseEdge class will not render any visual components. You must extend these classes into your own [custom Nodes](../in-depth/custom-nodes.md) and [custom Edges](../in-depth/custom-edges.md).
 {% endhint %}
 
 * **nodes** - `IPaperInputNode[]`: Initial Node data needed to render out Nodes.

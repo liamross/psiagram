@@ -5,24 +5,27 @@ In order to use Psiagram to the fullest, developers can use the framework to bui
 But first, some links to various Node files:
 
 1. [Base Node](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Node/BaseNode.ts)
-   * Provides the base implementation of Node. Every Node must extend this class
 
-     \(or if not, it must at least be in the prototype chain\)
+    - Provides the base implementation of Node. Every Node must extend this class
 
-   * Must be extended in order to be functional
+        \(or if not, it must at least be in the prototype chain\)
+
+    - Must be extended in order to be functional
+
 2. [Text Node](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Node/NodeAbstracts/TextNode.ts)
-   * Provides an extended Node that handles placing text within the Node
-   * Must be extended in order to be functional
+    - Provides an extended Node that handles placing text within the Node
+    - Must be extended in order to be functional
 3. [Rectangle](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Node/NodeLibrary/Rectangle.ts)
-   * This is an example implementation. Use this as a reference for any Nodes
 
-     you build.
+    - This is an example implementation. Use this as a reference for any Nodes
 
-   * Implements [Text Node](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Node/NodeAbstracts/TextNode.ts) \(see above\) to create a Rectangle Node in basic grey
+        you build.
 
-     colors
+    - Implements [Text Node](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Node/NodeAbstracts/TextNode.ts) \(see above\) to create a Rectangle Node in basic grey
 
-   * Functional as is \(does not need to be extended\)
+        colors
+
+    - Functional as is \(does not need to be extended\)
 
 Feel free to check the links out to get a basic idea of some of the Nodes provided by Psiagram. They will be referenced later on.
 
@@ -34,10 +37,10 @@ The properties of the [Base Node](https://github.com/liamross/psiagram/blob/mast
 
 ```typescript
 export interface IBaseNodeProperties {
-  id: string;
-  gridSize: number;
-  uniqueId: string;
-  paper: Paper;
+	id: string;
+	gridSize: number;
+	uniqueId: string;
+	paper: Paper;
 }
 ```
 
@@ -100,9 +103,7 @@ constructor(props: P) {
 initialize(): void;
 ```
 
-{% hint style="warning" %}
-The initialize method **must** be overwritten.
-{% endhint %}
+{% hint style="warning" %} The initialize method **must** be overwritten. {% endhint %}
 
 Initialize is called when the Node is being mounted into the DOM. You can build visual SVG components and add them to the group using `this.addToGroup(element)`. This function is only called once, so any changes in the future must be done through setters. Here's [Text Node's](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Node/NodeAbstracts/TextNode.ts) initialize function as an example:
 
@@ -136,9 +137,7 @@ Teardown is called when the Node is being removed from the DOM. You can cause tr
 
 ### width
 
-{% hint style="warning" %}
-Width get and set **must** be overwritten.
-{% endhint %}
+{% hint style="warning" %} Width get and set **must** be overwritten. {% endhint %}
 
 #### get
 
@@ -197,9 +196,7 @@ set width(width: number) {
 
 ### height
 
-{% hint style="warning" %}
-Height get and set **must** be overwritten.
-{% endhint %}
+{% hint style="warning" %} Height get and set **must** be overwritten. {% endhint %}
 
 #### get
 
@@ -261,9 +258,7 @@ set height(height: number) {
 getElement(): SVGElement;
 ```
 
-{% hint style="danger" %}
-Do not modify or overwrite this function unless you know what you're doing. It is used by the Paper to extract the entire Node group, and breaking the functionality may cause all of Psiagram to work incorrectly.
-{% endhint %}
+{% hint style="danger" %} Do not modify or overwrite this function unless you know what you're doing. It is used by the Paper to extract the entire Node group, and breaking the functionality may cause all of Psiagram to work incorrectly. {% endhint %}
 
 This function will always return the Node group. Any visual components for this Node should be contained within the Node group by adding them using [addToGroup](custom-nodes.md#addtogroup).
 
@@ -273,9 +268,6 @@ This function will always return the Node group. Any visual components for this 
 addToGroup(element: SVGElement): void;
 ```
 
-{% hint style="danger" %}
-Do not modify or overwrite this function unless you know what you're doing. It should be used by all extending classes to insert SVG elements into the Node group. Breaking the functionality may lead to incorrect rendering of the Node.
-{% endhint %}
+{% hint style="danger" %} Do not modify or overwrite this function unless you know what you're doing. It should be used by all extending classes to insert SVG elements into the Node group. Breaking the functionality may lead to incorrect rendering of the Node. {% endhint %}
 
 This function allows you to easily append elements into the Node group. Generally, it is used inside of [initialize](custom-nodes.md#initialize) to add created elements to the Node group.
-

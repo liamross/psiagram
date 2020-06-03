@@ -1,37 +1,48 @@
 {
-  "private": true,
-  "version": "0.0.0",
-  "workspaces": [
-    "packages/*"
-  ],
-  "repository": "https://github.com/liamross/psiagram",
-  "homepage": "https://www.psiagram.org",
-  "scripts": {
-    "_parcel": "parcel demo/index.html",
-    "start": "yarn clean-dev && yarn _parcel",
-    "start-build": "yarn build && yarn _parcel",
-    "test": "jest --config ./configs/test/jest.config.js",
-    "build": "yarn clean-build && lerna run build",
-    "bootstrap": "yarn build && lerna bootstrap",
-    "clean-dev": "node ./scripts/clean/development.js",
-    "clean-build": "node ./scripts/clean/builds.js",
-    "clean-deep": "node ./scripts/clean/deep.js && lerna clean --yes",
-    "clean-all": "yarn clean-cache && yarn clean-build && yarn clean-deep",
-    "lint": "lerna run lint"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.1.2",
-    "@babel/preset-env": "^7.1.0",
-    "@types/jest": "^24.0.11",
-    "babel-core": "7.0.0-bridge.0",
-    "babel-jest": "^24.7.0",
-    "jest": "^23.2.0",
-    "lerna": "^3.4.0",
-    "parcel-bundler": "^1.9.3",
-    "prettier": "^1.13.7",
-    "rimraf": "^2.6.2",
-    "tslint": "^5.10.0",
-    "tslint-config-prettier": "^1.13.0",
-    "typescript": "^3.0.0"
-  }
+	"private": true,
+	"version": "0.0.0",
+	"repository": "https://github.com/liamross/psiagram",
+	"homepage": "https://www.psiagram.org",
+	"scripts": {
+		"clean": "lerna run clean",
+		"lint": "eslint . --ext .js,.ts,.jsx,.tsx",
+		"format": "prettier --write .",
+		"test": "jest",
+		"test-verbose": "jest --verbose",
+		"build": "lerna run build --stream",
+		"start": "lerna run --parallel --stream start",
+		"pub": "lerna publish",
+		"bootstrap": "lerna bootstrap"
+	},
+	"devDependencies": {
+		"@babel/cli": "^7.7.5",
+		"@babel/core": "^7.7.5",
+		"@babel/plugin-proposal-class-properties": "^7.7.4",
+		"@babel/plugin-proposal-object-rest-spread": "^7.7.4",
+		"@babel/preset-env": "^7.7.5",
+		"@rollup/plugin-commonjs": "^11.0.1",
+		"@rollup/plugin-node-resolve": "^7.0.0",
+		"@rollup/plugin-replace": "^2.3.0",
+		"@types/jest": "^25.2.3",
+		"@typescript-eslint/eslint-plugin": "^2.16.0",
+		"@typescript-eslint/parser": "^2.16.0",
+		"babel-jest": "^24.7.0",
+		"eslint": "^6.8.0",
+		"eslint-config-prettier": "^6.9.0",
+		"eslint-plugin-jest": "^23.6.0",
+		"jest": "^26.0.1",
+		"lerna": "^3.4.0",
+		"parcel-bundler": "^1.9.3",
+		"prettier": "^2.0.5",
+		"rollup": "^1.27.4",
+		"rollup-plugin-terser": "^5.2.0",
+		"ts-jest": "^25.0.0",
+		"ts-node": "^8.6.2",
+		"typescript": "^3.0.0"
+	},
+	"workspaces": {
+		"packages": [
+			"packages/*"
+		]
+	}
 }

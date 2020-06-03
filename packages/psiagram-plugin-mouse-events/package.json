@@ -1,33 +1,31 @@
 {
-  "name": "psiagram-plugin-mouse-events",
-  "description": "A plugin to allow selection and drag-n-drop functionality in the Psiagram diagramming framework.",
-  "keywords": [
-    "psiagram",
-    "psiagram-plugin",
-    "mouse",
-    "event",
-    "drag-n-drop"
-  ],
-  "files": [
-    "README.md",
-    "lib/"
-  ],
-  "version": "1.0.0-beta.0",
-  "main": "lib/index.js",
-  "typings": "lib/index.d.ts",
-  "author": "Liam Ross <liamross.code@gmail.com>",
-  "repository": "https://github.com/liamross/psiagram/tree/master/packages/psiagram-plugin-mouse-events",
-  "bugs": "https://github.com/liamross/psiagram/issues",
-  "homepage": "https://www.psiagram.org",
-  "license": "MIT",
-  "scripts": {
-    "build": "tsc",
-    "lint": "tslint -p . -t verbose"
-  },
-  "dependencies": {
-    "psiagram": "^1.0.0-beta.0"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.1.2"
-  }
+	"name": "psiagram-plugin-mouse-events",
+	"description": "A plugin to allow selection and drag-n-drop functionality in the Psiagram diagramming framework.",
+	"keywords": [
+		"psiagram",
+		"psiagram-plugin",
+		"mouse",
+		"event",
+		"drag-n-drop"
+	],
+	"files": [
+		"README.md",
+		"lib/"
+	],
+	"version": "1.0.0-beta.0",
+	"main": "lib/index.js",
+	"typings": "lib/index.d.ts",
+	"author": "Liam Ross <liamross.code@gmail.com>",
+	"repository": "https://github.com/liamross/psiagram/tree/master/packages/psiagram-plugin-mouse-events",
+	"bugs": "https://github.com/liamross/psiagram/issues",
+	"homepage": "https://www.psiagram.org",
+	"license": "MIT",
+	"scripts": {
+		"clean": "../../scripts/clean_package.sh",
+		"build": "../../scripts/build_package.sh",
+		"start": "../../scripts/watch_package.sh"
+	},
+	"dependencies": {
+		"psiagram": "^1.0.0-beta.0"
+	}
 }

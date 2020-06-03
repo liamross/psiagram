@@ -19,21 +19,21 @@ Here is the Paper Properties interface defined in TypeScript:
 
 ```typescript
 interface IPaperProperties {
-  width: number;
-  height: number;
-  plugins?: PsiagramPlugin[];
-  attributes?: {
-    gridSize?: number;
-    paperWrapperClass?: string;
-    paperClass?: string;
-    uniqueId?: string;
-  };
-  initialConditions?: {
-    nodes?: IPaperInputNode[];
-    nodeComponentMap?: INodeComponentMap;
-    edges?: IPaperInputEdge[];
-    edgeComponentMap?: IEdgeComponentMap;
-  };
+	width: number;
+	height: number;
+	plugins?: PsiagramPlugin[];
+	attributes?: {
+		gridSize?: number;
+		paperWrapperClass?: string;
+		paperClass?: string;
+		uniqueId?: string;
+	};
+	initialConditions?: {
+		nodes?: IPaperInputNode[];
+		nodeComponentMap?: INodeComponentMap;
+		edges?: IPaperInputEdge[];
+		edgeComponentMap?: IEdgeComponentMap;
+	};
 }
 ```
 
@@ -55,93 +55,91 @@ An optional array of any initialized plugins you wish to pass into Paper. Plugin
 
 An optional object where you can define attributes of the Paper. These are all **optional**, and are the following:
 
-* gridSize - `number`: Grid size in px. If given, elements will snap to a grid.
-* paperWrapperClass - `string`: Class for div that encompasses Paper.
-* paperClass - `string`: Class for Paper SVG component.
-* uniqueId - `string`: Unique ID for paper \(self-generated if none given\).
+-   gridSize - `number`: Grid size in px. If given, elements will snap to a grid.
+-   paperWrapperClass - `string`: Class for div that encompasses Paper.
+-   paperClass - `string`: Class for Paper SVG component.
+-   uniqueId - `string`: Unique ID for paper \(self-generated if none given\).
 
 #### initialConditions \(optional\) - `Object`
 
 An optional object where you can define any initial Nodes or Edges to render onto Paper when it's initialized. In order to input these, object has the following **optional** properties:
 
-{% hint style="info" %}
-Psiagram only provides the base classes needed to begin building custom Nodes and Edges. Alone, the BaseNode class and BaseEdge class will not render any visual components. You must extend these classes into your own [custom Nodes](../in-depth/custom-nodes.md) and [custom Edges](../in-depth/custom-edges.md).
-{% endhint %}
+{% hint style="info" %} Psiagram only provides the base classes needed to begin building custom Nodes and Edges. Alone, the BaseNode class and BaseEdge class will not render any visual components. You must extend these classes into your own [custom Nodes](../in-depth/custom-nodes.md) and [custom Edges](../in-depth/custom-edges.md). {% endhint %}
 
-* **nodes** - `IPaperInputNode[]`: Initial Node data needed to render out Nodes.
+-   **nodes** - `IPaperInputNode[]`: Initial Node data needed to render out Nodes.
 
-  More details on input Nodes can be found in the [Node section](node.md).
+    More details on input Nodes can be found in the [Node section](node.md).
 
-* **nodeComponentMap** - `INodeComponentMap`: Object to map component strings to an
+-   **nodeComponentMap** - `INodeComponentMap`: Object to map component strings to an
 
-  extended BaseNode class. Once you've built some Nodes, they can be included
+    extended BaseNode class. Once you've built some Nodes, they can be included
 
-  here and selected by giving the key string to the appropriate initial Nodes.
+    here and selected by giving the key string to the appropriate initial Nodes.
 
-  ```typescript
-  export interface INodeComponentMap {
-    [key: string]: typeof BaseNode;
-  }
-  ```
+    ```typescript
+    export interface INodeComponentMap {
+    	[key: string]: typeof BaseNode;
+    }
+    ```
 
-* **edges** - `IPaperInputEdge[]`: Initial Edge data needed to render out Edges.
+-   **edges** - `IPaperInputEdge[]`: Initial Edge data needed to render out Edges.
 
-  More details on input Edges can be found in the [Edge section](edge.md).
+    More details on input Edges can be found in the [Edge section](edge.md).
 
-* **edgeComponentMap** - `IEdgeComponentMap`: Object to map component strings to an
+-   **edgeComponentMap** - `IEdgeComponentMap`: Object to map component strings to an
 
-  extended Edge class. Once you've built some Edges, they can be included here
+    extended Edge class. Once you've built some Edges, they can be included here
 
-  and selected by giving the key string to the appropriate initial Edges.
+    and selected by giving the key string to the appropriate initial Edges.
 
-  ```typescript
-  export interface IEdgeComponentMap {
-    [key: string]: typeof BaseEdge;
-  }
-  ```
+    ```typescript
+    export interface IEdgeComponentMap {
+    	[key: string]: typeof BaseEdge;
+    }
+    ```
 
 ### Initialization
 
 Now that you have an idea of building a Paper Properties object, let's look at initializing a Paper instance.
 
 ```javascript
-import { Paper, Rectangle, TextLine } from 'psiagram';
-import { Grid } from 'psiagram-plugin-grid';
-import { MouseEvents } from 'psiagram-plugin-mouse-events';
-import { ManhattanRouting } from 'psiagram-plugin-routing';
+import {Paper, Rectangle, TextLine} from 'psiagram';
+import {Grid} from 'psiagram-plugin-grid';
+import {MouseEvents} from 'psiagram-plugin-mouse-events';
+import {ManhattanRouting} from 'psiagram-plugin-routing';
 
 const myPaper = new Paper({
-  height: 900,
-  width: 1300,
-  attributes: {
-    gridSize: 20,
-    paperWrapperClass: 'myPaperWrapper',
-    paperClass: 'myPaper',
-    uniqueId: 'paper_unique_id',
-  },
-  plugins: [new Grid(), new MouseEvents(), new ManhattanRouting()],
-  initialConditions: {
-    nodes: [
-      {
-        id: 'node-1-id',
-        component: 'rectangle',
-        coords: { x: 80, y: 80 },
-        properties: { title: 'Node 1', width: 120, height: 80 },
-      },
-    ],
-    nodeComponentMap: { rectangle: Rectangle },
-    edges: [
-      {
-        id: 'edge-1-id',
-        component: 'text-edge',
-        source: { id: 'node-1-id' },
-        target: { x: 120, y: 240 },
-        coords: [],
-        properties: { title: 'Edge 1' },
-      },
-    ],
-    edgeComponentMap: { 'text-edge': TextLine },
-  },
+	height: 900,
+	width: 1300,
+	attributes: {
+		gridSize: 20,
+		paperWrapperClass: 'myPaperWrapper',
+		paperClass: 'myPaper',
+		uniqueId: 'paper_unique_id',
+	},
+	plugins: [new Grid(), new MouseEvents(), new ManhattanRouting()],
+	initialConditions: {
+		nodes: [
+			{
+				id: 'node-1-id',
+				component: 'rectangle',
+				coords: {x: 80, y: 80},
+				properties: {title: 'Node 1', width: 120, height: 80},
+			},
+		],
+		nodeComponentMap: {rectangle: Rectangle},
+		edges: [
+			{
+				id: 'edge-1-id',
+				component: 'text-edge',
+				source: {id: 'node-1-id'},
+				target: {x: 120, y: 240},
+				coords: [],
+				properties: {title: 'Edge 1'},
+			},
+		],
+		edgeComponentMap: {'text-edge': TextLine},
+	},
 });
 ```
 
@@ -253,4 +251,3 @@ removeListener(type: PaperEventType, listener: (evt: PaperEvent) => void): void;
 ```
 
 Remove a previously added listener. For more details on types of events, or the PaperEvent object, visit the [events section](../in-depth/events.md).
-

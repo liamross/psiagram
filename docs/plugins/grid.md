@@ -14,7 +14,7 @@ Here is the Grid Properties interface defined in TypeScript:
 
 ```typescript
 interface IGridProperties {
-  gridColor?: string;
+	gridColor?: string;
 }
 ```
 
@@ -29,29 +29,28 @@ This is the color that the grid will be rendered with. It defaults to `'#EEE'`.
 Now that you have an idea of building a Grid Properties object, let's look at initializing a Grid instance.
 
 ```typescript
-import { Grid } from 'psiagram-plugin-grid';
+import {Grid} from 'psiagram-plugin-grid';
 
 const myPaper = new Paper({
-  height: 900,
-  width: 1300,
-  plugins: [new Grid({ gridColor: '#C4C5C6' })],
+	height: 900,
+	width: 1300,
+	plugins: [new Grid({gridColor: '#C4C5C6'})],
 });
 ```
 
 Additionally, if you want to store the instance of the Grid outside of the Paper \(for example, to make changes to grid color after paper has already been initialized\) then you can initialize it like this:
 
 ```typescript
-import { Grid } from 'psiagram-plugin-grid';
+import {Grid} from 'psiagram-plugin-grid';
 
 const grid = new Grid();
 
 const myPaper = new Paper({
-  height: 900,
-  width: 1300,
-  plugins: [grid],
+	height: 900,
+	width: 1300,
+	plugins: [grid],
 });
 
 // Then later:
 grid.gridColor = '#CCC';
 ```
-

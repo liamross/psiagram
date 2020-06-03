@@ -23,4 +23,3 @@ For an in-depth look into some features, see the [in-depth section](in-depth/).
 Psiagram is set up to allow **easy extensibility through plugins**. These vary from providing a grid pattern background, to providing complex drag-n-drop functionality and event firing.
 
 Check out some of the official plugins in the [plugins section](plugins/).
-

@@ -14,7 +14,7 @@ Here is the Manhattan Routing Properties interface defined in TypeScript:
 
 ```typescript
 export interface IManhattanRoutingProperties {
-  minimumEdgeExtension?: number;
+	minimumEdgeExtension?: number;
 }
 ```
 
@@ -29,24 +29,23 @@ This is the minimum amount that the Edge will extend out of any Nodes before it 
 Now that you have an idea of building a Manhattan Routing Properties object, let's look at initializing a Manhattan Routing instance.
 
 ```typescript
-import { ManhattanRouting } from 'psiagram-plugin-routing';
+import {ManhattanRouting} from 'psiagram-plugin-routing';
 
 const myPaper = new Paper({
-  height: 900,
-  width: 1300,
-  plugins: [new ManhattanRouting({ minimumEdgeExtension: 40 })],
+	height: 900,
+	width: 1300,
+	plugins: [new ManhattanRouting({minimumEdgeExtension: 40})],
 });
 ```
 
 Keep in mind you can simply initialize it with nothing to get the default values.
 
 ```typescript
-import { ManhattanRouting } from 'psiagram-plugin-routing';
+import {ManhattanRouting} from 'psiagram-plugin-routing';
 
 const myPaper = new Paper({
-  height: 900,
-  width: 1300,
-  plugins: [new ManhattanRouting()],
+	height: 900,
+	width: 1300,
+	plugins: [new ManhattanRouting()],
 });
 ```
-

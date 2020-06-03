@@ -14,12 +14,12 @@ Here is the Paper Input Node interface defined in TypeScript:
 
 ```typescript
 interface IPaperInputNode {
-  id: string;
-  component: string;
-  coords: ICoordinates;
-  properties?: {
-    [property: string]: any;
-  };
+	id: string;
+	component: string;
+	coords: ICoordinates;
+	properties?: {
+		[property: string]: any;
+	};
 }
 ```
 
@@ -37,14 +37,14 @@ This string maps to a custom Node class within the `initialConditions.nodeCompon
 
 The coordinates at which the Node sits on Paper. The default behavior is that Node will snap to the nearest grid if `gridSize` was provided to Paper.
 
-* iCoordinates:
+-   iCoordinates:
 
-  ```typescript
-  interface ICoordinates {
-    x: number;
-    y: number;
-  }
-  ```
+    ```typescript
+    interface ICoordinates {
+    	x: number;
+    	y: number;
+    }
+    ```
 
 #### properties \(optional\) - `Object`
 
@@ -52,9 +52,9 @@ Properties is where you define any properties to pass into Node when it's initia
 
 ```typescript
 const properties = {
-  title: 'My Rectangle',
-  width: 160,
-  height: 80,
+	title: 'My Rectangle',
+	width: 160,
+	height: 80,
 };
 ```
 
@@ -62,8 +62,8 @@ Whereas if it's a square perhaps you might have a slightly simpler set of proper
 
 ```typescript
 const properties = {
-  title: 'My Square',
-  length: 80,
+	title: 'My Square',
+	length: 80,
 };
 ```
 
@@ -75,14 +75,14 @@ Here's an example of how to add a Node to the Paper using the Paper Input Node o
 
 ```typescript
 function addNode() {
-  const node: IPaperInputNode = {
-    id: 'new_node_test',
-    component: 'rectangle',
-    coords: { x: 320, y: 160 },
-    properties: { title: 'New Node', height: 80, width: 160 },
-  };
+	const node: IPaperInputNode = {
+		id: 'new_node_test',
+		component: 'rectangle',
+		coords: {x: 320, y: 160},
+		properties: {title: 'New Node', height: 80, width: 160},
+	};
 
-  myPaper.addNode(node);
+	myPaper.addNode(node);
 }
 ```
 
@@ -92,7 +92,7 @@ While the Paper Input Node is the input to the Paper, the Paper Node is the outp
 
 However, there is an additional property that has been added to a Paper Edge.
 
-* **`coords`** - The coordinates of the Node on Paper
+-   **`coords`** - The coordinates of the Node on Paper
 
 Of course, these are in addition to any properties defined by the custom Node \(example: every Node must expose a `width` and `height` property, and some custom Nodes could expose something like `title`\).
 
@@ -107,18 +107,15 @@ const yourNode = getNode('your-node-id');
 Now that you have your Paper Node, you can manipulate the `coords` property to position it on the Paper:
 
 ```typescript
-yourNode.coords = { x: yourNode.coords.x, y: 120 };
+yourNode.coords = {x: yourNode.coords.x, y: 120};
 ```
 
 Here, we have kept the x-coordinate the same, but updated the y-coordinate to 120. This will update in the DOM automatically, and will also fire a `move-node` event. More detail on events can be found in the [events section](../in-depth/events.md).
 
-{% hint style="warning" %}
-Because this uses getters and setters to wrap the DOM manipulation logic, you must re-assign `yourNode.coords` entirely. You **can't** do something like:
+{% hint style="warning" %} Because this uses getters and setters to wrap the DOM manipulation logic, you must re-assign `yourNode.coords` entirely. You **can't** do something like:
 
 ```typescript
 yourNode.coords.x = 50;
 ```
 
-This just changes the x-property of the object **without calling the set method**. Therefore, none of the wrapped DOM manipulation logic will fire. Since the object itself **remains the same**, the set method for coords **will not be triggered** and none of the DOM manipulation logic will fire.
-{% endhint %}
-
+This just changes the x-property of the object **without calling the set method**. Therefore, none of the wrapped DOM manipulation logic will fire. Since the object itself **remains the same**, the set method for coords **will not be triggered** and none of the DOM manipulation logic will fire. {% endhint %}

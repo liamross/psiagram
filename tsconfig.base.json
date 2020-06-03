@@ -1,0 +1,16 @@
+{
+	"compilerOptions": {
+		"incremental": true,
+		"target": "ES2020",
+		"module": "ESNext",
+		"moduleResolution": "Node",
+		"lib": ["ESNext", "DOM"],
+		"strict": true,
+		"experimentalDecorators": true,
+		"noUnusedLocals": true,
+		"jsx": "react",
+		"forceConsistentCasingInFileNames": true,
+		"declaration": true,
+		"allowSyntheticDefaultImports": false
+	}
+}

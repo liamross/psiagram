@@ -1,0 +1,16 @@
+{
+	"extends": "./tsconfig.base.json",
+	"compilerOptions": {
+		"baseUrl": ".",
+		"allowSyntheticDefaultImports": true,
+		"paths": {
+			"@dialectjs/core": ["packages/core/src/index"],
+			"@dialectjs/core/*": ["packages/core/src/*"],
+			"@dialectjs/eslint-plugin": ["packages/eslint-plugin/src/index"],
+			"@dialectjs/eslint-plugin/*": ["packages/eslint-plugin/src/*"],
+			"@dialectjs/react": ["packages/react/src/index"],
+			"@dialectjs/react/*": ["packages/react/src/*"]
+		}
+	},
+	"exclude": ["**/node_modules/**", "**/lib/**", "**/dist/**", "**/build/**"]
+}

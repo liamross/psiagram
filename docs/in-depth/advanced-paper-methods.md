@@ -65,4 +65,3 @@ _insertPaperDef(def: SVGElement, id?: string): void;
  */
 _removePaperDef(id: string): void;
 ```
-

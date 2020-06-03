@@ -12,13 +12,13 @@ First, let's look at a very simple example of a listener for an event.
 
 ```typescript
 function addNodeAnnouncement(evt) {
-  console.log('Added Node. ID: ' + evt.target.id);
+	console.log('Added Node. ID: ' + evt.target.id);
 }
 
 myPaper.addListener(PaperEventType.AddNode, addNodeAnnouncement);
 ```
 
-In the example above, every time a Node is added to the Paper, it will log the ID of the added Node. 
+In the example above, every time a Node is added to the Paper, it will log the ID of the added Node.
 
 ### Cancelling events
 
@@ -26,12 +26,12 @@ However, where events really shine is by giving control over the event to any li
 
 ```typescript
 function noTallNodes(evt) {
-  const height = evt.target.instance.height;
-  if (height > 150) {
-    evt.preventDefault();
-    evt.stopPropagation();
-    console.error('Can not add Node with height > 150px');
-  }
+	const height = evt.target.instance.height;
+	if (height > 150) {
+		evt.preventDefault();
+		evt.stopPropagation();
+		console.error('Can not add Node with height > 150px');
+	}
 }
 
 myPaper.addListener(PaperEventType.AddNode, noTallNodes);
@@ -45,8 +45,8 @@ One final example, and we will get into the internals of an event. In this examp
 
 ```typescript
 function addNodeToCorner(evt) {
-  evt.data.x = 0;
-  evt.data.y = 0;
+	evt.data.x = 0;
+	evt.data.y = 0;
 }
 
 myPaper.addListener(PaperEventType.AddNode, addNodeToCorner);
@@ -54,9 +54,7 @@ myPaper.addListener(PaperEventType.AddNode, addNodeToCorner);
 
 For an AddNode event, the default action will be to add the Node to the paper at the coordinates specified. For a case like this, you don't want to prevent the default, nor do you want to stop the event from propagating \(in case additional listeners do important actions based on the event\). What you do want is to update the data that will be used by the default action once it is fired \(once every listener has been called\).
 
-{% hint style="info" %}
-For a more complex example, check out the [`_updateEdgeRoute`](https://github.com/liamross/psiagram/blob/12bc468c635796223c4ab8ccf3f8559b470f3c9a/packages/psiagram-plugin-routing/src/plugin/ManhattanRouting.ts#L68-L108) method within the ManhattanRouting plugin repository \(this is an example of transforming data\). Now we will take a deeper look into events.
-{% endhint %}
+{% hint style="info" %} For a more complex example, check out the [`_updateEdgeRoute`](https://github.com/liamross/psiagram/blob/12bc468c635796223c4ab8ccf3f8559b470f3c9a/packages/psiagram-plugin-routing/src/plugin/ManhattanRouting.ts#L68-L108) method within the ManhattanRouting plugin repository \(this is an example of transforming data\). Now we will take a deeper look into events. {% endhint %}
 
 ## Event API
 
@@ -73,20 +71,18 @@ The event type defines what type of action the event represents. The events that
 
 ```typescript
 enum PaperEventType {
-  AddNode = 'add-node',
-  MoveNode = 'move-node',
-  RemoveNode = 'remove-node',
-  AddEdge = 'add-edge',
-  MoveEdge = 'move-edge',
-  RemoveEdge = 'remove-edge',
-  PaperInit = 'paper-init',
-  UpdateActiveItem = 'update-active-item',
+	AddNode = 'add-node',
+	MoveNode = 'move-node',
+	RemoveNode = 'remove-node',
+	AddEdge = 'add-edge',
+	MoveEdge = 'move-edge',
+	RemoveEdge = 'remove-edge',
+	PaperInit = 'paper-init',
+	UpdateActiveItem = 'update-active-item',
 }
 ```
 
-{% hint style="info" %}
-**For advanced users**: Event types can be any string. If you are writing a plugin or wish to fire a custom event, you can use the advanced Paper method [\_fireEvent](advanced-paper-methods.md#_fireevent).
-{% endhint %}
+{% hint style="info" %} **For advanced users**: Event types can be any string. If you are writing a plugin or wish to fire a custom event, you can use the advanced Paper method [\_fireEvent](advanced-paper-methods.md#_fireevent). {% endhint %}
 
 ### target
 
@@ -95,7 +91,7 @@ enum PaperEventType {
 const target = evt.target;
 ```
 
-The target is whatever the event is acting on. This could simply return `undefined` in the case of [PaperInit](events.md#paperinit), or it could be a stored Node in the case of [MoveNode](events.md#move-node). 
+The target is whatever the event is acting on. This could simply return `undefined` in the case of [PaperInit](events.md#paperinit), or it could be a stored Node in the case of [MoveNode](events.md#move-node).
 
 ### data
 
@@ -151,15 +147,15 @@ There are various events that are fired by Paper whenever an action occurs. Each
 #### Target
 
 ```typescript
-IPaperStoredNode
+IPaperStoredNode;
 ```
 
 #### Data
 
 ```typescript
 {
-  x: number;
-  y: number;
+	x: number;
+	y: number;
 }
 ```
 
@@ -172,15 +168,15 @@ Add the stored Node at the `x` and `y` coordinates.
 #### Target
 
 ```typescript
-IPaperStoredNode
+IPaperStoredNode;
 ```
 
 #### Data
 
 ```typescript
 {
-  coords: ICoordinates;
-  oldCoords: ICoordinates;
+	coords: ICoordinates;
+	oldCoords: ICoordinates;
 }
 ```
 
@@ -193,13 +189,13 @@ Move the stored Node from `oldCoords` to `coords`.
 #### Target
 
 ```typescript
-IPaperStoredNode
+IPaperStoredNode;
 ```
 
 #### Data
 
 ```typescript
-undefined
+undefined;
 ```
 
 #### Default action
@@ -211,13 +207,13 @@ Remove the target Node.
 #### Target
 
 ```typescript
-IPaperStoredEdge
+IPaperStoredEdge;
 ```
 
 #### Data
 
 ```typescript
-undefined
+undefined;
 ```
 
 #### Default action
@@ -229,7 +225,7 @@ Add the Edge to the Paper.
 #### Target
 
 ```typescript
-IPaperStoredEdge
+IPaperStoredEdge;
 ```
 
 #### Data
@@ -259,13 +255,13 @@ Move the Edge on the paper. If the source/target is a Node, then `node` and `mid
 #### Target
 
 ```typescript
-IPaperStoredEdge
+IPaperStoredEdge;
 ```
 
 #### Data
 
 ```typescript
-undefined
+undefined;
 ```
 
 #### Default action
@@ -277,13 +273,13 @@ Remove the target Edge.
 #### Target
 
 ```typescript
-undefined
+undefined;
 ```
 
 #### Data
 
 ```typescript
-undefined
+undefined;
 ```
 
 #### Default action
@@ -295,19 +291,18 @@ No default action. This is only fired once on the last line of the Paper constru
 #### Target
 
 ```typescript
-IActiveItem | null
+IActiveItem | null;
 ```
 
 #### Data
 
 ```typescript
 {
-  activeItem: IActiveItem | null;
-  oldActiveItem: IActiveItem | null;
+	activeItem: IActiveItem | null;
+	oldActiveItem: IActiveItem | null;
 }
 ```
 
 #### Default action
 
 Update the active item from `oldActiveItem` to `activeItem`. The old item could be null if there was none and an item is becoming active, or the current could be null if there is no current active item.
-

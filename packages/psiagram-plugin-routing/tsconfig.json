@@ -1,12 +1,8 @@
 {
-  "extends": "../../configs/tsconfig",
-  "compilerOptions": {
-    "baseUrl": "./packages/psiagram-plugin-routing",
-    "paths": {
-      "lib/*": ["src/*"]
-    },
-    "outDir": "lib"
-  },
-  "include": ["src"],
-  "exclude": ["**/__tests__", "**/*.test.ts", "**/*.spec.ts"]
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"outDir": "./lib",
+		"baseUrl": "./"
+	},
+	"include": ["./src/index.ts"]
 }

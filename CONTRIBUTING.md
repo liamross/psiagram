@@ -2,8 +2,7 @@
 
 First, ensure you have the [latest `yarn`](https://yarnpkg.com/en/).
 
-> These can also be done with the [latest `npm`](https://docs.npmjs.com/),
-> simply follow npm instructions (may need to add 'run' after `$ npm`).
+> These can also be done with the [latest `npm`](https://docs.npmjs.com/), simply follow npm instructions (may need to add 'run' after `$ npm`).
 
 ## Cloning Repository
 
@@ -38,9 +37,7 @@ $ npm test --coverage
 
 ### Linting
 
-> Note: this will likely show an overly-verbose error if there is one. This is
-> due to lerna reading the error from the failed lint as an error with the
-> scripts.
+> Note: this will likely show an overly-verbose error if there is one. This is due to lerna reading the error from the failed lint as an error with the scripts.
 
 ```sh
 $ yarn lint

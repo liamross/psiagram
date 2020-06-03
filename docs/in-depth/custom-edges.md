@@ -5,17 +5,19 @@ Edges are the **connective elements** within a Psiagram Paper. They could be any
 But first, some links to various Edge files:
 
 1. [Base Edge](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Edge/BaseEdge.ts)
-   * Provides the base implementation of Edge. Every Edge must extend this class
 
-     \(or if not, it must at least be in the prototype chain\)
+    - Provides the base implementation of Edge. Every Edge must extend this class
 
-   * Must be extended in order to be functional
+        \(or if not, it must at least be in the prototype chain\)
+
+    - Must be extended in order to be functional
+
 2. [Line](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Edge/EdgeLibrary/Line.ts)
-   * Provides an extended Edge that renders a black arrow
-   * Functional as is \(does not need to be extended\)
+    - Provides an extended Edge that renders a black arrow
+    - Functional as is \(does not need to be extended\)
 3. [Text Line](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Edge/EdgeLibrary/TextLine.ts)
-   * Extends [Line](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Edge/EdgeLibrary/Line.ts) \(see above\) to additionally render a title for the Edge
-   * Functional as is \(does not need to be extended\)
+    - Extends [Line](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Edge/EdgeLibrary/Line.ts) \(see above\) to additionally render a title for the Edge
+    - Functional as is \(does not need to be extended\)
 
 Feel free to check the links out to get a basic idea of some of the Edges provided by Psiagram. They will be referenced later on.
 
@@ -27,10 +29,10 @@ The properties of the [Base Edge](https://github.com/liamross/psiagram/blob/mast
 
 ```typescript
 export interface IBaseEdgeProperties {
-  id: string;
-  gridSize: number;
-  uniqueId: string;
-  paper: Paper;
+	id: string;
+	gridSize: number;
+	uniqueId: string;
+	paper: Paper;
 }
 ```
 
@@ -94,9 +96,7 @@ constructor(props: P) {
 initialize(): void;
 ```
 
-{% hint style="warning" %}
-The initialize method **must** be overwritten.
-{% endhint %}
+{% hint style="warning" %} The initialize method **must** be overwritten. {% endhint %}
 
 Initialize is called when the Edge is being mounted into the DOM. You can build visual SVG components and add them to the group using `this.addToGroup(element)`. This function is only called once, so any changes in the future must be done through setters. Here's [Line's](https://github.com/liamross/psiagram/blob/master/packages/psiagram/src/components/Edge/EdgeLibrary/Line.ts) initialize function as an example:
 
@@ -160,9 +160,7 @@ Teardown is called when the Edge is being removed from the DOM. You can cause tr
 
 ### getCoordinates
 
-{% hint style="warning" %}
-The getCoordinates method **must** be overwritten.
-{% endhint %}
+{% hint style="warning" %} The getCoordinates method **must** be overwritten. {% endhint %}
 
 ```typescript
 getCoordinates(): ICoordinates[];
@@ -180,9 +178,7 @@ public getCoordinates(): ICoordinates[] {
 
 ### setCoordinates
 
-{% hint style="warning" %}
-The setCoordinates method **must** be overwritten.
-{% endhint %}
+{% hint style="warning" %} The setCoordinates method **must** be overwritten. {% endhint %}
 
 ```typescript
 setCoordinates(coordinates: ICoordinates[]): void;
@@ -241,9 +237,7 @@ public setCoordinates(coordinates: ICoordinates[]): void {
 getElement(): SVGElement;
 ```
 
-{% hint style="danger" %}
-Do not modify or overwrite this function unless you know what you're doing. It is used by the Paper to extract the entire Edge group, and breaking the functionality may cause all of Psiagram to work incorrectly.
-{% endhint %}
+{% hint style="danger" %} Do not modify or overwrite this function unless you know what you're doing. It is used by the Paper to extract the entire Edge group, and breaking the functionality may cause all of Psiagram to work incorrectly. {% endhint %}
 
 This function will always return the Edge group. Any visual components for this Edge should be contained within the Edge group by adding them using [addToGroup](custom-edges.md#addtogroup).
 
@@ -253,9 +247,6 @@ This function will always return the Edge group. Any visual components for this 
 addToGroup(element: SVGElement): void;
 ```
 
-{% hint style="danger" %}
-Do not modify this function unless you know what you're doing. It should be used by all extending classes to insert SVG elements into the Edge group. Breaking the functionality may lead to incorrect rendering of the Edge.
-{% endhint %}
+{% hint style="danger" %} Do not modify this function unless you know what you're doing. It should be used by all extending classes to insert SVG elements into the Edge group. Breaking the functionality may lead to incorrect rendering of the Edge. {% endhint %}
 
 This function allows you to easily append elements into the Edge group. Generally, it is used inside of initialize to add created elements to the Edge group.
-

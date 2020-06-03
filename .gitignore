@@ -1,12 +1,15 @@
 # dependencies
-/node_modules
+node_modules
 
 # development
 .cache
 
+# caches
+.eslintcache
+
 # production
-/dist
-/lib
+dist
+lib
 
 # testing
 /coverage
@@ -16,6 +19,7 @@
 .vscode
 
 # environment
+.env
 .env.local
 .env.development.local
 .env.test.local

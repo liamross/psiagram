@@ -6,10 +6,10 @@ The active item is a way to designate or determine which element on paper **is b
 
 ```typescript
 interface IActiveItem {
-  elementType: ElementType;
-  id: string;
-  isSelected: boolean;
-  [key: string]: any;
+	elementType: ElementType;
+	id: string;
+	isSelected: boolean;
+	[key: string]: any;
 }
 ```
 
@@ -19,9 +19,9 @@ This property helps to narrow down the active item. IDs must be unique across al
 
 ```typescript
 enum ElementType {
-  Paper = 'paper',
-  Node = 'node',
-  Edge = 'edge',
+	Paper = 'paper',
+	Node = 'node',
+	Edge = 'edge',
 }
 ```
 
@@ -38,6 +38,3 @@ This is used for every active item. It shows if an item is in a selected state. 
 #### Additional properties - `any`
 
 Any additional properties can be added to the active item object. This can be useful for adding plugin-specific properties to whichever item is active. One example is in the [Mouse Events Plugin](../plugins/mouse-events.md), where an `isMoving` boolean is added in order to determine if an active item is in a moving state.
-
-
-
